@@ -25,4 +25,13 @@ public class SuperAdminTests {
         Assertions.assertThrows(InvalidStringFieldLengException.class,
                 () -> SuperAdmin.register(firstName, "any_last_name", "any_email", "any_password"));
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should throw RequiredFieldException if lastName is null or empty on register")
+    public void shouldThrowRequiredFieldExceptionIfLastNameIsNullOrEmptyOnRegister(String lastName) {
+        Assertions.assertThrows(RequiredFieldException.class,
+                () -> SuperAdmin.register("any_first_name", lastName, "any_email", "any_password"));
+    }
+
 }
