@@ -46,6 +46,6 @@ public abstract class UserJpaEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 }

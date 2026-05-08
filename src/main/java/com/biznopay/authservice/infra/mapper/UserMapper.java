@@ -7,7 +7,7 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 
 public class UserMapper {
     public static UserJpaEntity toUserJpaEntity(User user) {
-        return switch (user){
+        return switch (user) {
             case SuperAdmin sa -> toSuperAdminJpaEntity(sa);
             default -> throw new IllegalArgumentException("Unknown user type: " + user.getClass().getName());
         };

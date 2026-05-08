@@ -5,5 +5,5 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("SUPER_ADMIN")
-public class SuperAdminJpaEntity extends UserJpaEntity{
+public class SuperAdminJpaEntity extends UserJpaEntity {
 }

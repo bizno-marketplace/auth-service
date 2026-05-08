@@ -26,7 +26,7 @@ public class UserGatewayImplTests {
     @DisplayName("Should count super admins on countSAs")
     public void shouldCountSuperAdminsOnCountSAs() {
         Mockito.when(superAdminJpaRepository.countBy()).thenReturn(3L);
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository,superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
         long count = userGatewayImpl.countSAs();
         Assertions.assertEquals(3L, count);
         Mockito.verify(superAdminJpaRepository).countBy();
@@ -35,10 +35,10 @@ public class UserGatewayImplTests {
 
     @Test
     @DisplayName("Should save user on save")
-    public  void shouldSaveUserOnSave(){
+    public void shouldSaveUserOnSave() {
         RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository,superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
         userGatewayImpl.save(user);
         Mockito.verify(userJpaRepository).save(Mockito.any(UserJpaEntity.class));
         Mockito.verifyNoMoreInteractions(userJpaRepository);
