@@ -53,7 +53,7 @@ public abstract class User {
         return lastname;
     }
 
-    private  String validatePassword(String password){
+    private String validatePassword(String password) {
         if (password == null || password.isEmpty())
             throw new RequiredFieldException("Password", User.class.getName(), "USER-006");
         if (!password.matches(PASSWORD_REGEX))
