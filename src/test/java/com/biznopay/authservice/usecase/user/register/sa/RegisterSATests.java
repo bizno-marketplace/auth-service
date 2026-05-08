@@ -11,8 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 @ExtendWith(MockitoExtension.class)
 public class RegisterSATests {
     @Mock
@@ -24,25 +22,31 @@ public class RegisterSATests {
     public void shouldThrowConflictExceptionWhenSuperAdminAlreadyExistsOnRegisterSuperAdmin() {
         RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         SuperAdmin superAdmin =  SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        Mockito.when(userGateway.findSAByEmail(input.email())).thenReturn(Optional.of(superAdmin));
-
+        Mockito.when(userGateway.countSAs()).thenReturn(1L);
         RegisterSA useCase = new RegisterSA(userGateway);
         Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Super admin already exists");
+        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
+    }
 
-        Mockito.verify(userGateway, Mockito.times(1)).findSAByEmail(input.email());
+    @Test
+    @DisplayName("Should throw ConflictException when system already has a super admin on register super admin")
+    public void shouldThrowConflictExceptionWhenSystemHAlreadyHasASuperAdminOnRegisterSuperAdmin(){
+        RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        Mockito.when(userGateway.countSAs()).thenReturn(1L);
+        RegisterSA useCase = new RegisterSA(userGateway);
+        Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Super admin already exists");
+        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
     }
 
     @Test
     @DisplayName("Should registry supper admin, send activation link with 15 mins of expiration to provided email and return message to notify user")
     public void shouldRegisterSupperAdminSendActivationLinkWith15minsOfExpirationToProvidedEmailAndReturnMessageToNotifyUser(){
         RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
-        Mockito.when(userGateway.findSAByEmail(input.email())).thenReturn(Optional.empty());
-
+        Mockito.when(userGateway.countSAs()).thenReturn(0L);
         RegisterSA useCase = new RegisterSA(userGateway);
         RegisterSAOutput output = useCase.execute(input);
-
         Assertions.assertEquals("We've sent an activation link to provided email: "+input.email(), output.message());
-        Mockito.verify(userGateway, Mockito.times(1)).findSAByEmail(input.email());
+        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
         Mockito.verify(userGateway, Mockito.times(1)).save(Mockito.any(SuperAdmin.class));
     }
 }
