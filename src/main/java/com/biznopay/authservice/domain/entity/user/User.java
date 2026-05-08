@@ -1,7 +1,7 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.exception.InvalidDataException;
+import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
@@ -34,9 +34,11 @@ public abstract class User {
 
     //START VALIDATIONS
     private String validateFirstName(String firstName) {
-        if (firstName == null || firstName.isEmpty()) {
+        if (firstName == null || firstName.isEmpty())
             throw new RequiredFieldException("First name", User.class.getName(), "USER-002");
-        }
+        if (firstName.length() < 3)
+            throw new InvalidStringFieldLengException("First name", 3, User.class.getName(), "USER-003");
+
         return  firstName;
     }
     //END VALIDATIONS
