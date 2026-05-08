@@ -11,22 +11,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 public class RegisterSATests {
     @Mock
     private UserGateway userGateway;
-
-
-    @Test
-    @DisplayName("Should throw ConflictException when super admin already exists on register super admin")
-    public void shouldThrowConflictExceptionWhenSuperAdminAlreadyExistsOnRegisterSuperAdmin() {
-        RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
-        SuperAdmin superAdmin =  SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        Mockito.when(userGateway.countSAs()).thenReturn(1L);
-        RegisterSA useCase = new RegisterSA(userGateway);
-        Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Super admin already exists");
-        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
-    }
 
     @Test
     @DisplayName("Should throw ConflictException when system already has a super admin on register super admin")
@@ -36,6 +26,19 @@ public class RegisterSATests {
         RegisterSA useCase = new RegisterSA(userGateway);
         Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Super admin already exists");
         Mockito.verify(userGateway, Mockito.times(1)).countSAs();
+    }
+
+    @Test
+    @DisplayName("Should throw EmailAlreadyInUseException when email is already in use on register super admin")
+    public void shouldThrowEmailAlreadyInUseExceptionWhenEmailIsAlreadyInUseOnRegisterSuperAdmin() {
+        RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        SuperAdmin superAdmin =  SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
+        Mockito.when(userGateway.countSAs()).thenReturn(0L);
+        Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.of(superAdmin));
+        RegisterSA useCase = new RegisterSA(userGateway);
+        Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Email already in use");
+        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
+        Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
 
     @Test
