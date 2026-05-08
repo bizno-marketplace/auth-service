@@ -34,4 +34,13 @@ public class SuperAdminTests {
                 () -> SuperAdmin.register("any_first_name", lastName, "any_email", "any_password"));
     }
 
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ad"})
+    @DisplayName("Should throw InvalidStringFieldLengException if lastName has less than min characters allowed")
+    public void shouldThrowInvalidStringFieldLengExceptionIFlastNameHasLessThanMinCharactersAllowed(String lastName) {
+        Assertions.assertThrows(InvalidStringFieldLengException.class,
+                () -> SuperAdmin.register("any_first_name", lastName, "any_email", "any_password"));
+    }
+
 }
