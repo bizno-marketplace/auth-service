@@ -1,11 +1,13 @@
 package com.biznopay.authservice.domain.entity.user;
 
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -75,5 +77,22 @@ public class SuperAdminTests {
     public void shouldThrowInvalidPasswordExceptionIfPasswordDoesNotMatchWithEstablishedRules(String password) {
         Assertions.assertThrows(InvalidPasswordException.class,
                 () -> SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", password));
+    }
+
+    @Test
+    @DisplayName("Should register SuperAdmin with correct param on register ande set status  PENDING")
+    public void shouldRegisterSuperAdminWithCorrectParamOnRegisterAndSetStatusOnPENDING() {
+        SuperAdmin superAdmin = SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", "Password@123");
+        Assertions.assertNotNull(superAdmin);
+        Assertions.assertNotNull(superAdmin.getId());
+        Assertions.assertEquals("any_first_name", superAdmin.getFirstName());
+        Assertions.assertEquals("any_last_name", superAdmin.getLastname());
+        Assertions.assertEquals("anybizno@bizno.co.mz", superAdmin.getEmail());
+        Assertions.assertEquals("", superAdmin.getPhone());
+        Assertions.assertEquals("Password@123", superAdmin.getPassword());
+        Assertions.assertEquals(UserStatus.PENDING, superAdmin.getStatus());
+        Assertions.assertNotNull(superAdmin.getExpiresAt());
+        Assertions.assertNotNull(superAdmin.getCreatedAt());
+        Assertions.assertNotNull(superAdmin.getUpdatedAt());
     }
 }
