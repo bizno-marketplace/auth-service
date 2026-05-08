@@ -30,7 +30,7 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        Optional<UserJpaEntity> entity =  userJpaRepository.findByEmail(email);
+        Optional<UserJpaEntity> entity = userJpaRepository.findByEmail(email);
         return entity.map(UserMapper::toUserDomain);
     }
 }

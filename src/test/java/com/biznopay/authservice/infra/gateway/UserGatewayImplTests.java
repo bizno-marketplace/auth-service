@@ -2,7 +2,6 @@ package com.biznopay.authservice.infra.gateway;
 
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
@@ -66,9 +65,9 @@ public class UserGatewayImplTests {
         Assertions.assertEquals("", result.get().getPhone());
         Assertions.assertEquals(entity.getPassword(), result.get().getPassword());
         Assertions.assertEquals(entity.getStatus(), result.get().getStatus());
-        Assertions.assertEquals(entity.getExpiresAt(),result.get().getExpiresAt());
-        Assertions.assertEquals(entity.getCreatedAt(),result.get().getCreatedAt());
-        Assertions.assertEquals(entity.getUpdatedAt(),result.get().getUpdatedAt());
+        Assertions.assertEquals(entity.getExpiresAt(), result.get().getExpiresAt());
+        Assertions.assertEquals(entity.getCreatedAt(), result.get().getCreatedAt());
+        Assertions.assertEquals(entity.getUpdatedAt(), result.get().getUpdatedAt());
 
         Mockito.verify(userJpaRepository).findByEmail(user.getEmail());
         Mockito.verifyNoMoreInteractions(userJpaRepository);

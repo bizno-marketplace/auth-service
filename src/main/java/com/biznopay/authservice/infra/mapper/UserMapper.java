@@ -30,11 +30,12 @@ public class UserMapper {
     }
 
 
-    public static User toUserDomain(UserJpaEntity entity){
+    public static User toUserDomain(UserJpaEntity entity) {
         return switch (entity) {
             case SuperAdminJpaEntity sa -> toSuperAdminDomainEntity(sa);
             default -> throw new IllegalArgumentException("Unknown user type: " + entity.getClass().getName());
-        };    }
+        };
+    }
 
     private static SuperAdmin toSuperAdminDomainEntity(SuperAdminJpaEntity entity) {
         return SuperAdmin.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
