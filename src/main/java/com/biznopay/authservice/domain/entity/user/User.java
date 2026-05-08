@@ -23,7 +23,7 @@ public abstract class User {
         this.id = id;
         this.firstName = this.validateFirstName(firstName);
         this.lastname = this.validateLastName(lastname);
-        this.email = this.validateEmail(email);
+        this.email = email;
         this.phone = phone;
         this.password = password;
         this.status = status;
@@ -48,12 +48,6 @@ public abstract class User {
         if (lastname.length() < 3)
             throw new InvalidStringFieldLengException("Last name", 3, User.class.getName(), "USER-005");
         return lastname;
-    }
-
-    private String validateEmail(String email){
-        if (email == null || email.isEmpty())
-            throw new RequiredFieldException("Email", User.class.getName(), "USER-006");
-        return email;
     }
     //END VALIDATIONS
 
