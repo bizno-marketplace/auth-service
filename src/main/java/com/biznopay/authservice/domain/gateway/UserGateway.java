@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface UserGateway {
     long countSAs();
+
     void save(User user);
+
     Optional<User> findByEmail(String email);
 }
