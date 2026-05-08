@@ -13,8 +13,11 @@ public class RegisterSA {
         this.userGateway = userGateway;
     }
 
-    public void execute(RegisterSAInput input) {
-        Optional<SuperAdmin> superAdmin = userGateway.findSuperByEmail(input.email());
-        if (superAdmin.isPresent()) throw new ConflictException("Super admin", "SUPER_ADMIN-003");
+    public RegisterSAOutput execute(RegisterSAInput input) {
+        Optional<SuperAdmin> existingSA = userGateway.findSAByEmail(input.email());
+        if (existingSA.isPresent()) throw new ConflictException("Super admin", "SUPER_ADMIN-003");
+        SuperAdmin superAdmin = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
+        userGateway.save(superAdmin);
+        return new RegisterSAOutput("We've sent an activation link to provided email: " + input.email());
     }
 }
