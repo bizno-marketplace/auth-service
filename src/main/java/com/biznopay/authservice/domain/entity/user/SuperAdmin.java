@@ -21,6 +21,12 @@ public class SuperAdmin extends User {
         return new SuperAdmin(UserId.generate(), firstName, lastname, email, "", password, UserStatus.PENDING, expiresAt, createdAt, createdAt);
     }
 
+    public static SuperAdmin reconstitute(UserId id, String firstName, String lastName, String email, String phone,
+                                          String password, UserStatus status, LocalDateTime expiresAt,
+                                          LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new SuperAdmin(id, firstName, lastName, email, phone, password, status, expiresAt, createdAt, updatedAt);
+    }
+
     private static String validateBiznoInstitutionalEmail(String email) {
         if (email == null || email.isEmpty())
             throw new RequiredFieldException("Email", User.class.getName(), "SUPER_ADMIN-001");

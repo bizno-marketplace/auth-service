@@ -2,6 +2,7 @@ package com.biznopay.authservice.infra.mapper;
 
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 
@@ -26,5 +27,18 @@ public class UserMapper {
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
         return entity;
+    }
+
+
+    public static User toUserDomain(UserJpaEntity entity){
+        return switch (entity) {
+            case SuperAdminJpaEntity sa -> toSuperAdminDomainEntity(sa);
+            default -> throw new IllegalArgumentException("Unknown user type: " + entity.getClass().getName());
+        };    }
+
+    private static SuperAdmin toSuperAdminDomainEntity(SuperAdminJpaEntity entity) {
+        return SuperAdmin.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
+                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
+                entity.getCreatedAt(), entity.getUpdatedAt());
     }
 }
