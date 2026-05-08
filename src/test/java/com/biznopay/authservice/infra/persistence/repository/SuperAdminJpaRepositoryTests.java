@@ -1,8 +1,13 @@
 package com.biznopay.authservice.infra.persistence.repository;
 
+import com.biznopay.authservice.domain.entity.user.SuperAdmin;
+import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import org.assertj.core.api.Assertions;
+import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +49,23 @@ public class SuperAdminJpaRepositoryTests {
     @DisplayName("should count zero when no super admin exists")
     public  void shouldCountZeroWhenNoSuperAdminExists() {
         long count = superAdminJpaRepository.count();
-        Assertions.assertThat(count).isZero();
+        Assertions.assertEquals(0, count);
+    }
+
+    @Test
+    @DisplayName("Should counts 2 when exist 2 super admins")
+    public  void shouldCountsTwoWhenExistTwoSuperAdmins() {
+        RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+
+        input = new RegisterSAInput("any_first_name", "any_last_name", "admine@bizno.co.mz", "Password@123");
+        user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
+        entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+
+        long count = superAdminJpaRepository.count();
+        Assertions.assertEquals(2,count);
     }
 }
