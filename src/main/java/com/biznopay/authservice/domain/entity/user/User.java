@@ -19,7 +19,7 @@ public abstract class User {
     private final LocalDateTime updatedAt;
 
     protected User(UserId id, String firstName, String lastname, String email, String phone, String password, UserStatus status,
-                LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                   LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = this.validateFirstName(firstName);
         this.lastname = this.validateLastName(lastname);
@@ -39,10 +39,10 @@ public abstract class User {
         if (firstName.length() < 3)
             throw new InvalidStringFieldLengException("First name", 3, User.class.getName(), "USER-003");
 
-        return  firstName;
+        return firstName;
     }
 
-    private String validateLastName(String lastname){
+    private String validateLastName(String lastname) {
         if (lastname == null || lastname.isEmpty())
             throw new RequiredFieldException("Last name", User.class.getName(), "USER-004");
         if (lastname.length() < 3)

@@ -14,10 +14,10 @@ Feature: Register Super Admin
   Scenario: Successfully register super admin when none exists
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | fistName     | Super             |
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | fistName | Super             |
+      | lastName | Admin             |
+      | email    | admin@bizno.co.mz |
+      | password | password          |
     Then the response should be 200
     And a confirmation email should be sent to admin@bizno.co.mz
     And the confirmation email should have a link that expires after 15 minutes
@@ -25,86 +25,86 @@ Feature: Register Super Admin
   Scenario: Reject registration when user already exists
     Given a super admin already exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | firstName | Super             |
+      | lastName  | Admin             |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
     Then the response should be 409
     And the response should have a message "Super admin already exists"
 
   Scenario: Reject registration if firstname is missing
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | lastName | Admin             |
+      | email    | admin@bizno.co.mz |
+      | password | password          |
     Then the response should be 400
     And the response should have a message "First name is required"
 
   Scenario: Reject registration if firstname as less than 3 characters
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Su                |
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | firstName | Su                |
+      | lastName  | Admin             |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
     Then the response should be 422
     And the response should have a message "First name must be at least 3 characters long"
 
   Scenario: Reject registration if lastname is missing
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | firstName | Super             |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
     Then the response should be 400
     And the response should have a message "Last name is required"
 
   Scenario: Reject registration if lastname as less than 3 characters
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | lastName     | Ad                |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | firstName | Super             |
+      | lastName  | Ad                |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
     Then the response should be 422
     And the response should have a message "Last name must be at least 3 characters long"
 
   Scenario: Reject registration if email is missing
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | lastName     | Admin             |
-      | password     | password          |
+      | firstName | Super    |
+      | lastName  | Admin    |
+      | password  | password |
     Then the response should be 400
     And the response should have a message "Email is required"
 
   Scenario: Reject registration with non bizno institutional email
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | firstName | Super             |
+      | lastName  | Admin             |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
     Then the response should be 422
     And the response should have a message "Email must be a bizno institutional email"
 
   Scenario: Reject registration if password is missing
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
+      | firstName | Super             |
+      | lastName  | Admin             |
+      | email     | admin@bizno.co.mz |
     Then the response should be 400
     And the response should have a message "Password is required"
 
   Scenario: Reject registration if weak password
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
-      | firstName    | Super             |
-      | lastName     | Admin             |
-      | email        | admin@bizno.co.mz |
-      | password     | password          |
+      | firstName | Super             |
+      | lastName  | Admin             |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
     Then the response should be 422
     And the response should have a message"Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
 

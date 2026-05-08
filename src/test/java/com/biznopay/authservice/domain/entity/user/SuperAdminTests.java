@@ -5,7 +5,6 @@ import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailExcep
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -54,7 +53,7 @@ public class SuperAdminTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"any_email", "test@email.com","someone@gmail.com"})
+    @ValueSource(strings = {"any_email", "test@email.com", "someone@gmail.com"})
     @DisplayName("Should throw NonBiznoInstitutionalEmailException if email is not bizno instututional")
     public void shouldThrowNonBiznoInstitutionalEmailExceptionIfEmailIsNotBiznoInstitutional(String email) {
         Assertions.assertThrows(NonBiznoInstitutionalEmailException.class,

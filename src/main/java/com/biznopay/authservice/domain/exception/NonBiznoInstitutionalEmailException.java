@@ -6,7 +6,7 @@ import com.biznopay.authservice.domain.enums.ExceptionSeverity;
 import java.util.Map;
 
 public class NonBiznoInstitutionalEmailException extends BiznoException {
-    public NonBiznoInstitutionalEmailException( String code) {
+    public NonBiznoInstitutionalEmailException(String code) {
         String message = "E-mail must be a bizno institutional email";
         super(message, code, ExceptionSeverity.LOW, Map.of(User.class.getName(), "E-mail"));
     }

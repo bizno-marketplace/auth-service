@@ -17,7 +17,7 @@ public class SuperAdmin extends User {
     public static SuperAdmin register(String firstName, String lastname, String email, String password) {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(2);
-        email =  validateBiznoInstitutionalEmail(email);
+        email = validateBiznoInstitutionalEmail(email);
         return new SuperAdmin(UserId.generate(), firstName, lastname, email, "", password, UserStatus.PENDING, expiresAt, createdAt, createdAt);
     }
 

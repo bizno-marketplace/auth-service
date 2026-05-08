@@ -7,9 +7,9 @@ import java.util.Map;
 public abstract class BiznoException extends RuntimeException {
     private final String errorCode;
     private final ExceptionSeverity severity;
-    private  final Map<String, String> metadata;
+    private final Map<String, String> metadata;
 
-    protected BiznoException(String message,String errorCode, ExceptionSeverity severity, Map<String, String> metadata) {
+    protected BiznoException(String message, String errorCode, ExceptionSeverity severity, Map<String, String> metadata) {
         super(message);
         this.errorCode = errorCode;
         this.severity = severity;
