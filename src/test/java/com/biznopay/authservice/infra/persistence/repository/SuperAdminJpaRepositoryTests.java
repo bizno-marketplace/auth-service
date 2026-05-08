@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -47,14 +46,14 @@ public class SuperAdminJpaRepositoryTests {
 
     @Test
     @DisplayName("should count zero when no super admin exists")
-    public  void shouldCountZeroWhenNoSuperAdminExists() {
+    public void shouldCountZeroWhenNoSuperAdminExists() {
         long count = superAdminJpaRepository.count();
         Assertions.assertEquals(0, count);
     }
 
     @Test
     @DisplayName("Should counts 2 when exist 2 super admins")
-    public  void shouldCountsTwoWhenExistTwoSuperAdmins() {
+    public void shouldCountsTwoWhenExistTwoSuperAdmins() {
         RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
@@ -66,6 +65,6 @@ public class SuperAdminJpaRepositoryTests {
         userJpaRepository.save(entity);
 
         long count = superAdminJpaRepository.count();
-        Assertions.assertEquals(2,count);
+        Assertions.assertEquals(2, count);
     }
 }
