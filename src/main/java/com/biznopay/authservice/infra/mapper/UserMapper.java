@@ -18,7 +18,7 @@ public class UserMapper {
         SuperAdminJpaEntity entity = new SuperAdminJpaEntity();
         entity.setId(domain.getId().value());
         entity.setFirstName(domain.getFirstName());
-        entity.setLastName(domain.getLastname());
+        entity.setLastName(domain.getLastName());
         entity.setEmail(domain.getEmail());
         entity.setPhone(domain.getPhone());
         entity.setPassword(domain.getPassword());

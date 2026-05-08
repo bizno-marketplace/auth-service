@@ -86,7 +86,7 @@ public class SuperAdminTests {
         Assertions.assertNotNull(superAdmin);
         Assertions.assertNotNull(superAdmin.getId());
         Assertions.assertEquals("any_first_name", superAdmin.getFirstName());
-        Assertions.assertEquals("any_last_name", superAdmin.getLastname());
+        Assertions.assertEquals("any_last_name", superAdmin.getLastName());
         Assertions.assertEquals("anybizno@bizno.co.mz", superAdmin.getEmail());
         Assertions.assertEquals("", superAdmin.getPhone());
         Assertions.assertEquals("Password@123", superAdmin.getPassword());

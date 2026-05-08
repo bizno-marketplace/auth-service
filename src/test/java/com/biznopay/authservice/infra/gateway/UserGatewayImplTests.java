@@ -60,7 +60,7 @@ public class UserGatewayImplTests {
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(entity.getId(), result.get().getId().value());
         Assertions.assertEquals(entity.getFirstName(), result.get().getFirstName());
-        Assertions.assertEquals(entity.getLastName(), result.get().getLastname());
+        Assertions.assertEquals(entity.getLastName(), result.get().getLastName());
         Assertions.assertEquals(entity.getEmail(), result.get().getEmail());
         Assertions.assertEquals("", result.get().getPhone());
         Assertions.assertEquals(entity.getPassword(), result.get().getPassword());

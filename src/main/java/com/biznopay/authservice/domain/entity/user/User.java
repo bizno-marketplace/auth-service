@@ -71,7 +71,7 @@ public abstract class User {
         return firstName;
     }
 
-    public String getLastname() {
+    public String getLastName() {
         return lastname;
     }
 
