@@ -4,6 +4,11 @@ spring:
       enabled: false
   config:
     import: "optional:configserver:"
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 
 eureka:
   client:
