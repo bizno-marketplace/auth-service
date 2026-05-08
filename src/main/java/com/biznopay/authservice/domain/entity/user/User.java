@@ -45,6 +45,8 @@ public abstract class User {
     private String validateLastName(String lastname){
         if (lastname == null || lastname.isEmpty())
             throw new RequiredFieldException("Last name", User.class.getName(), "USER-004");
+        if (lastname.length() < 3)
+            throw new InvalidStringFieldLengException("Last name", 3, User.class.getName(), "USER-005");
         return lastname;
     }
     //END VALIDATIONS
