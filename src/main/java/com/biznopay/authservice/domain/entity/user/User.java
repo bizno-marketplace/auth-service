@@ -25,7 +25,7 @@ public abstract class User {
         this.lastname = this.validateLastName(lastname);
         this.email = email;
         this.phone = phone;
-        this.password = password;
+        this.password = this.validatePassword(password);
         this.status = status;
         this.expiresAt = expiresAt;
         this.createdAt = createdAt;
@@ -48,6 +48,12 @@ public abstract class User {
         if (lastname.length() < 3)
             throw new InvalidStringFieldLengException("Last name", 3, User.class.getName(), "USER-005");
         return lastname;
+    }
+
+    private  String validatePassword(String password){
+        if (password == null || password.isEmpty())
+            throw new RequiredFieldException("Password", User.class.getName(), "USER-006");
+        return password;
     }
     //END VALIDATIONS
 
