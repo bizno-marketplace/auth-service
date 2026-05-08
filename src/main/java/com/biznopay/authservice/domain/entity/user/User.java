@@ -1,12 +1,15 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
 
 public abstract class User {
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&._#-])[A-Za-z\\d@$!%*?&._#-]{8,}$";
+
     private final UserId id;
     private final String firstName;
     private final String lastname;
@@ -53,6 +56,8 @@ public abstract class User {
     private  String validatePassword(String password){
         if (password == null || password.isEmpty())
             throw new RequiredFieldException("Password", User.class.getName(), "USER-006");
+        if (!password.matches(PASSWORD_REGEX))
+            throw new InvalidPasswordException("USER-007");
         return password;
     }
     //END VALIDATIONS
