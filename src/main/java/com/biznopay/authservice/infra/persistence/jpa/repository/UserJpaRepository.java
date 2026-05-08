@@ -1,8 +1,8 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import org.springframework.stereotype.Component;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Component
-public interface UserJpaRepository {
-    long countSAs();
+import java.util.UUID;
+public interface UserJpaRepository extends JpaRepository<UserJpaEntity, UUID> {
 }
