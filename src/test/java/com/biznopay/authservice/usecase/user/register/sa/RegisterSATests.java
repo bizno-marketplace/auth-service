@@ -22,13 +22,27 @@ public class RegisterSATests {
     @Test
     @DisplayName("Should throw ConflictException when super admin already exists on register super admin")
     public void shouldThrowConflictExceptionWhenSuperAdminAlreadyExistsOnRegisterSuperAdmin() {
-        RegisterSA useCase = new RegisterSA(userGateway);
         RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         SuperAdmin superAdmin =  SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        Mockito.when(userGateway.findSuperByEmail(input.email())).thenReturn(Optional.of(superAdmin));
+        Mockito.when(userGateway.findSAByEmail(input.email())).thenReturn(Optional.of(superAdmin));
 
+        RegisterSA useCase = new RegisterSA(userGateway);
         Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Super admin already exists");
 
-        Mockito.verify(userGateway, Mockito.times(1)).findSuperByEmail(input.email());
+        Mockito.verify(userGateway, Mockito.times(1)).findSAByEmail(input.email());
+    }
+
+    @Test
+    @DisplayName("Should registry supper admin, send activation link with 15 mins of expiration to provided email and return message to notify user")
+    public void shouldRegisterSupperAdminSendActivationLinkWith15minsOfExpirationToProvidedEmailAndReturnMessageToNotifyUser(){
+        RegisterSAInput input =  new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        Mockito.when(userGateway.findSAByEmail(input.email())).thenReturn(Optional.empty());
+
+        RegisterSA useCase = new RegisterSA(userGateway);
+        RegisterSAOutput output = useCase.execute(input);
+
+        Assertions.assertEquals("We've sent an activation link to provided email: "+input.email(), output.message());
+        Mockito.verify(userGateway, Mockito.times(1)).findSAByEmail(input.email());
+        Mockito.verify(userGateway, Mockito.times(1)).save(Mockito.any(SuperAdmin.class));
     }
 }
