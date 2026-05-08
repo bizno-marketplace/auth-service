@@ -14,8 +14,8 @@ public class RegisterSA {
     }
 
     public RegisterSAOutput execute(RegisterSAInput input) {
-        Optional<SuperAdmin> existingSA = userGateway.findSAByEmail(input.email());
-        if (existingSA.isPresent()) throw new ConflictException("Super admin", "SUPER_ADMIN-003");
+        long contSAs = userGateway.countSAs();
+        if (contSAs > 0) throw new ConflictException("Super admin", "SUPER_ADMIN-003");
         SuperAdmin superAdmin = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
         userGateway.save(superAdmin);
         return new RegisterSAOutput("We've sent an activation link to provided email: " + input.email());
