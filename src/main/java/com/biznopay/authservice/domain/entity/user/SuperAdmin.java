@@ -22,10 +22,8 @@ public class SuperAdmin extends User {
     }
 
     private static String validateBiznoInstitutionalEmail(String email) {
-        if (email == null || email.isEmpty())
-            throw new RequiredFieldException("Email", User.class.getName(), "SUPER_ADMIN-001");
-        if (!email.endsWith(BIZNO_EMAIL_DOMAIN))
-            throw new NonBiznoInstitutionalEmailException("SUPER_ADMIN-002");
+        if (email == null || email.isEmpty()) throw new RequiredFieldException("Email", User.class.getName(), "SUPER_ADMIN-001");
+        if (!email.endsWith(BIZNO_EMAIL_DOMAIN)) throw new NonBiznoInstitutionalEmailException("SUPER_ADMIN-002");
         return email;
     }
 }
