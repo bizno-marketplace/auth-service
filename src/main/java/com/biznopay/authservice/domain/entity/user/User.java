@@ -22,7 +22,7 @@ public abstract class User {
                 LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = this.validateFirstName(firstName);
-        this.lastname = lastname;
+        this.lastname = this.validateLastName(lastname);
         this.email = email;
         this.phone = phone;
         this.password = password;
@@ -40,6 +40,12 @@ public abstract class User {
             throw new InvalidStringFieldLengException("First name", 3, User.class.getName(), "USER-003");
 
         return  firstName;
+    }
+
+    private String validateLastName(String lastname){
+        if (lastname == null || lastname.isEmpty())
+            throw new RequiredFieldException("Last name", User.class.getName(), "USER-004");
+        return lastname;
     }
     //END VALIDATIONS
 
