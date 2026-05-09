@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-class MockUnknownEntityException  extends User {
+class MockUnknownEntityException extends User {
     public MockUnknownEntityException(UserId id, String firstName, String lastname, String email, String phone,
                                       String password, UserStatus status, LocalDateTime expiresAt,
                                       LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -50,7 +50,7 @@ public class UserMapperTests {
 
     @Test
     @DisplayName("Should return Buyer jpa entity on toUserJpaEntity")
-    public void shouldReturnBuyerJpaEntityOnToUserJpaEntity(){
+    public void shouldReturnBuyerJpaEntityOnToUserJpaEntity() {
         User user = Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(UserJpaEntity.class, entity);
@@ -65,7 +65,6 @@ public class UserMapperTests {
         Assertions.assertEquals(user.getCreatedAt(), entity.getCreatedAt());
         Assertions.assertEquals(user.getUpdatedAt(), entity.getUpdatedAt());
     }
-
 
 
     @Test

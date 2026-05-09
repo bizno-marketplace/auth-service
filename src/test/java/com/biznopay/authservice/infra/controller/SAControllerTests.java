@@ -50,18 +50,17 @@ public class SAControllerTests {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-
-    @BeforeEach
-    void setUp() {
-        restTemplate = new TestRestTemplate();
-        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
-    }
-
     @AfterAll
     static void tearDown() {
         if (postgres != null && postgres.isRunning()) {
             postgres.stop();
         }
+    }
+
+    @BeforeEach
+    void setUp() {
+        restTemplate = new TestRestTemplate();
+        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
     private String url(String path) {
