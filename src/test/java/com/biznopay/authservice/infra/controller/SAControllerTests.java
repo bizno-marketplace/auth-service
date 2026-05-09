@@ -121,4 +121,13 @@ public class SAControllerTests {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Password is required", response.getBody().error().message());
     }
+
+    @Test
+    @DisplayName("Should return 422 if password is invalid")
+    void shouldReturn400IfPasswordIsInvalid() {
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password123");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
+        Assertions.assertEquals("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character", response.getBody().error().message());
+    }
 }
