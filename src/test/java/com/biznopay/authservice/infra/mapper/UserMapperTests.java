@@ -5,6 +5,7 @@ import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
@@ -138,21 +139,20 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should throw InvalidEntityIdException if id is invalid on toUserDomain")
     public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnToUserDomain() {
-        UserJpaEntity entity = new MockUnknownJpaEntityException();
-        Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
+        UserJpaEntity entity = new BuyerJpaEntity();
+        Assertions.assertThrows(InvalidEntityIdException.class, () -> UserMapper.toUserDomain(entity));
     }
-
 
     @Test
     @DisplayName("Should return RegisterSAInput on toRegisterSAInput")
-    public void shouldReturnRegisterSAInputOnToRegisterSAInput(){
-        RegisterSARequest request = new RegisterSARequest ("any_first_name", "any_last_name",
+    public void shouldReturnRegisterSAInputOnToRegisterSAInput() {
+        RegisterSARequest request = new RegisterSARequest("any_first_name", "any_last_name",
                 "admin@bizno.co.mz", "Password@123");
         RegisterSAInput input = new RegisterSAInput(request.firstName(), request.lastName(), request.email(), request.password());
 
         Assertions.assertEquals(request.firstName(), input.firstName());
         Assertions.assertEquals(request.lastName(), input.lastName());
-        Assertions.assertEquals(request.email(),input.email());
+        Assertions.assertEquals(request.email(), input.email());
         Assertions.assertEquals(request.password(), input.password());
     }
 }
