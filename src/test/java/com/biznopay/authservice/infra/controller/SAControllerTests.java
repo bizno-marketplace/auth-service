@@ -1,8 +1,13 @@
 package com.biznopay.authservice.infra.controller;
 
 
+import com.biznopay.authservice.domain.entity.user.SuperAdmin;
+import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +48,10 @@ public class SAControllerTests {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
+
     @BeforeEach
     void setUp() {
         restTemplate = new TestRestTemplate();
@@ -52,6 +61,19 @@ public class SAControllerTests {
     private String url(String path) {
         return "http://localhost:" + port + path;
     }
+
+    @Test
+    @DisplayName("Should return 409 when Super admin already exists")
+    public void shouldReturn409WhenSuperAdminAlreadyExists(){
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        User user = SuperAdmin.register(request.firstName(), request.lastName(), request.email(), request.password());
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Super admin already exists", response.getBody().error().message());
+    }
+
 
     @EmptySource
     @ParameterizedTest
