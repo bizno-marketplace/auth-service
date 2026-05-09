@@ -47,6 +47,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return Super admin jpa entity on toUserJpaEntity")
     public void shouldReturnSuperAdminJpaEntityOnToUserJpaEntity() {
+        UserMapper userMapper = new UserMapper();
         User user = SuperAdmin.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(SuperAdminJpaEntity.class, entity);
