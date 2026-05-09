@@ -45,6 +45,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler()
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ApiResponse<Object>> handleEmailAlreadyInUseException(EmailAlreadyInUseException exception, HttpServletRequest request) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
+                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
+
+        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse<Object>> handleRequiredFieldException(RequiredFieldException exception, HttpServletRequest request) {
         log.warn("[{}] {} {} | code={} | field={} | message={}",
