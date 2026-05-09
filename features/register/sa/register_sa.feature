@@ -32,6 +32,16 @@ Feature: Register Super Admin
     Then the response should be 409
     And the response should have a message "Super admin already exists"
 
+  Scenario: Reject registration if email is already in use
+    Given a super admin already exists in the system
+    When i send a POST request to "/auth/setup/sa" with:
+      | firstName | Super             |
+      | lastName  | Admin             |
+      | email     | admin@bizno.co.mz |
+      | password  | password          |
+    Then the response should be 409
+    And the response should have a message "Email already in use"
+
   Scenario: Reject registration if firstname is missing
     Given no super admin exists in the system
     When i send a POST request to "/auth/setup/sa" with:
