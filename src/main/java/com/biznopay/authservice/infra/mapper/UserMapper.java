@@ -3,8 +3,10 @@ package com.biznopay.authservice.infra.mapper;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 
 public class UserMapper {
     public static UserJpaEntity toUserJpaEntity(User user) {
@@ -41,5 +43,9 @@ public class UserMapper {
         return SuperAdmin.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
                 entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt());
+    }
+
+    public static RegisterSAInput toRegisterSAInput(RegisterSARequest request) {
+        return new RegisterSAInput(request.firstName(), request.lastName(), request.email(), request.password());
     }
 }
