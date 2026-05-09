@@ -2,6 +2,7 @@ package com.biznopay.authservice.usecase.user.register.sa;
 
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.exception.ConflictException;
+import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ public class RegisterSATests {
         Mockito.when(userGateway.countSAs()).thenReturn(0L);
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.of(superAdmin));
         RegisterSA useCase = new RegisterSA(userGateway);
-        Assertions.assertThrows(ConflictException.class, () -> useCase.execute(input), "Email already in use");
+        Assertions.assertThrows(EmailAlreadyInUseException.class, () -> useCase.execute(input), "Email already in use");
         Mockito.verify(userGateway, Mockito.times(1)).countSAs();
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
