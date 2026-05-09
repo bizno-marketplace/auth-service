@@ -126,7 +126,8 @@ public class UserMapperTests {
     public void shouldThrowUnknownEntityExceptionIfEntityIsUnknownOnToUserDomain() {
         UserJpaEntity entity = new MockUnknownJpaEntityException(UUID.randomUUID(), "any_first_name", "any_last_name",
                 "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
-                LocalDateTime.now(), LocalDateTime.now());        Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
+                LocalDateTime.now(), LocalDateTime.now());
+        Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
     }
 
 }
