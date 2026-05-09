@@ -6,6 +6,7 @@ import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
+import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import org.junit.jupiter.api.Assertions;
@@ -82,6 +83,26 @@ public class UserMapperTests {
                 LocalDateTime.now(), LocalDateTime.now());
         User user = UserMapper.toUserDomain(entity);
         Assertions.assertInstanceOf(SuperAdmin.class, user);
+        Assertions.assertEquals(entity.getId(), user.getId().value());
+        Assertions.assertEquals(entity.getFirstName(), user.getFirstName());
+        Assertions.assertEquals(entity.getLastName(), user.getLastName());
+        Assertions.assertEquals(entity.getEmail(), user.getEmail());
+        Assertions.assertEquals("", user.getPhone());
+        Assertions.assertEquals(entity.getPassword(), user.getPassword());
+        Assertions.assertEquals(entity.getStatus(), user.getStatus());
+        Assertions.assertEquals(entity.getExpiresAt(), user.getExpiresAt());
+        Assertions.assertEquals(entity.getCreatedAt(), user.getCreatedAt());
+        Assertions.assertEquals(entity.getUpdatedAt(), user.getUpdatedAt());
+    }
+
+    @Test
+    @DisplayName("Should return Buyer domain entity on toUserDomain")
+    public void shouldReturnBuyerEntityOnToUserDomain() {
+        UserJpaEntity entity = new BuyerJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
+                "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
+                LocalDateTime.now(), LocalDateTime.now());
+        User user = UserMapper.toUserDomain(entity);
+        Assertions.assertInstanceOf(Buyer.class, user);
         Assertions.assertEquals(entity.getId(), user.getId().value());
         Assertions.assertEquals(entity.getFirstName(), user.getFirstName());
         Assertions.assertEquals(entity.getLastName(), user.getLastName());
