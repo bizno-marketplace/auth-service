@@ -35,6 +35,9 @@ class MockUnknownJpaEntityException extends UserJpaEntity {
                                          String password, UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id, firstName, lastName, email, phone, password, status, expiresAt, createdAt, updatedAt);
     }
+
+    public MockUnknownJpaEntityException() {
+    }
 }
 
 public class UserMapperTests {
@@ -127,6 +130,13 @@ public class UserMapperTests {
         UserJpaEntity entity = new MockUnknownJpaEntityException(UUID.randomUUID(), "any_first_name", "any_last_name",
                 "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
                 LocalDateTime.now(), LocalDateTime.now());
+        Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidEntityIdException if id is invalid on toUserDomain")
+    public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnToUserDomain() {
+        UserJpaEntity entity = new MockUnknownJpaEntityException();
         Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
     }
 
