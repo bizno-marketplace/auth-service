@@ -3,8 +3,6 @@ package com.biznopay.authservice.infra.persistence.jpa.entity;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

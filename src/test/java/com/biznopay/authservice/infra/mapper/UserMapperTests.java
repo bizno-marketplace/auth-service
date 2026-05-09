@@ -78,7 +78,7 @@ public class UserMapperTests {
     @DisplayName("Should return Super admin domain entity on toUserDomain")
     public void shouldReturnSuperAdminEntityOnToUserDomain() {
         UserJpaEntity entity = new SuperAdminJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
-                "admin@bizno.co.mz", "","Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
+                "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
                 LocalDateTime.now(), LocalDateTime.now());
         User user = UserMapper.toUserDomain(entity);
         Assertions.assertInstanceOf(SuperAdmin.class, user);
