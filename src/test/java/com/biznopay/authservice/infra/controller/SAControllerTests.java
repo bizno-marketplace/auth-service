@@ -64,7 +64,7 @@ public class SAControllerTests {
 
     @Test
     @DisplayName("Should return 409 when Super admin already exists")
-    public void shouldReturn409WhenSuperAdminAlreadyExists(){
+    public void shouldReturn409WhenSuperAdminAlreadyExists() {
         RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
         User user = SuperAdmin.register(request.firstName(), request.lastName(), request.email(), request.password());
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
