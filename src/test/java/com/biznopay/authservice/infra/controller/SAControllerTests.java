@@ -93,4 +93,14 @@ public class SAControllerTests {
         Assertions.assertEquals("Last name must be at least 3 characters long", response.getBody().error().message());
     }
 
+    @EmptySource
+    @ParameterizedTest
+    @DisplayName("Should return 400 if email is empty")
+    void shouldReturn400IfEmailIsEmpty(String email) {
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", email, "Password@123");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("E-mail is required", response.getBody().error().message());
+    }
+
 }
