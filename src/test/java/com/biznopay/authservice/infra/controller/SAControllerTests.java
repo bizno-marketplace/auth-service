@@ -9,10 +9,8 @@ import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.biznopay.authservice.infra.util.FuncUtils;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +57,13 @@ public class SAControllerTests {
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
+    @AfterAll
+    static void tearDown() {
+        if (postgres != null && postgres.isRunning()) {
+            postgres.stop();
+        }
+    }
+
     private String url(String path) {
         return "http://localhost:" + port + path;
     }
@@ -66,6 +71,7 @@ public class SAControllerTests {
     @Test
     @DisplayName("Should return 200 on successfully registration")
     void shouldReturn200OnSuccessfullyRegistration() {
+        FuncUtils funcUtils = new FuncUtils();
         RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
