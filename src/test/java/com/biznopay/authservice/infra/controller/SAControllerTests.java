@@ -1,6 +1,7 @@
 package com.biznopay.authservice.infra.controller;
 
 
+import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.vo.ApiResponse;
@@ -82,6 +83,17 @@ public class SAControllerTests {
         Assertions.assertEquals("Super admin already exists", response.getBody().error().message());
     }
 
+    @Test
+    @DisplayName("Should return 409 if email is already in use")
+    public void shouldReturn409IfEmailIsAlreadyInUse() {
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        User user = Buyer.register(request.firstName(), request.lastName(), request.email(), request.password());
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Email already in use", response.getBody().error().message());
+    }
 
     @EmptySource
     @ParameterizedTest
