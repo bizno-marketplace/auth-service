@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
@@ -15,7 +16,7 @@ public class UserMapper {
         return switch (user) {
             case SuperAdmin sa -> toSuperAdminJpaEntity(sa);
             case Buyer buyer -> toBuyerEntity(buyer);
-            default -> throw new IllegalArgumentException("Unknown user type: " + user.getClass().getName());
+            default -> throw new UnknownEntityException("Unknown entity: " + user.getClass().getName(), "USER_MAPPER-0001");
         };
     }
 
