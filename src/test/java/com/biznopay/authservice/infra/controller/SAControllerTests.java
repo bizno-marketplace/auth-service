@@ -84,4 +84,13 @@ public class SAControllerTests {
         Assertions.assertEquals("Last name is required", response.getBody().error().message());
     }
 
+    @Test
+    @DisplayName("Should return 422 if last name is invalid")
+    void shouldReturn422IfLastNameIsInvalid() {
+        RegisterSARequest request = new RegisterSARequest("John", "Sm", "johnsmith@bizno.co.mz", "Password@123");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
+        Assertions.assertEquals("Last name must be at least 3 characters long", response.getBody().error().message());
+    }
+
 }
