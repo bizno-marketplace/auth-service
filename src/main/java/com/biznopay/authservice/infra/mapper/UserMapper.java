@@ -56,7 +56,8 @@ public class UserMapper {
         return switch (entity) {
             case SuperAdminJpaEntity sa -> toSuperAdminDomainEntity(sa);
             case BuyerJpaEntity buyerJpa -> toBuyerDomainEntity(buyerJpa);
-            default -> throw new IllegalArgumentException("Unknown user type: " + entity.getClass().getName());
+            default ->
+                    throw new UnknownEntityException("Unknown entity: " + entity.getClass().getName(), "USER_MAPPER-0001");
         };
     }
 
