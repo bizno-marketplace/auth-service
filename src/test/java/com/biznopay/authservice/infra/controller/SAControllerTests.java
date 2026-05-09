@@ -112,4 +112,13 @@ public class SAControllerTests {
         Assertions.assertEquals("E-mail must be a bizno institutional email", response.getBody().error().message());
     }
 
+    @EmptySource
+    @ParameterizedTest
+    @DisplayName("Should return 400 if password is empty")
+    void shouldReturn400IfPasswordIsEmpty(String password) {
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", password);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Password is required", response.getBody().error().message());
+    }
 }
