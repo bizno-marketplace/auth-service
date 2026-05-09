@@ -1,8 +1,6 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
 
