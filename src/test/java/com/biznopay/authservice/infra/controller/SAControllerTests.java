@@ -103,4 +103,13 @@ public class SAControllerTests {
         Assertions.assertEquals("E-mail is required", response.getBody().error().message());
     }
 
+    @Test
+    @DisplayName("Should return 422 if email is invalid")
+    void shouldReturn400IfEmailIsInvalid() {
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@email.co.mz", "Password@123");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
+        Assertions.assertEquals("E-mail must be a bizno institutional email", response.getBody().error().message());
+    }
+
 }
