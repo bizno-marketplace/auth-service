@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -51,6 +53,15 @@ public class SAControllerTests {
 
     private String url(String path) {
         return "http://localhost:" + port + path;
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should return 400 if first name is null or empty")
+    void shouldReturn400IfFirstNameIsNullOrEmpty(String firstName) {
+        RegisterSARequest request = new RegisterSARequest(firstName, "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
