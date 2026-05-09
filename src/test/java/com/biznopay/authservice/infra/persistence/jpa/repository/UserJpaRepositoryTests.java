@@ -4,7 +4,6 @@ import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

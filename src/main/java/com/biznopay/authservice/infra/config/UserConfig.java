@@ -12,7 +12,7 @@ public class UserConfig {
     private final UserGateway userGateway;
 
     @Bean
-    public RegisterSA registerSA(){
+    public RegisterSA registerSA() {
         return new RegisterSA(userGateway);
     }
 

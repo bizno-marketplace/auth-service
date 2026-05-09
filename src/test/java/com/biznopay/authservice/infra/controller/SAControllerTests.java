@@ -49,14 +49,14 @@ public class SAControllerTests {
         userRepository.deleteAll();
     }
 
-    private String url (String path) {
-        return "http://localhost:"+port+path;
+    private String url(String path) {
+        return "http://localhost:" + port + path;
     }
 
     @Test
     @DisplayName("Should return 422 if first name is invalid")
     void shouldReturn422IfFirstNameIsInvalid() {
-        RegisterSARequest request = new RegisterSARequest("Jo", "Smith","johnsmith@bizno.co.mz", "Password@123" );
+        RegisterSARequest request = new RegisterSARequest("Jo", "Smith", "johnsmith@bizno.co.mz", "Password@123");
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         Assertions.assertEquals("First name must be at least 3 characters long", response.getBody().error().message());
