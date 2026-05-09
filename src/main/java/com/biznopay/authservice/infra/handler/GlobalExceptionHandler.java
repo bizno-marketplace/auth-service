@@ -1,9 +1,6 @@
 package com.biznopay.authservice.infra.handler;
 
-import com.biznopay.authservice.domain.exception.InvalidPasswordException;
-import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
-import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
+import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.ApiError;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.util.FuncUtils;
@@ -34,6 +31,17 @@ public class GlobalExceptionHandler {
         ApiError error = new ApiError("VALIDATION_ERROR", errorMessage);
         log.warn("[LOW] {} {} | code=VALIDATION_ERROR | errors={}", request.getMethod(), request.getRequestURI(), error);
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ApiResponse<Object>> handleConflictException(ConflictException exception, HttpServletRequest request) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
+                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
+
+        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler()
