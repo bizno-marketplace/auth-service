@@ -6,9 +6,11 @@ import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
+import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -140,4 +142,17 @@ public class UserMapperTests {
         Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
     }
 
+
+    @Test
+    @DisplayName("Should return RegisterSAInput on toRegisterSAInput")
+    public void shouldReturnRegisterSAInputOnToRegisterSAInput(){
+        RegisterSARequest request = new RegisterSARequest ("any_first_name", "any_last_name",
+                "admin@bizno.co.mz", "Password@123");
+        RegisterSAInput input = new RegisterSAInput(request.firstName(), request.lastName(), request.email(), request.password());
+
+        Assertions.assertEquals(request.firstName(), input.firstName());
+        Assertions.assertEquals(request.lastName(), input.lastName());
+        Assertions.assertEquals(request.email(),input.email());
+        Assertions.assertEquals(request.password(), input.password());
+    }
 }
