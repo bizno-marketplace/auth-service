@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.List;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -38,7 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ApiResponse<Object>> handleRequiredFieldException(RequiredFieldException exception,HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Object>> handleRequiredFieldException(RequiredFieldException exception, HttpServletRequest request) {
         log.warn("[{}] {} {} | code={} | field={} | message={}",
                 exception.getSeverity(), request.getMethod(), request.getRequestURI(),
                 exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
