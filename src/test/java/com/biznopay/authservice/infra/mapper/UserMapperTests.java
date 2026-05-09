@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 class MockUnknownEntityException extends User {
     public MockUnknownEntityException(UserId id, String firstName, String lastname, String email, String phone,
@@ -66,11 +67,30 @@ public class UserMapperTests {
         Assertions.assertEquals(user.getUpdatedAt(), entity.getUpdatedAt());
     }
 
-
     @Test
     @DisplayName("Should throw UnknownEntityException if entity is unknown on toUserJpaEntity")
     public void shouldThrowUnknownEntityExceptionIfEntityIsUnknownOnToUserJpaEntity() {
         User user = MockUnknownEntityException.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserJpaEntity(user));
+    }
+
+    @Test
+    @DisplayName("Should return Super admin domain entity on toUserDomain")
+    public void shouldReturnSuperAdminEntityOnToUserDomain() {
+        UserJpaEntity entity = new SuperAdminJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
+                "admin@bizno.co.mz", "","Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
+                LocalDateTime.now(), LocalDateTime.now());
+        User user = UserMapper.toUserDomain(entity);
+        Assertions.assertInstanceOf(SuperAdmin.class, user);
+        Assertions.assertEquals(entity.getId(), user.getId().value());
+        Assertions.assertEquals(entity.getFirstName(), user.getFirstName());
+        Assertions.assertEquals(entity.getLastName(), user.getLastName());
+        Assertions.assertEquals(entity.getEmail(), user.getEmail());
+        Assertions.assertEquals("", user.getPhone());
+        Assertions.assertEquals(entity.getPassword(), user.getPassword());
+        Assertions.assertEquals(entity.getStatus(), user.getStatus());
+        Assertions.assertEquals(entity.getExpiresAt(), user.getExpiresAt());
+        Assertions.assertEquals(entity.getCreatedAt(), user.getCreatedAt());
+        Assertions.assertEquals(entity.getUpdatedAt(), user.getUpdatedAt());
     }
 }
