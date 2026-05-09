@@ -1,5 +1,6 @@
 package com.biznopay.authservice.infra.handler;
 
+import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
@@ -60,6 +61,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
     public ResponseEntity<ApiResponse<Object>> handleNonBiznoInstitutionalEmailException(NonBiznoInstitutionalEmailException exception, HttpServletRequest request) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
+                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
+
+        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+        return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
+    public ResponseEntity<ApiResponse<Object>> handleInvalidPasswordExceptionException(InvalidPasswordException exception, HttpServletRequest request) {
         log.warn("[{}] {} {} | code={} | field={} | message={}",
                 exception.getSeverity(), request.getMethod(), request.getRequestURI(),
                 exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
