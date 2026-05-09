@@ -63,6 +63,14 @@ public class SAControllerTests {
     }
 
     @Test
+    @DisplayName("Should return 200 on successfully registration")
+    void shouldReturn200OnSuccessfullyRegistration() {
+        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
     @DisplayName("Should return 409 when Super admin already exists")
     public void shouldReturn409WhenSuperAdminAlreadyExists() {
         RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
@@ -149,13 +157,5 @@ public class SAControllerTests {
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         Assertions.assertEquals("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character", response.getBody().error().message());
-    }
-
-    @Test
-    @DisplayName("Should return 200 on successfully registration")
-    void shouldReturn200OnSuccessfullyRegistration() {
-        RegisterSARequest request = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
