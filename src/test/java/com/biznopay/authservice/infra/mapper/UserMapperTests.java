@@ -16,18 +16,24 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-class MockUnknownEntityException extends User {
-    public MockUnknownEntityException(UserId id, String firstName, String lastname, String email, String phone,
-                                      String password, UserStatus status, LocalDateTime expiresAt,
-                                      LocalDateTime createdAt, LocalDateTime updatedAt) {
+class MockUnknownDomainEntityException extends User {
+    public MockUnknownDomainEntityException(UserId id, String firstName, String lastname, String email, String phone,
+                                            String password, UserStatus status, LocalDateTime expiresAt,
+                                            LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(id, firstName, lastname, email, phone, password, status, expiresAt, createdAt, updatedAt);
     }
 
-
-    public static MockUnknownEntityException register(String firstName, String lastname, String email, String password) {
+    public static MockUnknownDomainEntityException register(String firstName, String lastname, String email, String password) {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(2);
-        return new MockUnknownEntityException(UserId.generate(), firstName, lastname, email, "", password, UserStatus.PENDING, expiresAt, createdAt, createdAt);
+        return new MockUnknownDomainEntityException(UserId.generate(), firstName, lastname, email, "", password, UserStatus.PENDING, expiresAt, createdAt, createdAt);
+    }
+}
+
+class MockUnknownJpaEntityException extends UserJpaEntity {
+    public MockUnknownJpaEntityException(UUID id, String firstName, String lastName, String email, String phone,
+                                         String password, UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        super(id, firstName, lastName, email, phone, password, status, expiresAt, createdAt, updatedAt);
     }
 }
 
@@ -71,7 +77,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should throw UnknownEntityException if entity is unknown on toUserJpaEntity")
     public void shouldThrowUnknownEntityExceptionIfEntityIsUnknownOnToUserJpaEntity() {
-        User user = MockUnknownEntityException.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        User user = MockUnknownDomainEntityException.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserJpaEntity(user));
     }
 
@@ -114,4 +120,13 @@ public class UserMapperTests {
         Assertions.assertEquals(entity.getCreatedAt(), user.getCreatedAt());
         Assertions.assertEquals(entity.getUpdatedAt(), user.getUpdatedAt());
     }
+
+    @Test
+    @DisplayName("Should throw UnknownEntityException if entity is unknown on toUserDomain")
+    public void shouldThrowUnknownEntityExceptionIfEntityIsUnknownOnToUserDomain() {
+        UserJpaEntity entity = new MockUnknownJpaEntityException(UUID.randomUUID(), "any_first_name", "any_last_name",
+                "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
+                LocalDateTime.now(), LocalDateTime.now());        Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
+    }
+
 }
