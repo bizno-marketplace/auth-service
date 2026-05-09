@@ -30,6 +30,6 @@ public class SAController {
     public ResponseEntity<ApiResponse<Object>> create(@RequestBody @Valid RegisterSARequest request) {
         RegisterSAInput input = UserMapper.toRegisterSAInput(request);
         RegisterSAOutput output = registerSA.execute(input);
-        return ResponseEntity.status(HttpStatus.CREATED).body(FuncUtils.buildResponseBody(true, output, null));
+        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
     }
 }
