@@ -1,14 +1,16 @@
+# application-test.yml
 spring:
+  config:
+    activate:
+      on-profile: test
+    import: "optional:configserver:"
   cloud:
     config:
       enabled: false
-  config:
-    import: "optional:configserver:"
+      fail-fast: false
   jpa:
     hibernate:
       ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
 
 eureka:
   client:
