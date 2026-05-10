@@ -1,12 +1,83 @@
 package com.biznopay.authservice.infra.util;
 
+import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.ApiError;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;
 
 public class FuncUtils {
     public static ApiResponse<Object> buildResponseBody(boolean success, Object data, ApiError error) {
         return new ApiResponse<Object>(success, data, error, Instant.now());
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleRequiredFieldException(RequiredFieldException exception, HttpServletRequest request, Logger log) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
+                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
+        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+        return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleConflictException(RuntimeException exception, HttpServletRequest request, Logger log) {
+        ApiError error = null;
+        if (exception instanceof ConflictException) {
+            ConflictException ex = (ConflictException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof EmailAlreadyInUseException) {
+            EmailAlreadyInUseException ex = (EmailAlreadyInUseException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.CONFLICT);
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleUnprocessableContentException(RuntimeException exception, HttpServletRequest request, Logger log) {
+        ApiError error = null;
+        if (exception instanceof InvalidStringFieldLengException) {
+            InvalidStringFieldLengException ex = (InvalidStringFieldLengException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof InvalidPasswordException) {
+            InvalidPasswordException ex = (InvalidPasswordException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof NonBiznoInstitutionalEmailException) {
+            NonBiznoInstitutionalEmailException ex = (NonBiznoInstitutionalEmailException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+        return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleUnexpectedException(RuntimeException exception, HttpServletRequest request, Logger log) {
+        TechnicalException ex = new UnexpectedException("UNEXPECTED_ERROR-001");
+        log.error("[{}] {} {} | code={} | message={}",
+                ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                ex.getErrorCode(), exception.getMessage());
+        ApiError error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(FuncUtils.buildResponseBody(false, null, error));
     }
 }
