@@ -33,69 +33,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
     }
 
-    @ExceptionHandler()
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ApiResponse<Object>> handleConflictException(ConflictException exception, HttpServletRequest request) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
-        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler()
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ApiResponse<Object>> handleEmailAlreadyInUseException(EmailAlreadyInUseException exception, HttpServletRequest request) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
-        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler()
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ApiResponse<Object>> handleRequiredFieldException(RequiredFieldException exception, HttpServletRequest request) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
-        return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
-    }
-
-    @ExceptionHandler()
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
-    public ResponseEntity<ApiResponse<Object>> handleInvalidStringFieldLengException(InvalidStringFieldLengException exception, HttpServletRequest request) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
-        return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
-    }
-
-    @ExceptionHandler()
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
-    public ResponseEntity<ApiResponse<Object>> handleNonBiznoInstitutionalEmailException(NonBiznoInstitutionalEmailException exception, HttpServletRequest request) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
-        return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
-    }
-
-    @ExceptionHandler()
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
-    public ResponseEntity<ApiResponse<Object>> handleInvalidPasswordExceptionException(InvalidPasswordException exception, HttpServletRequest request) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
-        return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse<Object>> handleExceptions(RuntimeException exception, HttpServletRequest request) {
+        return switch (exception) {
+            case RequiredFieldException ex -> FuncUtils.handleRequiredFieldException(ex, request, log);
+            case ConflictException ex -> FuncUtils.handleConflictException(ex, request, log);
+            case EmailAlreadyInUseException ex -> FuncUtils.handleConflictException(ex, request, log);
+            case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
+            case NonBiznoInstitutionalEmailException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
+            case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
+            default -> FuncUtils.handleUnexpectedException(exception, request, log);
+        };
     }
 }
