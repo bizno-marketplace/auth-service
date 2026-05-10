@@ -1,0 +1,17 @@
+# application-test.yml
+spring:
+  config:
+    activate:
+      on-profile: test
+    import: "optional:configserver:"
+  cloud:
+    config:
+      enabled: false
+      fail-fast: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+eureka:
+  client:
+    enabled: false

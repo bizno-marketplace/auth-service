@@ -1,0 +1,12 @@
+name: Auth Service CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  ci:
+    uses: bizno-marketplace/.github/.github/workflows/ci-reusable.yml@master
+    with:
+      coverage-threshold: 80
