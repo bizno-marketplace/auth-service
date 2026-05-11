@@ -1,0 +1,53 @@
+package com.biznopay.authservice.infra.outbox;
+
+import com.biznopay.authservice.infra.mapper.OutboxEventMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.OutboxEventJpaRepository;
+import io.nats.client.Connection;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class OutboxPoller {
+    private static final Logger log = LoggerFactory.getLogger(OutboxPoller.class);
+
+    private final OutboxEventJpaRepository repository;
+    private final Connection natsConnection;
+
+    @Scheduled(fixedDelayString = "${outbox.poller.interval-ms:5000}")
+    public void poll() {
+        List<OutboxEventJpaEntity> pending = repository.findByStatus(OutboxStatus.PENDING);
+
+        for (OutboxEventJpaEntity entity : pending) {
+            OutboxEvent event = OutboxEventMapper.toDomain(entity);
+            process(event);
+            repository.save(OutboxEventMapper.toJpaEntity(event));
+        }
+    }
+
+    private void process(OutboxEvent event) {
+        try {
+            natsConnection.publish(event.getSubject(), event.getPayload().getBytes());
+            event.markPublished();
+            log.info("[OUTBOX] Event published — type={} subject={} aggregateId={}",
+                    event.getEventType(), event.getSubject(), event.getAggregateId());
+        } catch (Exception e) {
+            event.registerFailure(e.getMessage());
+            if (event.hasExhaustedRetries()) {
+                log.error("[OUTBOX] Event FAILED after {} retries — type={} aggregateId={} lastError={}",
+                        event.getRetryCount(), event.getEventType(),
+                        event.getAggregateId(), e.getMessage());
+            } else {
+                log.warn("[OUTBOX] Retry {}/{} — type={} aggregateId={} error={}",
+                        event.getRetryCount(), OutboxEvent.MAX_RETRIES,
+                        event.getEventType(), event.getAggregateId(), e.getMessage());
+            }
+        }
+    }
+}
