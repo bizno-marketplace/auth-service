@@ -5,7 +5,7 @@ import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
 
 import java.util.UUID;
 
-public record ActivationTokenId (UUID value) {
+public record ActivationTokenId(UUID value) {
     public ActivationTokenId {
         if (value == null) {
             throw new InvalidEntityIdException(User.class.getName(), "USER-001");

@@ -25,7 +25,7 @@ public class ActivationTokenTests {
 
     @Test
     @DisplayName("Should generate ActivationToken with correct values ")
-    public void shouldGenerateActivationTokenWithCorrectValues(){
+    public void shouldGenerateActivationTokenWithCorrectValues() {
         UserId userId = new UserId(UUID.randomUUID());
         ActivationToken activationToken = ActivationToken.generate(userId);
 

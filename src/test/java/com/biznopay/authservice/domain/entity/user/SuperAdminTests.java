@@ -3,7 +3,6 @@ package com.biznopay.authservice.domain.entity.user;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.infra.mapper.UserMapper;
-import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import org.junit.jupiter.api.Assertions;
