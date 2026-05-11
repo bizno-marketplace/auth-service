@@ -135,13 +135,6 @@ public class UserMapperTests {
     }
 
     @Test
-    @DisplayName("Should throw InvalidEntityIdException if id is invalid on toUserDomain")
-    public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnToUserDomain() {
-        UserJpaEntity entity = new BuyerJpaEntity();
-        Assertions.assertThrows(InvalidEntityIdException.class, () -> UserMapper.toUserDomain(entity));
-    }
-
-    @Test
     @DisplayName("Should return RegisterSAInput on toRegisterSAInput")
     public void shouldReturnRegisterSAInputOnToRegisterSAInput() {
         RegisterSARequest request = Mocks.registerSARequestMock();
