@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.UUID;
@@ -61,5 +62,14 @@ public class UserRegisteredTests {
         ActivationTokenId tokenId = new ActivationTokenId(UUID.randomUUID());
         Assertions.assertThrows(InvalidStringFieldLengException.class,
                 () -> UserRegistered.of(userId, "test@email.com", firstName, tokenId));
+    }
+
+    @NullSource
+    @ParameterizedTest
+    @DisplayName("Should throw RequiredFieldException if ActivationTokenId is null")
+    public void shouldThrowRequiredFieldExceptionIfFirstNameIsNull(ActivationTokenId activationTokenId) {
+        UserId userId = new UserId(UUID.randomUUID());
+        Assertions.assertThrows(RequiredFieldException.class,
+                () -> UserRegistered.of(userId, "test@email.com", "John", activationTokenId));
     }
 }
