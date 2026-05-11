@@ -62,12 +62,26 @@ public class OutboxEventTests {
     }
 
     @Test
-    @DisplayName("Should register OutboxEvent as failed")
+    @DisplayName("Should register a failure")
     public void shouldRegisterFailure(){
         OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
         event.registerFailure("error");
         Assertions.assertEquals(1, event.getRetryCount());
         Assertions.assertEquals("error", event.getLastError());
         Assertions.assertEquals(OutboxStatus.PENDING, event.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should register OutboxEvent as failure after 3 retries")
+    public void shouldRegisterOutboxEventAsFailureAfter3Retries(){
+        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+        event.registerFailure("error");
+        event.registerFailure("error");
+        event.registerFailure("error");
+
+        Assertions.assertEquals(3, event.getRetryCount());
+        Assertions.assertEquals("error", event.getLastError());
+        Assertions.assertEquals(OutboxStatus.FAILED, event.getStatus());
+        Assertions.assertTrue(event.hasExhaustedRetries());
     }
 }
