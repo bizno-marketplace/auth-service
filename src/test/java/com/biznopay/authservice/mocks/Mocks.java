@@ -23,8 +23,8 @@ public class Mocks {
         return new RegisterSAInput("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
     }
 
-    public static RegisterSARequest registerSARequestEmptyFieldMock(String fieldName){
-        return switch (fieldName){
+    public static RegisterSARequest registerSARequestEmptyFieldMock(String fieldName) {
+        return switch (fieldName) {
             case "firstname" -> new RegisterSARequest("", "Smith", "johnsmith@bizno.co.mz", "Password@123");
             case "lastname" -> new RegisterSARequest("John", "", "johnsmith@bizno.co.mz", "Password@123");
             case "email" -> new RegisterSARequest("John", "Smith", "", "Password@123");
@@ -34,7 +34,7 @@ public class Mocks {
     }
 
     public static RegisterSARequest registerSARequestInvalidFieldMock(String fieldName) {
-        return switch (fieldName){
+        return switch (fieldName) {
             case "firstname" -> new RegisterSARequest("Jo", "Smith", "johnsmith@bizno.co.mz", "Password@123");
             case "lastname" -> new RegisterSARequest("John", "Sm", "johnsmith@bizno.co.mz", "Password@123");
             case "email" -> new RegisterSARequest("John", "Smith", "johnsmith@gmail.com", "Password@123");
@@ -43,41 +43,41 @@ public class Mocks {
         };
     }
 
-    public static User superAdminMock(){
+    public static User superAdminMock() {
         return SuperAdmin.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
     }
 
-    public static User superAdminMockFromRegisterSARequest(RegisterSARequest request){
+    public static User superAdminMockFromRegisterSARequest(RegisterSARequest request) {
         return SuperAdmin.register(request.firstName(), request.lastName(), request.email(), request.password());
     }
 
-    public static  UserJpaEntity superAdminJpaEntityMock(){
+    public static UserJpaEntity superAdminJpaEntityMock() {
         return new SuperAdminJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
                 "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
                 LocalDateTime.now(), LocalDateTime.now());
     }
 
-    public static  UserJpaEntity supperAdminJpaEntityMockFromSuperAdmin(){
-        User user =  superAdminMockFromRegisterSARequest(registerSARequestMock());
+    public static UserJpaEntity supperAdminJpaEntityMockFromSuperAdmin() {
+        User user = superAdminMockFromRegisterSARequest(registerSARequestMock());
         return UserMapper.toUserJpaEntity(user);
     }
 
-    public static User buyerMock(){
+    public static User buyerMock() {
         return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
     }
 
-    public static User buyerMockFromRegisterSARequest(RegisterSARequest request){
+    public static User buyerMockFromRegisterSARequest(RegisterSARequest request) {
         return Buyer.register(request.firstName(), request.lastName(), request.email(), request.password());
     }
 
-    public static  UserJpaEntity buyerJpaEntityMock(){
+    public static UserJpaEntity buyerJpaEntityMock() {
         return new BuyerJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
                 "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
                 LocalDateTime.now(), LocalDateTime.now());
     }
 
-    public static  UserJpaEntity buyerJpaEntityMockFromBuyer(){
-        User user =  buyerMockFromRegisterSARequest(registerSARequestMock());
+    public static UserJpaEntity buyerJpaEntityMockFromBuyer() {
+        User user = buyerMockFromRegisterSARequest(registerSARequestMock());
         return UserMapper.toUserJpaEntity(user);
     }
 }

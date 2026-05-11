@@ -1,11 +1,7 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import com.biznopay.authservice.domain.entity.user.SuperAdmin;
-import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.mocks.Mocks;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

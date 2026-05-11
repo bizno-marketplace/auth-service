@@ -47,15 +47,15 @@ public class SAControllerTests {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
-
     @AfterAll
     static void tearDown() {
         if (postgres != null && postgres.isRunning()) {
             postgres.stop();
         }
+    }
+
+    private String url(String path) {
+        return "http://localhost:" + port + path;
     }
 
     @BeforeEach
