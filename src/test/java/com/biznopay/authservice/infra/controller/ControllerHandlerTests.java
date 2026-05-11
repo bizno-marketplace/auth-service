@@ -5,10 +5,7 @@ import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +74,8 @@ public class ControllerHandlerTests {
     @Test
     @DisplayName("Should return 500 and UnexpectedException when any unexpected error occurs")
     public void shouldReturn500AndUnexpectedExceptionWhenAnyUnexpectedErrorOccurs() throws Exception {
-        Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(new UnexpectedException("UNEXPECTED_ERROR-001"));
+        UnexpectedException exception = new UnexpectedException("UNEXPECTED_ERROR-001");
+        Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(exception);
         RegisterSARequest registerSARequest = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
         String request = new ObjectMapper().writeValueAsString(registerSARequest);
         mvc.perform(MockMvcRequestBuilders
@@ -88,5 +86,6 @@ public class ControllerHandlerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("Unexpected error! Please try again later."))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error.code").value("UNEXPECTED_ERROR-001"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error.metadata").doesNotExist());
+        Assertions.assertNull(exception.getMetadata());
     }
 }
