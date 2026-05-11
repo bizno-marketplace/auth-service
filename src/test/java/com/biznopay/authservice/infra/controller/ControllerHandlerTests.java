@@ -45,18 +45,18 @@ public class ControllerHandlerTests {
     @MockitoBean
     private RegisterSA registerSA;
 
-    @BeforeEach
-    public void setup() {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-    }
-
     @AfterAll
     static void tearDown() {
         if (postgres != null && postgres.isRunning()) {
             postgres.stop();
         }
+    }
+
+    @BeforeEach
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .build();
     }
 
     @Test
