@@ -16,7 +16,7 @@ public class ActivationToken {
 
     private ActivationToken(ActivationTokenId id, UserId userId, boolean used, LocalDateTime expiresAt, LocalDateTime createdAt) {
         this.id = id;
-        this.userId = userId;
+        this.userId = this.validateUserId(userId);
         this.used = used;
         this.expiresAt = expiresAt;
         this.createdAt = createdAt;
