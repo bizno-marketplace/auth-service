@@ -72,4 +72,19 @@ public class UserRegisteredTests {
         Assertions.assertThrows(RequiredFieldException.class,
                 () -> UserRegistered.of(userId, "test@email.com", "John", activationTokenId));
     }
+
+    @Test
+    @DisplayName("Should return UserRegistered with correct values")
+    public void shouldReturnUserRegisteredWithCorrectValues(){
+        UserId userId = new UserId(UUID.randomUUID());
+        ActivationTokenId tokenId = new ActivationTokenId(UUID.randomUUID());
+        UserRegistered userRegistered = UserRegistered.of(userId, "test@email.com", "John", tokenId);
+
+        Assertions.assertNotNull(userRegistered.getEventId());
+        Assertions.assertEquals(userId, userRegistered.getUserId());
+        Assertions.assertEquals("test@email.com", userRegistered.getEmail());
+        Assertions.assertEquals("John", userRegistered.getFirstName());
+        Assertions.assertEquals(tokenId, userRegistered.getActivationToken());
+        Assertions.assertNotNull(userRegistered.getOccurredAt());
+    }
 }
