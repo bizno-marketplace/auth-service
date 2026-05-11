@@ -60,4 +60,14 @@ public class OutboxEventTests {
         Assertions.assertEquals(OutboxStatus.PUBLISHED, event.getStatus());
         Assertions.assertNotNull(event.getPublishedAt());
     }
+
+    @Test
+    @DisplayName("Should register OutboxEvent as failed")
+    public void shouldRegisterFailure(){
+        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+        event.registerFailure("error");
+        Assertions.assertEquals(1, event.getRetryCount());
+        Assertions.assertEquals("error", event.getLastError());
+        Assertions.assertEquals(OutboxStatus.PENDING, event.getStatus());
+    }
 }
