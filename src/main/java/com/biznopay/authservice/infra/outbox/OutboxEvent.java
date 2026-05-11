@@ -46,22 +46,26 @@ public class OutboxEvent {
     }
 
     private UUID validateAggregateId(UUID aggregateId) {
-        if (aggregateId == null) throw new RequiredFieldException("aggregateId", OutboxEvent.class.getName(),"OUTBOX_EVENT-001");
+        if (aggregateId == null)
+            throw new RequiredFieldException("aggregateId", OutboxEvent.class.getName(), "OUTBOX_EVENT-001");
         return aggregateId;
     }
 
     private String validateEventType(String eventType) {
-        if (eventType == null || eventType.trim().isEmpty()) throw new RequiredFieldException("eventType", OutboxEvent.class.getName(),"OUTBOX_EVENT-002");
+        if (eventType == null || eventType.trim().isEmpty())
+            throw new RequiredFieldException("eventType", OutboxEvent.class.getName(), "OUTBOX_EVENT-002");
         return eventType;
     }
 
     private String validateSubject(String subject) {
-        if (subject == null || subject.trim().isEmpty()) throw new RequiredFieldException("subject", OutboxEvent.class.getName(),"OUTBOX_EVENT-003");
+        if (subject == null || subject.trim().isEmpty())
+            throw new RequiredFieldException("subject", OutboxEvent.class.getName(), "OUTBOX_EVENT-003");
         return subject;
     }
 
     private String validatePayload(String payload) {
-        if (payload == null || payload.trim().isEmpty()) throw new RequiredFieldException("payload", OutboxEvent.class.getName(),"OUTBOX_EVENT-004");
+        if (payload == null || payload.trim().isEmpty())
+            throw new RequiredFieldException("payload", OutboxEvent.class.getName(), "OUTBOX_EVENT-004");
         return payload;
     }
 

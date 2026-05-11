@@ -4,6 +4,8 @@ import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.util.UUID;
 
@@ -15,31 +17,34 @@ public class OutboxEventTests {
                 OutboxEvent.create(null, "eventType", "subject", "payload"));
     }
 
-    @Test
+    @ParameterizedTest
+    @NullAndEmptySource
     @DisplayName("Should RequiredFieldException if eventType is null or empty")
-    public void shouldThrowRequiredFieldExceptionIfEventTypeIsNullOrEmptyOnCreate() {
+    public void shouldThrowRequiredFieldExceptionIfEventTypeIsNullOrEmptyOnCreate(String enventType) {
         Assertions.assertThrows(RequiredFieldException.class, () ->
-                OutboxEvent.create(UUID.randomUUID(), null, "subject", "payload"));
+                OutboxEvent.create(UUID.randomUUID(), enventType, "subject", "payload"));
     }
 
-    @Test
+    @ParameterizedTest
+    @NullAndEmptySource
     @DisplayName("Should RequiredFieldException if subject is null or empty")
-    public void shouldThrowRequiredFieldExceptionIfSubjectIsNullOrEmptyOnCreate() {
+    public void shouldThrowRequiredFieldExceptionIfSubjectIsNullOrEmptyOnCreate(String subject) {
         Assertions.assertThrows(RequiredFieldException.class, () ->
-                OutboxEvent.create(UUID.randomUUID(), "eventType", null, "payload"));
+                OutboxEvent.create(UUID.randomUUID(), "eventType", subject, "payload"));
     }
 
-    @Test
+    @ParameterizedTest
+    @NullAndEmptySource
     @DisplayName("Should throw RequiredFieldException if payload is null or empty")
-    public void shouldThrowRequiredFieldExceptionIfPayloadIsNullOrEmptyOnCreate() {
+    public void shouldThrowRequiredFieldExceptionIfPayloadIsNullOrEmptyOnCreate(String payload) {
         Assertions.assertThrows(RequiredFieldException.class, () ->
-                OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", null));
+                OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", payload));
     }
 
     @Test
     @DisplayName("Should create OutboxEvent with correct values")
-    public void shouldCreateOutboxEventWithCorrectValues(){
-        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+    public void shouldCreateOutboxEventWithCorrectValues() {
+        OutboxEvent event = OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
 
         Assertions.assertNotNull(event.getId());
         Assertions.assertEquals("eventType", event.getEventType());
@@ -54,8 +59,8 @@ public class OutboxEventTests {
 
     @Test
     @DisplayName("Should mark OutboxEvent as published")
-    public void shouldMarkOutboxEventAsPublished(){
-        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+    public void shouldMarkOutboxEventAsPublished() {
+        OutboxEvent event = OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
         event.markPublished();
         Assertions.assertEquals(OutboxStatus.PUBLISHED, event.getStatus());
         Assertions.assertNotNull(event.getPublishedAt());
@@ -63,18 +68,19 @@ public class OutboxEventTests {
 
     @Test
     @DisplayName("Should register a failure")
-    public void shouldRegisterFailure(){
-        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+    public void shouldRegisterFailure() {
+        OutboxEvent event = OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
         event.registerFailure("error");
         Assertions.assertEquals(1, event.getRetryCount());
         Assertions.assertEquals("error", event.getLastError());
         Assertions.assertEquals(OutboxStatus.PENDING, event.getStatus());
+        Assertions.assertFalse(event.hasExhaustedRetries());
     }
 
     @Test
     @DisplayName("Should register OutboxEvent as failure after 3 retries")
-    public void shouldRegisterOutboxEventAsFailureAfter3Retries(){
-        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+    public void shouldRegisterOutboxEventAsFailureAfter3Retries() {
+        OutboxEvent event = OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
         event.registerFailure("error");
         event.registerFailure("error");
         event.registerFailure("error");
