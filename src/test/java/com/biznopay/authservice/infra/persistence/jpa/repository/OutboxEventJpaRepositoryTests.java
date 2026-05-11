@@ -54,14 +54,14 @@ public class OutboxEventJpaRepositoryTests {
         UUID outboxEventId = UUID.randomUUID();
         UUID aggregateId = UUID.randomUUID();
         OutboxEventJpaEntity entity = new OutboxEventJpaEntity(outboxEventId, aggregateId, "event_type",
-                "subject", "payload", OutboxStatus.PENDING, 0, null, LocalDateTime.now(),LocalDateTime.now());
+                "subject", "payload", OutboxStatus.PENDING, 0, null, LocalDateTime.now(), LocalDateTime.now());
         outboxEventJpaRepository.save(entity);
         List<OutboxEventJpaEntity> result = outboxEventJpaRepository.findByStatus(OutboxStatus.PENDING);
 
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals(entity.getId(), result.getFirst().getId());
         Assertions.assertEquals(entity.getAggregateId(), result.getFirst().getAggregateId());
-        Assertions.assertEquals(entity.getEventType(),result.getFirst().getEventType());
+        Assertions.assertEquals(entity.getEventType(), result.getFirst().getEventType());
         Assertions.assertEquals(entity.getEventType(), result.getFirst().getEventType());
         Assertions.assertEquals(entity.getEventType(), result.getFirst().getEventType());
         Assertions.assertEquals(entity.getSubject(), result.getFirst().getSubject());
