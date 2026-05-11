@@ -19,7 +19,7 @@ public class UserRegistered {
     private UserRegistered(UUID eventId, UserId userId, String email, String firstName, ActivationTokenId activationTokenId, LocalDateTime occurredAt) {
         this.eventId = eventId;
         this.userId = this.validateUserId(userId);
-        this.email = email;
+        this.email = this.validateEmail(email);
         this.firstName = firstName;
         this.activationTokenId = activationTokenId;
         this.occurredAt = occurredAt;
@@ -33,6 +33,12 @@ public class UserRegistered {
         if(userId == null)
             throw new RequiredFieldException("userId",UserRegistered.class.getName(),"USER_REGISTERED-001");
         return userId;
+    }
+
+    private String validateEmail(String email ){
+        if(email == null || email.isEmpty())
+            throw new RequiredFieldException("email",UserRegistered.class.getName(),"USER_REGISTERED-002");
+        return email;
     }
 
     public UUID getEventId() {
