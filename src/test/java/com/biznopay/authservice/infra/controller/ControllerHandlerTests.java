@@ -2,6 +2,7 @@ package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
+import com.biznopay.authservice.domain.exception.UnexpectedException;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
 import org.junit.jupiter.api.AfterAll;
@@ -34,8 +35,6 @@ public class ControllerHandlerTests {
     static PostgreSQLContainer postgres = new PostgreSQLContainer(
             DockerImageName.parse("postgres:latest")
     );
-
-    private final String URL = "/fixed-expenses";
 
     @Autowired
     private WebApplicationContext context;
@@ -73,5 +72,20 @@ public class ControllerHandlerTests {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("First name is required"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.error.code").value("USER-002"));
+    }
+
+    @Test
+    @DisplayName("Should return 500 and UnexpectedException when any unexpected error occurs")
+    public void shouldReturn500AndUnexpectedExceptionWhenAnyUnexpectedErrorOccurs() throws Exception {
+        Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(new UnexpectedException("UNEXPECTED_ERROR-001"));
+        RegisterSARequest registerSARequest = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        String request = new ObjectMapper().writeValueAsString(registerSARequest);
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/supper-admins")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("Unexpected error! Please try again later"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.code").value("UNEXPECTED_ERROR-001"));
     }
 }
