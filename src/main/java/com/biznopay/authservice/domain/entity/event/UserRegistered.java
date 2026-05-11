@@ -3,12 +3,17 @@ package com.biznopay.authservice.domain.entity.event;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.exception.InvalidEmailException;
+import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 public class UserRegistered {
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$";
+
     private final UUID eventId;
     private final UserId userId;
     private final String email;
@@ -38,6 +43,8 @@ public class UserRegistered {
     private String validateEmail(String email ){
         if(email == null || email.isEmpty())
             throw new RequiredFieldException("email",UserRegistered.class.getName(),"USER_REGISTERED-002");
+        if (!email.matches(EMAIL_REGEX))
+            throw new InvalidEmailException("USER_REGISTERED-003");
         return email;
     }
 
