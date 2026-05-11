@@ -2,6 +2,8 @@ package com.biznopay.authservice.domain.entity.event;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.exception.InvalidEmailException;
+import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -28,5 +30,14 @@ public class UserRegisteredTests {
         ActivationTokenId tokenId = new ActivationTokenId(UUID.randomUUID());
         Assertions.assertThrows(RequiredFieldException.class, ()
                 -> UserRegistered.of(userId, email, "firstName", tokenId));
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidEmailException if email is invalid")
+    public void shouldThrowInvalidEmailExceptionIfEmailIsInvalid(){
+        UserId userId = new UserId(UUID.randomUUID());
+        ActivationTokenId tokenId = new ActivationTokenId(UUID.randomUUID());
+        Assertions.assertThrows(InvalidEmailException.class, ()
+                -> UserRegistered.of(userId, "email", "firstName", tokenId));
     }
 }
