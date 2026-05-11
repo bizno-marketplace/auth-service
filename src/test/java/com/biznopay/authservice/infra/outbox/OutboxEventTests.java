@@ -28,4 +28,11 @@ public class OutboxEventTests {
         Assertions.assertThrows(RequiredFieldException.class, () ->
                 OutboxEvent.create(UUID.randomUUID(), "eventType", null, "payload"));
     }
+
+    @Test
+    @DisplayName("Should throw RequiredFieldException if payload is null or empty")
+    public void shouldThrowRequiredFieldExceptionIfPayloadIsNullOrEmptyOnCreate() {
+        Assertions.assertThrows(RequiredFieldException.class, () ->
+                OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", null));
+    }
 }
