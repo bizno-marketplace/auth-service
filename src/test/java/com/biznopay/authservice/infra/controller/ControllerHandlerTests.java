@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
+import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
@@ -60,7 +61,7 @@ public class ControllerHandlerTests {
     @DisplayName("Should return 400 and return RequiredFieldException when first name is empty on RegisterSA")
     public void shouldReturn400AndReturnRequiredFieldExceptionWhenFirstNameIsEmptyOnRegisterSA() throws Exception {
         Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(new RequiredFieldException("First name", User.class.getName(), "USER-002"));
-        RegisterSARequest registerSARequest = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        RegisterSARequest registerSARequest = Mocks.registerSARequestMock();
         String request = new ObjectMapper().writeValueAsString(registerSARequest);
         mvc.perform(MockMvcRequestBuilders
                         .post("/supper-admins")
@@ -76,7 +77,7 @@ public class ControllerHandlerTests {
     public void shouldReturn500AndUnexpectedExceptionWhenAnyUnexpectedErrorOccurs() throws Exception {
         UnexpectedException exception = new UnexpectedException("UNEXPECTED_ERROR-001");
         Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(exception);
-        RegisterSARequest registerSARequest = new RegisterSARequest("John", "Smith", "johnsmith@bizno.co.mz", "Password@123");
+        RegisterSARequest registerSARequest = Mocks.registerSARequestMock();
         String request = new ObjectMapper().writeValueAsString(registerSARequest);
         mvc.perform(MockMvcRequestBuilders
                         .post("/supper-admins")
