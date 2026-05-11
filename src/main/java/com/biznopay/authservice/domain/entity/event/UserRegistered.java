@@ -3,6 +3,7 @@ package com.biznopay.authservice.domain.entity.event;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.exception.InvalidEmailException;
+import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
@@ -48,6 +49,8 @@ public class UserRegistered {
     private String validateFirstName(String firstName) {
         if (firstName == null || firstName.isEmpty())
             throw new RequiredFieldException("firstName", UserRegistered.class.getName(), "USER_REGISTERED-004");
+       if(firstName.length() < 3)
+           throw new InvalidStringFieldLengException("firstName", 3,UserRegistered.class.getName(), "USER_REGISTERED-005");
         return firstName;
     }
 
