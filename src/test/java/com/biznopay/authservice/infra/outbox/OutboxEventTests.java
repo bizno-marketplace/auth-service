@@ -35,4 +35,20 @@ public class OutboxEventTests {
         Assertions.assertThrows(RequiredFieldException.class, () ->
                 OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", null));
     }
+
+    @Test
+    @DisplayName("Should create OutboxEvent with correct values")
+    public void shouldCreateOutboxEventWithCorrectValues(){
+        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+
+        Assertions.assertNotNull(event.getId());
+        Assertions.assertEquals("eventType", event.getEventType());
+        Assertions.assertEquals("subject", event.getSubject());
+        Assertions.assertEquals("payload", event.getPayload());
+        Assertions.assertEquals(OutboxStatus.PENDING, event.getStatus());
+        Assertions.assertEquals(0, event.getRetryCount());
+        Assertions.assertNull(event.getLastError());
+        Assertions.assertNotNull(event.getCreatedAt());
+        Assertions.assertNull(event.getPublishedAt());
+    }
 }
