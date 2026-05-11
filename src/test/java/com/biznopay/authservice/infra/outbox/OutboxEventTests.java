@@ -51,4 +51,13 @@ public class OutboxEventTests {
         Assertions.assertNotNull(event.getCreatedAt());
         Assertions.assertNull(event.getPublishedAt());
     }
+
+    @Test
+    @DisplayName("Should mark OutboxEvent as published")
+    public void shouldMarkOutboxEventAsPublished(){
+        OutboxEvent event =  OutboxEvent.create(UUID.randomUUID(), "eventType", "subject", "payload");
+        event.markPublished();
+        Assertions.assertEquals(OutboxStatus.PUBLISHED, event.getStatus());
+        Assertions.assertNotNull(event.getPublishedAt());
+    }
 }
