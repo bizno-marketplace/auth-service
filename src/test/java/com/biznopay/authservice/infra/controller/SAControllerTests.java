@@ -77,7 +77,7 @@ public class SAControllerTests {
     @DisplayName("Should return 409 when Super admin already exists")
     public void shouldReturn409WhenSuperAdminAlreadyExists() {
         RegisterSARequest request = Mocks.registerSARequestMock();
-        UserJpaEntity entity = Mocks.userJpaEntityMockFromSuperAdmin();
+        UserJpaEntity entity = Mocks.supperAdminJpaEntityMockFromSuperAdmin();
         userJpaRepository.save(entity);
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -88,7 +88,7 @@ public class SAControllerTests {
     @DisplayName("Should return 409 if email is already in use")
     public void shouldReturn409IfEmailIsAlreadyInUse() {
         RegisterSARequest request = Mocks.registerSARequestMock();
-        UserJpaEntity entity = Mocks.userJpaEntityMockFromBuyer();
+        UserJpaEntity entity = Mocks.buyerJpaEntityMockFromBuyer();
         userJpaRepository.save(entity);
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());

@@ -11,6 +11,7 @@ import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +49,7 @@ public class UserMapperTests {
     @DisplayName("Should return Super admin jpa entity on toUserJpaEntity")
     public void shouldReturnSuperAdminJpaEntityOnToUserJpaEntity() {
         UserMapper userMapper = new UserMapper();
-        User user = SuperAdmin.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        User user = Mocks.superAdminMock();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(SuperAdminJpaEntity.class, entity);
         Assertions.assertEquals(user.getId().value(), entity.getId());
@@ -66,7 +67,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return Buyer jpa entity on toUserJpaEntity")
     public void shouldReturnBuyerJpaEntityOnToUserJpaEntity() {
-        User user = Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        User user = Mocks.buyerMock();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(UserJpaEntity.class, entity);
         Assertions.assertEquals(user.getId().value(), entity.getId());
@@ -91,9 +92,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return Super admin domain entity on toUserDomain")
     public void shouldReturnSuperAdminEntityOnToUserDomain() {
-        UserJpaEntity entity = new SuperAdminJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
-                "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
-                LocalDateTime.now(), LocalDateTime.now());
+        UserJpaEntity entity = Mocks.superAdminJpaEntityMock();
         User user = UserMapper.toUserDomain(entity);
         Assertions.assertInstanceOf(SuperAdmin.class, user);
         Assertions.assertEquals(entity.getId(), user.getId().value());
@@ -111,9 +110,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return Buyer domain entity on toUserDomain")
     public void shouldReturnBuyerEntityOnToUserDomain() {
-        UserJpaEntity entity = new BuyerJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
-                "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
-                LocalDateTime.now(), LocalDateTime.now());
+        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
         User user = UserMapper.toUserDomain(entity);
         Assertions.assertInstanceOf(Buyer.class, user);
         Assertions.assertEquals(entity.getId(), user.getId().value());
@@ -147,10 +144,8 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return RegisterSAInput on toRegisterSAInput")
     public void shouldReturnRegisterSAInputOnToRegisterSAInput() {
-        RegisterSARequest request = new RegisterSARequest("any_first_name", "any_last_name",
-                "admin@bizno.co.mz", "Password@123");
+        RegisterSARequest request = Mocks.registerSARequestMock();
         RegisterSAInput input = new RegisterSAInput(request.firstName(), request.lastName(), request.email(), request.password());
-
         Assertions.assertEquals(request.firstName(), input.firstName());
         Assertions.assertEquals(request.lastName(), input.lastName());
         Assertions.assertEquals(request.email(), input.email());
