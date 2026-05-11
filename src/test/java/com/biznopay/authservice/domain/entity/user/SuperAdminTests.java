@@ -16,8 +16,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class SuperAdminTests {
 
     @Test
-    @DisplayName("Should throw InvalidEntityIdException if id is invalid on toUserDomain")
-    public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnToUserDomain() {
+    @DisplayName("Should throw InvalidEntityIdException if id is invalid on build")
+    public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnBuild() {
         UserJpaEntity entity = new SuperAdminJpaEntity();
         Assertions.assertThrows(InvalidEntityIdException.class, () -> UserMapper.toUserDomain(entity));
     }
