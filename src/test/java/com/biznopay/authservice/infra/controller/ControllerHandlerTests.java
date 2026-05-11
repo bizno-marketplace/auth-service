@@ -45,18 +45,18 @@ public class ControllerHandlerTests {
     @MockitoBean
     private RegisterSA registerSA;
 
-    @AfterAll
-    static void tearDown() {
-        if (postgres != null && postgres.isRunning()) {
-            postgres.stop();
-        }
-    }
-
     @BeforeEach
     public void setup() {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        if (postgres != null && postgres.isRunning()) {
+            postgres.stop();
+        }
     }
 
     @Test
@@ -85,7 +85,8 @@ public class ControllerHandlerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("Unexpected error! Please try again later"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.error.code").value("UNEXPECTED_ERROR-001"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.message").value("Unexpected error! Please try again later."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.code").value("UNEXPECTED_ERROR-001"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.error.metadata").doesNotExist());
     }
 }
