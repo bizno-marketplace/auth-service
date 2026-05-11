@@ -40,7 +40,8 @@ public class GlobalExceptionHandler {
             case ConflictException ex -> FuncUtils.handleConflictException(ex, request, log);
             case EmailAlreadyInUseException ex -> FuncUtils.handleConflictException(ex, request, log);
             case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
-            case NonBiznoInstitutionalEmailException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
+            case NonBiznoInstitutionalEmailException ex ->
+                    FuncUtils.handleUnprocessableContentException(ex, request, log);
             case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
             default -> FuncUtils.handleUnexpectedException(exception, request, log);
         };

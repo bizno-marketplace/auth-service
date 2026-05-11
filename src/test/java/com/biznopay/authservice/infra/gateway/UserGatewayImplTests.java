@@ -6,6 +6,7 @@ import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ public class UserGatewayImplTests {
     @Test
     @DisplayName("Should save user on save")
     public void shouldSaveUserOnSave() {
-        RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+        RegisterSAInput input = Mocks.registerSAInputMock();
         User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
         UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
         userGatewayImpl.save(user);
@@ -50,8 +51,7 @@ public class UserGatewayImplTests {
     @Test
     @DisplayName("Should return correct result on find by email")
     public void shouldReturnCorrectResultOnFindByEmail() {
-        RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
-        User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
+        User user = Mocks.superAdminMock();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Mockito.when(userJpaRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(entity));
         UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);

@@ -1,10 +1,7 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import com.biznopay.authservice.domain.entity.user.SuperAdmin;
-import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
+import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,16 +49,11 @@ public class SuperAdminJpaRepositoryTests {
     @Test
     @DisplayName("Should counts 2 when exist 2 super admins")
     public void shouldCountsTwoWhenExistTwoSuperAdmins() {
-        RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
-        User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        UserJpaEntity entity = Mocks.superAdminJpaEntityMock();
         userJpaRepository.save(entity);
-
-        input = new RegisterSAInput("any_first_name", "any_last_name", "admine@bizno.co.mz", "Password@123");
-        user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        entity = UserMapper.toUserJpaEntity(user);
-        userJpaRepository.save(entity);
-
+        UserJpaEntity entity1 = Mocks.superAdminJpaEntityMock();
+        entity1.setEmail("admin1@bizno.co.mz");
+        userJpaRepository.save(entity1);
         long count = superAdminJpaRepository.count();
         Assertions.assertEquals(2, count);
     }

@@ -74,9 +74,9 @@ public class FuncUtils {
 
     public static ResponseEntity<ApiResponse<Object>> handleUnexpectedException(RuntimeException exception, HttpServletRequest request, Logger log) {
         TechnicalException ex = new UnexpectedException("UNEXPECTED_ERROR-001");
-        log.error("[{}] {} {} | code={} | message={}",
+        log.error("[{}] {} {} | code={} | message={} | metadata={}",
                 ex.getSeverity(), request.getMethod(), request.getRequestURI(),
-                ex.getErrorCode(), exception.getMessage());
+                ex.getErrorCode(), exception.getMessage(), ex.getMetadata());
         ApiError error = new ApiError(ex.getErrorCode(), exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(FuncUtils.buildResponseBody(false, null, error));
     }
