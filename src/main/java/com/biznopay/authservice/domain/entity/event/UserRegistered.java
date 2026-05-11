@@ -1,15 +1,12 @@
 package com.biznopay.authservice.domain.entity.event;
 
-import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.exception.InvalidEmailException;
-import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.regex.Matcher;
 
 public class UserRegistered {
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$";
@@ -25,7 +22,7 @@ public class UserRegistered {
         this.eventId = eventId;
         this.userId = this.validateUserId(userId);
         this.email = this.validateEmail(email);
-        this.firstName = firstName;
+        this.firstName = this.validateFirstName(firstName);
         this.activationTokenId = activationTokenId;
         this.occurredAt = occurredAt;
     }
@@ -34,18 +31,24 @@ public class UserRegistered {
         return new UserRegistered(UUID.randomUUID(), userId, email, firstName, activationTokenId, LocalDateTime.now());
     }
 
-    private UserId validateUserId(UserId userId){
-        if(userId == null)
-            throw new RequiredFieldException("userId",UserRegistered.class.getName(),"USER_REGISTERED-001");
+    private UserId validateUserId(UserId userId) {
+        if (userId == null)
+            throw new RequiredFieldException("userId", UserRegistered.class.getName(), "USER_REGISTERED-001");
         return userId;
     }
 
-    private String validateEmail(String email ){
-        if(email == null || email.isEmpty())
-            throw new RequiredFieldException("email",UserRegistered.class.getName(),"USER_REGISTERED-002");
+    private String validateEmail(String email) {
+        if (email == null || email.isEmpty())
+            throw new RequiredFieldException("email", UserRegistered.class.getName(), "USER_REGISTERED-002");
         if (!email.matches(EMAIL_REGEX))
             throw new InvalidEmailException("USER_REGISTERED-003");
         return email;
+    }
+
+    private String validateFirstName(String firstName) {
+        if (firstName == null || firstName.isEmpty())
+            throw new RequiredFieldException("firstName", UserRegistered.class.getName(), "USER_REGISTERED-004");
+        return firstName;
     }
 
     public UUID getEventId() {
