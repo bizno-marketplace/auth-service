@@ -76,7 +76,7 @@ public class UserRegistered {
         return firstName;
     }
 
-    public ActivationTokenId getActivationToken() {
+    public ActivationTokenId getActivationTokenId() {
         return activationTokenId;
     }
 

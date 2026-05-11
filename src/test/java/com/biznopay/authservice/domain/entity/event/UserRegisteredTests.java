@@ -83,7 +83,7 @@ public class UserRegisteredTests {
         Assertions.assertEquals(userId, userRegistered.getUserId());
         Assertions.assertEquals("test@email.com", userRegistered.getEmail());
         Assertions.assertEquals("John", userRegistered.getFirstName());
-        Assertions.assertEquals(tokenId, userRegistered.getActivationToken());
+        Assertions.assertEquals(tokenId, userRegistered.getActivationTokenId());
         Assertions.assertNotNull(userRegistered.getOccurredAt());
     }
 }
