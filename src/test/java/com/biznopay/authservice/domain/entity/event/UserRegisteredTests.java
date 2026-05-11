@@ -1,7 +1,6 @@
 package com.biznopay.authservice.domain.entity.event;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
-import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.exception.InvalidEmailException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
@@ -75,7 +74,7 @@ public class UserRegisteredTests {
 
     @Test
     @DisplayName("Should return UserRegistered with correct values")
-    public void shouldReturnUserRegisteredWithCorrectValues(){
+    public void shouldReturnUserRegisteredWithCorrectValues() {
         UserId userId = new UserId(UUID.randomUUID());
         ActivationTokenId tokenId = new ActivationTokenId(UUID.randomUUID());
         UserRegistered userRegistered = UserRegistered.of(userId, "test@email.com", "John", tokenId);

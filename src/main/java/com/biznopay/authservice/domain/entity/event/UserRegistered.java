@@ -49,8 +49,8 @@ public class UserRegistered {
     private String validateFirstName(String firstName) {
         if (firstName == null || firstName.isEmpty())
             throw new RequiredFieldException("firstName", UserRegistered.class.getName(), "USER_REGISTERED-004");
-       if(firstName.length() < 3)
-           throw new InvalidStringFieldLengException("firstName", 3,UserRegistered.class.getName(), "USER_REGISTERED-005");
+        if (firstName.length() < 3)
+            throw new InvalidStringFieldLengException("firstName", 3, UserRegistered.class.getName(), "USER_REGISTERED-005");
         return firstName;
     }
 
