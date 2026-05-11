@@ -24,7 +24,7 @@ public class UserRegistered {
         this.userId = this.validateUserId(userId);
         this.email = this.validateEmail(email);
         this.firstName = this.validateFirstName(firstName);
-        this.activationTokenId = activationTokenId;
+        this.activationTokenId = this.validateActivationTokenId(activationTokenId);
         this.occurredAt = occurredAt;
     }
 
@@ -52,6 +52,12 @@ public class UserRegistered {
        if(firstName.length() < 3)
            throw new InvalidStringFieldLengException("firstName", 3,UserRegistered.class.getName(), "USER_REGISTERED-005");
         return firstName;
+    }
+
+    private ActivationTokenId validateActivationTokenId(ActivationTokenId activationTokenId) {
+        if (activationTokenId == null)
+            throw new RequiredFieldException("activationTokenId", UserRegistered.class.getName(), "USER_REGISTERED-006");
+        return activationTokenId;
     }
 
     public UUID getEventId() {
