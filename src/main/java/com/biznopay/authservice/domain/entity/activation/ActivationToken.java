@@ -6,7 +6,7 @@ import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import java.time.LocalDateTime;
 
 public class ActivationToken {
-    private static final int EXPIRATION_MINUTES = 15;
+    public static final int EXPIRATION_MINUTES = 15;
 
     private final ActivationTokenId id;
     private final UserId userId;
