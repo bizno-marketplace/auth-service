@@ -25,7 +25,7 @@ public class OutboxEvent {
         this.id = id;
         this.aggregateId = this.validateAggregateId(aggregateId);
         this.eventType = this.validateEventType(eventType);
-        this.subject = subject;
+        this.subject = this.validateSubject(subject);
         this.payload = payload;
         this.status = status;
         this.retryCount = retryCount;
@@ -53,6 +53,11 @@ public class OutboxEvent {
     private String validateEventType(String eventType) {
         if (eventType == null || eventType.trim().isEmpty()) throw new RequiredFieldException("eventType", OutboxEvent.class.getName(),"OUTBOX_EVENT-002");
         return eventType;
+    }
+
+    private String validateSubject(String subject) {
+        if (subject == null || subject.trim().isEmpty()) throw new RequiredFieldException("subject", OutboxEvent.class.getName(),"OUTBOX_EVENT-003");
+        return subject;
     }
 
     public void markPublished() {
