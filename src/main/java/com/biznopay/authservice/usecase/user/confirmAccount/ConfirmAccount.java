@@ -29,6 +29,7 @@ public class ConfirmAccount {
                 orElseThrow(() -> new ResourceNotFoundException("User","ACTIVATION_TOKEN-004"));
         user.activate();
         userGateway.save(user);
-        tokenGateway.markAsUsed(activationToken.getId().value());
+        activationToken.markAsUsed();
+        tokenGateway.save(activationToken);
     }
 }

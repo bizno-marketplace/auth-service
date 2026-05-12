@@ -10,7 +10,7 @@ public class ActivationToken {
 
     private final ActivationTokenId id;
     private final UserId userId;
-    private final boolean used;
+    private boolean used;
     private final LocalDateTime expiresAt;
     private final LocalDateTime createdAt;
 
@@ -43,6 +43,10 @@ public class ActivationToken {
 
     public boolean isValid() {
         return !isExpired() && !isUsed();
+    }
+
+    public void markAsUsed(){
+        this.used = true;
     }
 
     private UserId validateUserId(UserId userId) {

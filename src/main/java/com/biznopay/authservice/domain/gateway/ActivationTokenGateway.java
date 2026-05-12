@@ -10,5 +10,4 @@ public interface ActivationTokenGateway {
 
     Optional<ActivationToken> findById(UUID tokenId);
 
-    void markAsUsed(UUID tokenId);
 }

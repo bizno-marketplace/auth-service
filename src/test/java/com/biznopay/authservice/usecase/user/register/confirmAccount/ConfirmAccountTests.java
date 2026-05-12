@@ -105,10 +105,10 @@ public class ConfirmAccountTests {
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
         confirmAccount.execute(rawTokenId);
-        Assertions.assertTrue(activationToken.isValid());
+        Assertions.assertFalse(activationToken.isValid());
         Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
         Mockito.verify(userGateway, Mockito.times(1)).findById(userId.value());
-        Mockito.verify(userGateway, Mockito.times(1)).save(user);        UserJpaEntity userJpaEntity = UserMapper.toUserJpaEntity(user);
-        Mockito.verify(tokenGateway, Mockito.times(1)).markAsUsed(rawTokenId);
+        Mockito.verify(userGateway, Mockito.times(1)).save(user);
+        Mockito.verify(tokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
     }
 }
