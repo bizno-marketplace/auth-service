@@ -92,10 +92,10 @@ Feature: Register Super Admin
   Scenario: Reject registration with non bizno institutional email
     Given no super admin exists in the system
     When i send a POST request to "/supper-admins" with:
-      | firstName | Super             |
-      | lastName  | Admin             |
-      | email     | admin@bizno.co.mz |
-      | password  | Password@1234     |
+      | firstName | Super           |
+      | lastName  | Admin           |
+      | email     | admin@gmail.com |
+      | password  | Password@1234   |
     Then the response should be 422
     And the response should have a message "E-mail must be a bizno institutional email"
 
