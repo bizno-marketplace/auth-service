@@ -5,6 +5,7 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.OutboxEventJpaR
 import com.biznopay.authservice.mocks.Mocks;
 import io.nats.client.Connection;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class OutboxPollerTests {
 

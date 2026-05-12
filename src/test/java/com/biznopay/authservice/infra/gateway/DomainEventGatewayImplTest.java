@@ -10,6 +10,7 @@ import com.biznopay.authservice.infra.outbox.OutboxEvent;
 import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.OutboxEventJpaRepository;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import static com.biznopay.authservice.infra.gateway.DomainEventGatewayImpl.EVENT_TYPE_USER_REGISTERED;
 import static com.biznopay.authservice.infra.gateway.DomainEventGatewayImpl.SUBJECT_USER_REGISTERED;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class DomainEventGatewayImplTest {
     @Mock
