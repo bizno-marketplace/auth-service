@@ -3,13 +3,11 @@ package com.biznopay.authservice.usecase.user.register.confirmAccount;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.Buyer;
+import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
-import com.biznopay.authservice.domain.exception.ExpiredConfirmationTokenException;
-import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
-import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
+import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.infra.mapper.UserMapper;
@@ -74,7 +72,7 @@ public class ConfirmAccountTests {
 
     @Test
     @DisplayName("Should throw ResourceNotFoundException if user does not exist")
-    public void shouldThrowResourceNotFoundExceptionIfUserDoesNotExist() {
+    public void shouldThrowResourceNotFoundExceptionIfUserDoesNotExist(){
         UUID rawTokenId = UUID.randomUUID();
         UserId userId = new UserId(UUID.randomUUID());
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
@@ -92,7 +90,7 @@ public class ConfirmAccountTests {
 
     @Test
     @DisplayName("Should active user and mark activation token as used")
-    public void shouldActiveUserAndMarkActivationTokenAsUsed() {
+    public void shouldActiveUserAndMarkActivationTokenAsUsed(){
         UUID rawTokenId = UUID.randomUUID();
         UserId userId = new UserId(UUID.randomUUID());
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
@@ -100,9 +98,9 @@ public class ConfirmAccountTests {
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, false, expiredAt, expiredAt);
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
 
-        User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "email@test",
-                "any_phone", "Password@0199", UserStatus.PENDING, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now());
+        User user = Buyer.reconstitute(userId,"any_first_name", "any_last_name","email@test",
+                "any_phone","Password@0199", UserStatus.PENDING,LocalDateTime.now(),
+                LocalDateTime.now(),LocalDateTime.now());
 
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
@@ -110,8 +108,7 @@ public class ConfirmAccountTests {
         Assertions.assertTrue(activationToken.isValid());
         Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
         Mockito.verify(userGateway, Mockito.times(1)).findById(userId.value());
-        Mockito.verify(userGateway, Mockito.times(1)).save(user);
-        UserJpaEntity userJpaEntity = UserMapper.toUserJpaEntity(user);
+        Mockito.verify(userGateway, Mockito.times(1)).save(user);        UserJpaEntity userJpaEntity = UserMapper.toUserJpaEntity(user);
         Mockito.verify(tokenGateway, Mockito.times(1)).markAsUsed(rawTokenId);
     }
 }
