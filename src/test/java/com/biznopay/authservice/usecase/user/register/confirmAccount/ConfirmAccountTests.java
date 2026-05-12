@@ -53,7 +53,7 @@ public class ConfirmAccountTests {
 
     @Test
     @DisplayName("Should throw AccountAlreadyConfirmedException if account is already confirmed")
-    public void shouldThrowAccountAlreadyConfirmedExceptionIfAccountIsAlreadyConfirmed(){
+    public void shouldThrowAccountAlreadyConfirmedExceptionIfAccountIsAlreadyConfirmed() {
         UUID rawTokenId = UUID.randomUUID();
         UserId userId = new UserId(UUID.randomUUID());
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
