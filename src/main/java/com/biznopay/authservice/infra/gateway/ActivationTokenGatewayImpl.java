@@ -26,4 +26,9 @@ public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
     public Optional<ActivationToken> findById(UUID tokenId) {
         return Optional.empty();
     }
+
+    @Override
+    public void markAsUsed(UUID tokenId) {
+
+    }
 }

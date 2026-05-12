@@ -9,4 +9,6 @@ public interface ActivationTokenGateway {
     void save(ActivationToken token);
 
     Optional<ActivationToken> findById(UUID tokenId);
+
+    void markAsUsed(UUID tokenId);
 }

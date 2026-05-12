@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -32,5 +33,10 @@ public class UserGatewayImpl implements UserGateway {
     public Optional<User> findByEmail(String email) {
         Optional<UserJpaEntity> entity = userJpaRepository.findByEmail(email);
         return entity.map(UserMapper::toUserDomain);
+    }
+
+    @Override
+    public Optional<User> findById(UUID userId) {
+        return Optional.empty();
     }
 }
