@@ -4,12 +4,12 @@ Feature: Confirm Account
   So that my account becomes active and i can access the platform
 
   Acceptance Criteria:
-    * The confirmation token must be valid and not expired
-    * A confirmed account must have its status changed to ACTIVE
-    * An expired token must be rejected with HTTP 410
-    * An already confirmed account must not be confirmed again
-    * An invalid or tampered token must be rejected
-    * A missing token must be rejected
+  * The confirmation token must be valid and not expired
+  * A confirmed account must have its status changed to ACTIVE
+  * An expired token must be rejected with HTTP 410
+  * An already confirmed account must not be confirmed again
+  * An invalid or tampered token must be rejected
+  * A missing token must be rejected
 
   Scenario: Successfully confirm account with valid token
     Given a user regitration was made with email "user@example.com"
