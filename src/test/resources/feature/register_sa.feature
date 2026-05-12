@@ -87,7 +87,7 @@ Feature: Register Super Admin
       | lastName  | Admin         |
       | password  | Password@1234 |
     Then the response should be 400
-    And the response should have a message "Email is required"
+    And the response should have a message "E-mail is required"
 
   Scenario: Reject registration with non bizno institutional email
     Given no super admin exists in the system
@@ -97,7 +97,7 @@ Feature: Register Super Admin
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
     Then the response should be 422
-    And the response should have a message "Email must be a bizno institutional email"
+    And the response should have a message "E-mail must be a bizno institutional email"
 
   Scenario: Reject registration if password is missing
     Given no super admin exists in the system
@@ -116,5 +116,5 @@ Feature: Register Super Admin
       | email     | admin@bizno.co.mz |
       | password  | password          |
     Then the response should be 422
-    And the response should have a message"Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    And the response should have a message "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
 

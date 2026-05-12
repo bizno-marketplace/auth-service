@@ -60,7 +60,7 @@ public class RegisterSASteps {
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
-    //    COMOM
+//  COMOM
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToSupperAdminsWith(String path, DataTable dataTable) {
         Map<String, String> data = dataTable.asMap(String.class, String.class);
@@ -78,12 +78,12 @@ public class RegisterSASteps {
         Assertions.assertEquals(message, response.getBody().error().message());
     }
 
-//  SCENARIO: Successfully register super admin when none exists
     @Given("no super admin exists in the system")
     public void noSuperAdminExistsInTheSystem() {
         //the setup method already does this
     }
 
+    //  SCENARIO: Successfully register super admin when none exists
     @And("a confirmation email should be sent to {string}")
     public void aConfirmationEmailShouldBeSentTo(String email) {
         Integer count = jdbcTemplate.queryForObject(
@@ -119,4 +119,5 @@ public class RegisterSASteps {
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
+//    OTHER STEPS ARE BEING COVERED BY THE COMMON STEPS
 }
