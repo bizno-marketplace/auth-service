@@ -33,7 +33,7 @@ Feature: Register Super Admin
     And the response should have a message "Super admin already exists"
 
   Scenario: Reject registration if email is already in use
-    Given a super admin already exists in the system
+    Given a user with email "admin@bizno.co.mz" exists in the system
     When i send a POST request to "/supper-admins" with:
       | firstName | Super             |
       | lastName  | Admin             |

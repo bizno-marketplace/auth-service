@@ -1,5 +1,6 @@
 package com.biznopay.authservice.bdd.steps;
 
+import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.vo.ApiResponse;
@@ -77,7 +78,7 @@ public class RegisterSASteps {
         Assertions.assertEquals(message, response.getBody().error().message());
     }
 
-    //   SCENARIO: Successfully register super admin when none exists
+//  SCENARIO: Successfully register super admin when none exists
     @Given("no super admin exists in the system")
     public void noSuperAdminExistsInTheSystem() {
         //the setup method already does this
@@ -103,10 +104,18 @@ public class RegisterSASteps {
         Assertions.assertTrue(payload.contains("activationTokenId"));
     }
 
-    //    SCENARIO: Reject registration when user already exists
+//  SCENARIO: Reject registration when user already exists
     @Given("a super admin already exists in the system")
     public void aSuperAdminAlreadyExistsInTheSystem() {
         User user = SuperAdmin.register("John", "Smith", "admin@bizno.co.mz", "Password@123");
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+    }
+
+//  SCENARIO: Reject registration if email is already in use
+    @Given("a user with email {string} exists in the system")
+    public void aUserWithEmailExistsInTheSystem(String email) {
+        User user = Buyer.register("John", "Smith", email, "Password@123");
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
