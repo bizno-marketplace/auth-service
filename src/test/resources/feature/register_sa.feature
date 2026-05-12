@@ -28,7 +28,7 @@ Feature: Register Super Admin
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password  | Password@1234     |
     Then the response should be 409
     And the response should have a message "Super admin already exists"
 
@@ -38,7 +38,7 @@ Feature: Register Super Admin
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password  | Password@1234     |
     Then the response should be 409
     And the response should have a message "Email already in use"
 
@@ -47,7 +47,7 @@ Feature: Register Super Admin
     When i send a POST request to "/supper-admins" with:
       | lastName | Admin             |
       | email    | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password | Password@1234     |
     Then the response should be 400
     And the response should have a message "First name is required"
 
@@ -57,7 +57,7 @@ Feature: Register Super Admin
       | firstName | Su                |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password  | Password@1234     |
     Then the response should be 422
     And the response should have a message "First name must be at least 3 characters long"
 
@@ -66,7 +66,7 @@ Feature: Register Super Admin
     When i send a POST request to "/supper-admins" with:
       | firstName | Super             |
       | email     | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password  | Password@1234     |
     Then the response should be 400
     And the response should have a message "Last name is required"
 
@@ -76,16 +76,16 @@ Feature: Register Super Admin
       | firstName | Super             |
       | lastName  | Ad                |
       | email     | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password  | Password@1234     |
     Then the response should be 422
     And the response should have a message "Last name must be at least 3 characters long"
 
   Scenario: Reject registration if email is missing
     Given no super admin exists in the system
     When i send a POST request to "/supper-admins" with:
-      | firstName | Super    |
-      | lastName  | Admin    |
-      | password  |  Password@1234    |
+      | firstName | Super         |
+      | lastName  | Admin         |
+      | password  | Password@1234 |
     Then the response should be 400
     And the response should have a message "Email is required"
 
@@ -95,7 +95,7 @@ Feature: Register Super Admin
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
-      | password  |  Password@1234    |
+      | password  | Password@1234     |
     Then the response should be 422
     And the response should have a message "Email must be a bizno institutional email"
 

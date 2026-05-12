@@ -20,7 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -60,7 +59,7 @@ public class RegisterSASteps {
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
-//    COMOM
+    //    COMOM
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToSupperAdminsWith(String path, DataTable dataTable) {
         Map<String, String> data = dataTable.asMap(String.class, String.class);
@@ -104,11 +103,11 @@ public class RegisterSASteps {
         Assertions.assertTrue(payload.contains("activationTokenId"));
     }
 
-//    SCENARIO: Reject registration when user already exists
+    //    SCENARIO: Reject registration when user already exists
     @Given("a super admin already exists in the system")
     public void aSuperAdminAlreadyExistsInTheSystem() {
         User user = SuperAdmin.register("John", "Smith", "admin@bizno.co.mz", "Password@123");
-        UserJpaEntity entity =  UserMapper.toUserJpaEntity(user);
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
 }
