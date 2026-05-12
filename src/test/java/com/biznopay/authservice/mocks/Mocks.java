@@ -6,7 +6,9 @@ import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.outbox.OutboxStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
@@ -79,5 +81,10 @@ public class Mocks {
     public static UserJpaEntity buyerJpaEntityMockFromBuyer() {
         User user = buyerMockFromRegisterSARequest(registerSARequestMock());
         return UserMapper.toUserJpaEntity(user);
+    }
+
+    public static OutboxEventJpaEntity pendingOutboxEventJpaEntityMock() {
+        return new OutboxEventJpaEntity(UUID.randomUUID(), UUID.randomUUID(), "eventType",
+                "subject", "payload", OutboxStatus.PENDING, 0, null, LocalDateTime.now(), null);
     }
 }
