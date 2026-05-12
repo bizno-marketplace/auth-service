@@ -7,6 +7,7 @@ import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -15,6 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.UUID;
 
+@Tag("unit")
 public class UserRegisteredTests {
     @Test
     @DisplayName("Should throw RequiredFieldException if userId is null")

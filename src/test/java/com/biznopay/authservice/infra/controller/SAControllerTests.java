@@ -28,6 +28,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
+@Tag("integration")
 @ActiveProfiles("test")
 @Import({TestConfig.class})
 @AutoConfigureRestTestClient

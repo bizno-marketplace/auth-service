@@ -3,12 +3,14 @@ package com.biznopay.authservice.infra.outbox;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.util.UUID;
 
+@Tag("unit")
 public class OutboxEventTests {
     @Test
     @DisplayName("Should throw RequiredFieldException if aggregateId is null on create")

@@ -13,6 +13,7 @@ import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ class MockUnknownJpaEntityException extends UserJpaEntity {
     }
 }
 
+@Tag("unit")
 public class UserMapperTests {
     @Test
     @DisplayName("Should return Super admin jpa entity on toUserJpaEntity")

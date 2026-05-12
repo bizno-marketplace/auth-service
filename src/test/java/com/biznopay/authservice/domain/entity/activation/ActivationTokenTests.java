@@ -5,11 +5,13 @@ import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+@Tag("unit")
 public class ActivationTokenTests {
     @Test
     @DisplayName("Should throw InvalidEntityIdException if id is invalid on build")

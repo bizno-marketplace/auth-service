@@ -30,6 +30,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest
 @Testcontainers
+@Tag("integration")
 @ActiveProfiles("test")
 @Import({TestConfig.class})
 public class ControllerHandlerTests {

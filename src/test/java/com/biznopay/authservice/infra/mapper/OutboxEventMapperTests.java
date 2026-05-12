@@ -5,11 +5,13 @@ import com.biznopay.authservice.infra.outbox.OutboxStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Tag("unit")
 public class OutboxEventMapperTests {
     @Test
     @DisplayName("Should map to JPA entity")
