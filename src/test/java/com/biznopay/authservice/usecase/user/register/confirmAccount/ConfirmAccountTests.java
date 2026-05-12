@@ -1,6 +1,6 @@
 package com.biznopay.authservice.usecase.user.register.confirmAccount;
 
-import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
+import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.usecase.user.confirmAccount.ConfirmAccount;
@@ -22,11 +22,11 @@ public class ConfirmAccountTests {
 
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException when token is not found")
-    public void shouldThrowResourceNotFoundExceptionWhenTokenIsNotFound() {
+    @DisplayName("Should throw InvalidConfirmationTokenException when token is not found")
+    public void shouldThrowInvalidConfirmationTokenExceptionWhenTokenIsNotFound() {
         UUID rawTokenId = UUID.randomUUID();
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> confirmAccount.execute(rawTokenId));
+        Assertions.assertThrows(InvalidConfirmationTokenException.class, () -> confirmAccount.execute(rawTokenId));
     }
 
 }
