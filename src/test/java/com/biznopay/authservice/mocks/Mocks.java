@@ -87,4 +87,9 @@ public class Mocks {
         return new OutboxEventJpaEntity(UUID.randomUUID(), UUID.randomUUID(), "eventType",
                 "subject", "payload", OutboxStatus.PENDING, 0, null, LocalDateTime.now(), null);
     }
+
+    public static OutboxEventJpaEntity exhaustedOutboxEventJpaEntityMock() {
+        return new OutboxEventJpaEntity(UUID.randomUUID(), UUID.randomUUID(), "eventType",
+                "subject", "payload", OutboxStatus.PENDING, 3, null, LocalDateTime.now(), null);
+    }
 }
