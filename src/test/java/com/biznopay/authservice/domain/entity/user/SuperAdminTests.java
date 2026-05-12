@@ -1,10 +1,10 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.exception.InvalidPasswordException;
-import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
-import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
+import com.biznopay.authservice.domain.exception.*;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,13 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class SuperAdminTests {
+
+    @Test
+    @DisplayName("Should throw InvalidEntityIdException if id is invalid on build")
+    public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnBuild() {
+        UserJpaEntity entity = new SuperAdminJpaEntity();
+        Assertions.assertThrows(InvalidEntityIdException.class, () -> UserMapper.toUserDomain(entity));
+    }
 
     @ParameterizedTest
     @NullAndEmptySource

@@ -5,10 +5,8 @@ import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
-import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.mocks.Mocks;
@@ -132,13 +130,6 @@ public class UserMapperTests {
                 "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
                 LocalDateTime.now(), LocalDateTime.now());
         Assertions.assertThrows(UnknownEntityException.class, () -> UserMapper.toUserDomain(entity));
-    }
-
-    @Test
-    @DisplayName("Should throw InvalidEntityIdException if id is invalid on toUserDomain")
-    public void shouldThrowInvalidEntityIdExceptionIfEntityIsUnknownOnToUserDomain() {
-        UserJpaEntity entity = new BuyerJpaEntity();
-        Assertions.assertThrows(InvalidEntityIdException.class, () -> UserMapper.toUserDomain(entity));
     }
 
     @Test
