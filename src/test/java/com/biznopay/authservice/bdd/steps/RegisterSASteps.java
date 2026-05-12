@@ -60,7 +60,7 @@ public class RegisterSASteps {
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
-//  COMOM
+    //  COMOM
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToSupperAdminsWith(String path, DataTable dataTable) {
         Map<String, String> data = dataTable.asMap(String.class, String.class);
@@ -104,7 +104,7 @@ public class RegisterSASteps {
         Assertions.assertTrue(payload.contains("activationTokenId"));
     }
 
-//  SCENARIO: Reject registration when user already exists
+    //  SCENARIO: Reject registration when user already exists
     @Given("a super admin already exists in the system")
     public void aSuperAdminAlreadyExistsInTheSystem() {
         User user = SuperAdmin.register("John", "Smith", "admin@bizno.co.mz", "Password@123");
@@ -112,7 +112,7 @@ public class RegisterSASteps {
         userJpaRepository.save(entity);
     }
 
-//  SCENARIO: Reject registration if email is already in use
+    //  SCENARIO: Reject registration if email is already in use
     @Given("a user with email {string} exists in the system")
     public void aUserWithEmailExistsInTheSystem(String email) {
         User user = Buyer.register("John", "Smith", email, "Password@123");
