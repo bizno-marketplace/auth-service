@@ -3,6 +3,7 @@ package com.biznopay.authservice.usecase.user.register.confirmAccount;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.ExpiredConfirmationTokenException;
 import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
@@ -47,6 +48,20 @@ public class ConfirmAccountTests {
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
         Assertions.assertThrows(ExpiredConfirmationTokenException.class, () -> confirmAccount.execute(rawTokenId));
+        Assertions.assertFalse(activationToken.isValid());
+    }
+
+    @Test
+    @DisplayName("Should throw AccountAlreadyConfirmedException if account is already confirmed")
+    public void shouldThrowAccountAlreadyConfirmedExceptionIfAccountIsAlreadyConfirmed(){
+        UUID rawTokenId = UUID.randomUUID();
+        UserId userId = new UserId(UUID.randomUUID());
+        ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
+        LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
+        ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, true, expiredAt, expiredAt);
+        Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
+        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        Assertions.assertThrows(AccountAlreadyConfirmedException.class, () -> confirmAccount.execute(rawTokenId));
         Assertions.assertFalse(activationToken.isValid());
     }
 }
