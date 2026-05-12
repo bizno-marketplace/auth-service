@@ -8,6 +8,9 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationToken
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
@@ -17,5 +20,10 @@ public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
     public void save(ActivationToken token) {
         ActivationTokenJpaEntity jpaEntity = ActivationTokenMapper.toJpaEntity(token);
         activationTokenJpaRepository.save(jpaEntity);
+    }
+
+    @Override
+    public Optional<ActivationToken> findById(UUID tokenId) {
+        return Optional.empty();
     }
 }
