@@ -25,7 +25,7 @@ public class ConfirmAccountTests {
     @DisplayName("Should throw ResourceNotFoundException when token is not found")
     public void shouldThrowResourceNotFoundExceptionWhenTokenIsNotFound() {
         UUID rawTokenId = UUID.randomUUID();
-        ConfirmAccount confirmAccount =  new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
         Assertions.assertThrows(ResourceNotFoundException.class, () -> confirmAccount.execute(rawTokenId));
     }
 

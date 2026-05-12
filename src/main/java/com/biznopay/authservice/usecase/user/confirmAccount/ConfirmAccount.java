@@ -16,6 +16,6 @@ public class ConfirmAccount {
     }
 
     public void execute(UUID rawTokenId) {
-        throw  new ResourceNotFoundException("Activation token", "ACTIVATION_TOKEN-001");
+        throw new ResourceNotFoundException("Activation token", "ACTIVATION_TOKEN-001");
     }
 }
