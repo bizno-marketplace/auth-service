@@ -6,6 +6,7 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntit
 public class OutboxEventMapper {
     private OutboxEventMapper() {
     }
+
     public static OutboxEventJpaEntity toJpaEntity(OutboxEvent event) {
         return new OutboxEventJpaEntity(
                 event.getId(),

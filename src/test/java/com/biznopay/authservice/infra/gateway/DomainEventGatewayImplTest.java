@@ -32,7 +32,7 @@ public class DomainEventGatewayImplTest {
     @Test
     @DisplayName("Should save OutboxEvent with correct values")
     public void shouldSaveOutboxEventWithCorrectValues() {
-        UserId userId =  UserId.of(UUID.randomUUID());
+        UserId userId = UserId.of(UUID.randomUUID());
         ActivationTokenId activationTokenId = ActivationTokenId.of(UUID.randomUUID());
         UserRegistered event = UserRegistered.of(userId, "test@email.com", "firstName", activationTokenId);
 
@@ -43,7 +43,7 @@ public class DomainEventGatewayImplTest {
 
         Mockito.when(outboxEventJpaRepository.save(Mockito.any(OutboxEventJpaEntity.class))).thenReturn(entity);
 
-        DomainEventGateway domainEventGateway =  new DomainEventGatewayImpl(outboxEventJpaRepository,objectMapper);
+        DomainEventGateway domainEventGateway = new DomainEventGatewayImpl(outboxEventJpaRepository, objectMapper);
         domainEventGateway.publish(event);
 
         Mockito.verify(outboxEventJpaRepository).save(Mockito.any());
