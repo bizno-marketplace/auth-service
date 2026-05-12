@@ -25,8 +25,8 @@ public class ConfirmAccount {
                 orElseThrow(() -> new InvalidConfirmationTokenException("ACTIVATION_TOKEN-001"));
         if (activationToken.isExpired()) throw new ExpiredConfirmationTokenException("ACTIVATION_TOKEN-002");
         if (activationToken.isUsed()) throw new AccountAlreadyConfirmedException("ACTIVATION_TOKEN-003");
-        User user =  userGateway.findById(activationToken.getUserId().value()).
-                orElseThrow(() -> new ResourceNotFoundException("User","ACTIVATION_TOKEN-004"));
+        User user = userGateway.findById(activationToken.getUserId().value()).
+                orElseThrow(() -> new ResourceNotFoundException("User", "ACTIVATION_TOKEN-004"));
         user.activate();
         userGateway.save(user);
         tokenGateway.markAsUsed(activationToken.getId().value());
