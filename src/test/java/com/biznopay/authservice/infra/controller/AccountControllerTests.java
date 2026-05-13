@@ -2,6 +2,7 @@ package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.config.PostgresContainerBase;
 import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
@@ -18,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDateTime;
 
 @Tag("integration")
 @ActiveProfiles("test")
@@ -52,6 +55,7 @@ public class AccountControllerTests extends PostgresContainerBase {
     void setUp() {
         restTemplate = new TestRestTemplate();
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
     @Test
@@ -63,5 +67,18 @@ public class AccountControllerTests extends PostgresContainerBase {
         activationTokenJpaRepository.save(entity);
         ResponseEntity response = restTemplate.getForEntity(url("/accounts?token=" + entity.getId()), Void.class);
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Should return 410 on expired token")
+    public void shouldReturn410OnExpiredToken(){
+        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        userJpaRepository.save(user);
+        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        entity.setExpiresAt(LocalDateTime.now().minusMinutes(15));
+        activationTokenJpaRepository.save(entity);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + entity.getId()), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.GONE, response.getStatusCode());
+        Assertions.assertEquals("Confirmation link expired", response.getBody().error().message());
     }
 }
