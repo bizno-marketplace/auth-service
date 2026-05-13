@@ -36,13 +36,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<Object>> handleExceptions(RuntimeException exception, HttpServletRequest request) {
         return switch (exception) {
-            case RequiredFieldException ex -> FuncUtils.handleRequiredFieldException(ex, request, log);
-            case ConflictException ex -> FuncUtils.handleConflictException(ex, request, log);
-            case EmailAlreadyInUseException ex -> FuncUtils.handleConflictException(ex, request, log);
-            case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
-            case NonBiznoInstitutionalEmailException ex ->
-                    FuncUtils.handleUnprocessableContentException(ex, request, log);
-            case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContentException(ex, request, log);
+            case RequiredFieldException ex -> FuncUtils.handleBadRequest(ex, request, log);
+            case ConflictException ex -> FuncUtils.handleConflict(ex, request, log);
+            case EmailAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
+            case ExpiredConfirmationTokenException ex -> FuncUtils.handleGone(ex, request, log);
+            case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
+            case NonBiznoInstitutionalEmailException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
+            case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             default -> FuncUtils.handleUnexpectedException(exception, request, log);
         };
     }

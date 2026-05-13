@@ -15,7 +15,7 @@ public class FuncUtils {
         return new ApiResponse<Object>(success, data, error, Instant.now());
     }
 
-    public static ResponseEntity<ApiResponse<Object>> handleRequiredFieldException(RequiredFieldException exception, HttpServletRequest request, Logger log) {
+    public static ResponseEntity<ApiResponse<Object>> handleBadRequest(RequiredFieldException exception, HttpServletRequest request, Logger log) {
         log.warn("[{}] {} {} | code={} | field={} | message={}",
                 exception.getSeverity(), request.getMethod(), request.getRequestURI(),
                 exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
@@ -23,7 +23,7 @@ public class FuncUtils {
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
     }
 
-    public static ResponseEntity<ApiResponse<Object>> handleConflictException(RuntimeException exception, HttpServletRequest request, Logger log) {
+    public static ResponseEntity<ApiResponse<Object>> handleConflict(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
         if (exception instanceof ConflictException) {
             ConflictException ex = (ConflictException) exception;
@@ -44,7 +44,12 @@ public class FuncUtils {
         return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.CONFLICT);
     }
 
-    public static ResponseEntity<ApiResponse<Object>> handleUnprocessableContentException(RuntimeException exception, HttpServletRequest request, Logger log) {
+    public static ResponseEntity<ApiResponse<Object>> handleGone(ExpiredConfirmationTokenException exception, HttpServletRequest request, Logger log) {
+        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+        return ResponseEntity.status(HttpStatus.GONE).body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleUnprocessableContent(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
         if (exception instanceof InvalidStringFieldLengException) {
             InvalidStringFieldLengException ex = (InvalidStringFieldLengException) exception;
