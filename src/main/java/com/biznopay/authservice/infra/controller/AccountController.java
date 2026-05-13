@@ -24,8 +24,7 @@ public class AccountController {
     public ResponseEntity confirmAccount(@RequestParam("token") String token) {
         if (token == null || token.isEmpty())
             throw new RequiredFieldException("Token", "AccountController", "ACCOUNT_CONTROLLER-001");
-        UUID tokenId = UUID.fromString(token);
-        confirmAccount.execute(tokenId);
+        confirmAccount.execute(token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -21,17 +21,28 @@ public class ConfirmAccount {
         this.userGateway = userGateway;
     }
 
-    public void execute(UUID rawTokenId) {
-        ActivationToken activationToken = tokenGateway.findById(rawTokenId).
-                orElseThrow(() -> new InvalidConfirmationTokenException("ACTIVATION_TOKEN-001"));
-        if (activationToken.isExpired()) throw new ExpiredConfirmationTokenException("ACTIVATION_TOKEN-002");
+    public void execute(String rawTokenId) {
+        UUID tokenId = validateActivationTokenId(rawTokenId);
+        ActivationToken activationToken = tokenGateway.findById(tokenId).
+                orElseThrow(() -> new InvalidConfirmationTokenException("ACTIVATION_TOKEN-002"));
+        if (activationToken.isExpired()) throw new ExpiredConfirmationTokenException("ACTIVATION_TOKEN-003");
         User user = userGateway.findById(activationToken.getUserId().value()).
                 orElseThrow(() -> new ResourceNotFoundException("User", "ACTIVATION_TOKEN-004"));
         if (activationToken.isUsed() && UserStatus.ACTIVE == user.getStatus())
-            throw new AccountAlreadyConfirmedException("ACTIVATION_TOKEN-003");
+            throw new AccountAlreadyConfirmedException("ACTIVATION_TOKEN-005");
         user.activate();
         userGateway.save(user);
         activationToken.markAsUsed();
         tokenGateway.save(activationToken);
+    }
+
+    private UUID validateActivationTokenId(String rawTokenId){
+        UUID tokenId = null;
+        try {
+            tokenId = UUID.fromString(rawTokenId);
+        }catch (IllegalArgumentException ex){
+            throw new InvalidConfirmationTokenException("ACTIVATION_TOKEN-001");
+        }
+        return tokenId;
     }
 }

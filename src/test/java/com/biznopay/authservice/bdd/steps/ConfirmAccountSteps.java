@@ -16,6 +16,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class ConfirmAccountSteps {
     @LocalServerPort
@@ -113,5 +115,15 @@ public class ConfirmAccountSteps {
         activationTokenJpaRepository.save(activationTokenEntity);
     }
 
+    @Given("a user registered with email {string}")
+    public void aUserRegisteredWithEmail(String email) {
+        User user = Buyer.register("John", "Smith", email, "Password@123");
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+    }
 
+    @When("i send a confirmation request with the invalid token")
+    public void iSendAConfirmationRequestWithTheInvalidToken() {
+        response = restTemplate.getForEntity(url("/accounts/confirm-account?token=invalidToken"), ApiResponse.class);
+    }
 }

@@ -24,8 +24,8 @@ Feature: Confirm Account
     And the response body should contain error "Confirmation link expired"
 
   Scenario: Reject confirmation with invalid or tampered token
-    Given a user registration was made with email "user@example.com"
-    When i send a GET request to "/confirm-account?token={invalidToken}"
+    Given a user registered with email "user@example.com"
+    When i send a confirmation request with the invalid token
     Then the response code is 400
     And the response body should contain error "Invalid confirmation link"
 
