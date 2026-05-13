@@ -59,7 +59,7 @@ public class AccountControllerTests extends PostgresContainerBase {
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         activationTokenJpaRepository.save(entity);
-        ResponseEntity response = restTemplate.getForEntity(url("/accounts?token=" + entity.getId()), Void.class);
+        ResponseEntity response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + entity.getId().toString()), Void.class);
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
@@ -71,7 +71,7 @@ public class AccountControllerTests extends PostgresContainerBase {
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         entity.setExpiresAt(LocalDateTime.now().minusMinutes(15));
         activationTokenJpaRepository.save(entity);
-        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + entity.getId()), ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + entity.getId()), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.GONE, response.getStatusCode());
         Assertions.assertEquals("Confirmation link expired", response.getBody().error().message());
     }
@@ -83,7 +83,7 @@ public class AccountControllerTests extends PostgresContainerBase {
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         activationTokenJpaRepository.save(entity);
-        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + user.getId()), ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + user.getId()), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Invalid confirmation link", response.getBody().error().message());
     }
@@ -97,7 +97,7 @@ public class AccountControllerTests extends PostgresContainerBase {
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         entity.setUsed(true);
         activationTokenJpaRepository.save(entity);
-        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + entity.getId()), ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + entity.getId()), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         Assertions.assertEquals("Account already confirmed", response.getBody().error().message());
     }
@@ -105,7 +105,7 @@ public class AccountControllerTests extends PostgresContainerBase {
     @Test
     @DisplayName("Should return 400 when token is missing")
     void shouldReturn400WhenTokenIsMissing() {
-        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token="), ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token="), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Token is required", response.getBody().error().message());
     }
