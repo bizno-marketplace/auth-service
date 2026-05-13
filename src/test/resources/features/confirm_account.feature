@@ -15,7 +15,7 @@ Feature: Confirm Account
     Given a user regitration was made with email "user@example.com"
     And the confirmation token has not expired
     When i send a GET request to "/confirm-account?token={validToken}"
-    Then the response code is 200
+    Then the response code is 204
     And the user account status should be "ACTIVE"
 
   Scenario: Reject confirmation with expired token
