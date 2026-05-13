@@ -3,6 +3,7 @@ package com.biznopay.authservice.domain.gateway;
 import com.biznopay.authservice.domain.entity.user.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserGateway {
     long countSAs();
@@ -10,4 +11,6 @@ public interface UserGateway {
     void save(User user);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findById(UUID userId);
 }

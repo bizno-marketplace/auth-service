@@ -104,4 +104,12 @@ public class SuperAdminTests {
         Assertions.assertNotNull(superAdmin.getCreatedAt());
         Assertions.assertNotNull(superAdmin.getUpdatedAt());
     }
+
+    @Test
+    @DisplayName("Should active SuperAdmin on active")
+    public void shouldActiveSuperAdminOnActive() {
+        SuperAdmin superAdmin = SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", "Password@123");
+        superAdmin.activate();
+        Assertions.assertEquals(UserStatus.ACTIVE, superAdmin.getStatus());
+    }
 }

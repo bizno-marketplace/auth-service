@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -72,6 +73,43 @@ public class UserGatewayImplTests {
         Assertions.assertEquals(entity.getUpdatedAt(), result.get().getUpdatedAt());
 
         Mockito.verify(userJpaRepository).findByEmail(user.getEmail());
+        Mockito.verifyNoMoreInteractions(userJpaRepository);
+    }
+
+    @Test
+    @DisplayName("Should return optional empty when user does not exists on find by id")
+    public void shouldReturnOptionalEmptyWhenUserDoesNotExistsOnFindById() {
+        UUID useId = UUID.randomUUID();
+        Mockito.when(userJpaRepository.findById(useId)).thenReturn(Optional.empty());
+        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        Optional<User> result = userGatewayImpl.findById(useId);
+        Assertions.assertTrue(result.isEmpty());
+        Mockito.verify(userJpaRepository).findById(useId);
+        Mockito.verifyNoMoreInteractions(userJpaRepository);
+    }
+
+    @Test
+    @DisplayName("Should return user when exists on find by id")
+    public void shouldReturnUserWhenExistsOnFindById() {
+        User user = Mocks.buyerMock();
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        Mockito.when(userJpaRepository.findById(user.getId().value())).thenReturn(Optional.of(entity));
+        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        Optional<User> result = userGatewayImpl.findById(user.getId().value());
+
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(entity.getId(), result.get().getId().value());
+        Assertions.assertEquals(entity.getFirstName(), result.get().getFirstName());
+        Assertions.assertEquals(entity.getLastName(), result.get().getLastName());
+        Assertions.assertEquals(entity.getEmail(), result.get().getEmail());
+        Assertions.assertEquals("", result.get().getPhone());
+        Assertions.assertEquals(entity.getPassword(), result.get().getPassword());
+        Assertions.assertEquals(entity.getStatus(), result.get().getStatus());
+        Assertions.assertEquals(entity.getExpiresAt(), result.get().getExpiresAt());
+        Assertions.assertEquals(entity.getCreatedAt(), result.get().getCreatedAt());
+        Assertions.assertEquals(entity.getUpdatedAt(), result.get().getUpdatedAt());
+
+        Mockito.verify(userJpaRepository).findById(user.getId().value());
         Mockito.verifyNoMoreInteractions(userJpaRepository);
     }
 }

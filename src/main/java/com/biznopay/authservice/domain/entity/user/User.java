@@ -1,6 +1,7 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
@@ -16,10 +17,10 @@ public abstract class User {
     private final String email;
     private final String phone;
     private final String password;
-    private final UserStatus status;
     private final LocalDateTime expiresAt;
     private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private UserStatus status;
+    private LocalDateTime updatedAt;
 
     protected User(UserId id, String firstName, String lastname, String email, String phone, String password, UserStatus status,
                    LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
@@ -62,6 +63,11 @@ public abstract class User {
     }
     //END VALIDATIONS
 
+    public void activate() {
+        if (this.status == UserStatus.ACTIVE) throw new AccountAlreadyConfirmedException("USER-008");
+        this.status = UserStatus.ACTIVE;
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public UserId getId() {
         return id;

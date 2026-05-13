@@ -41,13 +41,6 @@ public class SAControllerTests extends PostgresContainerBase {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-    @AfterAll
-    static void tearDown() {
-        if (postgres != null && postgres.isRunning()) {
-            postgres.stop();
-        }
-    }
-
     private String url(String path) {
         return "http://localhost:" + port + path;
     }

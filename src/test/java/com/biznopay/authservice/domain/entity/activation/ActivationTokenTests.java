@@ -41,4 +41,24 @@ public class ActivationTokenTests {
         Assertions.assertNotNull(activationToken.getCreatedAt());
         Assertions.assertNotNull(activationToken.getExpiresAt());
     }
+
+
+    @Test
+    @DisplayName("Should mark token as used on markAsUsed")
+    public void shouldMarkTokenAsUsedOnMarlAsUsed() {
+        UserId userId = new UserId(UUID.randomUUID());
+        ActivationToken activationToken = ActivationToken.generate(userId);
+        activationToken.markAsUsed();
+
+        Assertions.assertNotNull(activationToken.getId());
+        Assertions.assertEquals(userId, activationToken.getUserId());
+        long minutes = ChronoUnit.MINUTES.between(activationToken.getCreatedAt(), activationToken.getExpiresAt());
+        Assertions.assertEquals(ActivationToken.EXPIRATION_MINUTES, minutes);
+        Assertions.assertFalse(activationToken.isExpired());
+        Assertions.assertTrue(activationToken.isUsed());
+        Assertions.assertFalse(activationToken.isValid());
+        Assertions.assertNotNull(activationToken.getCreatedAt());
+        Assertions.assertNotNull(activationToken.getExpiresAt());
+    }
+
 }

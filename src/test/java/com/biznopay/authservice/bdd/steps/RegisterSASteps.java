@@ -61,6 +61,11 @@ public class RegisterSASteps {
     }
 
     //  COMOM
+    @Given("no super admin exists in the system")
+    public void noSuperAdminExistsInTheSystem() {
+        //the setup method already does this
+    }
+
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToSupperAdminsWith(String path, DataTable dataTable) {
         Map<String, String> data = dataTable.asMap(String.class, String.class);
@@ -76,11 +81,6 @@ public class RegisterSASteps {
     @And("the response should have a message {string}")
     public void theResponseShouldHaveAMessage(String message) {
         Assertions.assertEquals(message, response.getBody().error().message());
-    }
-
-    @Given("no super admin exists in the system")
-    public void noSuperAdminExistsInTheSystem() {
-        //the setup method already does this
     }
 
     //  SCENARIO: Successfully register super admin when none exists
