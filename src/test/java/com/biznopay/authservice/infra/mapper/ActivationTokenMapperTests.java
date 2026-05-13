@@ -13,9 +13,9 @@ public class ActivationTokenMapperTests {
     @Test
     @DisplayName("Should return ActivationTokenJpaEntity on toJpaEntity")
     public void shouldReturnActivationTokenJpaEntityOnToJpaEntity() {
-        UserId userId =  new UserId(UUID.randomUUID());
-        ActivationToken  activationToken =  ActivationToken.generate(userId);
-        ActivationTokenJpaEntity entity =  ActivationTokenMapper.toJpaEntity(activationToken);
+        UserId userId = new UserId(UUID.randomUUID());
+        ActivationToken activationToken = ActivationToken.generate(userId);
+        ActivationTokenJpaEntity entity = ActivationTokenMapper.toJpaEntity(activationToken);
         Assertions.assertEquals(entity.getId(), activationToken.getId().value());
         Assertions.assertEquals(entity.getUserId(), activationToken.getUserId().value());
         Assertions.assertEquals(entity.isUsed(), activationToken.isUsed());

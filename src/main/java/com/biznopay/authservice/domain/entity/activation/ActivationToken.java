@@ -10,9 +10,9 @@ public class ActivationToken {
 
     private final ActivationTokenId id;
     private final UserId userId;
-    private boolean used;
     private final LocalDateTime expiresAt;
     private final LocalDateTime createdAt;
+    private boolean used;
 
     private ActivationToken(ActivationTokenId id, UserId userId, boolean used, LocalDateTime expiresAt, LocalDateTime createdAt) {
         this.id = id;
@@ -45,7 +45,7 @@ public class ActivationToken {
         return !isExpired() && !isUsed();
     }
 
-    public void markAsUsed(){
+    public void markAsUsed() {
         this.used = true;
     }
 
