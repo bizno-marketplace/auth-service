@@ -18,9 +18,8 @@ Feature: Confirm Account
     And the user account status should be "ACTIVE"
 
   Scenario: Reject confirmation with expired token
-    Given a user regitration was made with email "user@example.com"
-    And the confirmation token has expired after 15 minutes
-    When i send a GET request to "/confirm-account?token={expiredToken}"
+    Given a user registered with email "user@example.com" has an expired confirmation token
+    When i send a confirmation request with the valid token
     Then the response code is 410
     And the response body should contain error "Confirmation link expired"
 

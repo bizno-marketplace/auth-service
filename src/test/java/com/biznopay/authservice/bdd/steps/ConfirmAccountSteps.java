@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
 
 public class ConfirmAccountSteps {
     @LocalServerPort
@@ -91,5 +92,23 @@ public class ConfirmAccountSteps {
     public void theUserAccountStatusShouldBe(String expectedStatus) {
         UserJpaEntity userEntity = userJpaRepository.findAll().get(0);
         Assertions.assertEquals(expectedStatus, userEntity.getStatus().name());
+    }
+
+//    SCENARIO: Reject confirmation with expired token
+    @Given("a user registered with email {string} has an expired confirmation token")
+    public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email){
+        User user = Buyer.register("John", "Smith", email, "Password@123");
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+
+        ActivationToken activationToken = ActivationToken.generate(user.getId());
+        ActivationTokenJpaEntity activationTokenEntity = ActivationTokenMapper.toJpaEntity(activationToken);
+        activationTokenEntity.setExpiresAt(LocalDateTime.now().minusMinutes(15));
+        activationTokenJpaRepository.save(activationTokenEntity);
+    }
+
+    @And("the response body should contain error {string}")
+    public void theResponseBodyShouldContainError(String message) {
+        Assertions.assertEquals(message, response.getBody().error().message());
     }
 }
