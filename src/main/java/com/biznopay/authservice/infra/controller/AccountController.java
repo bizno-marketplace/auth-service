@@ -1,7 +1,5 @@
 package com.biznopay.authservice.infra.controller;
 
-import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.usecase.user.confirmAccount.ConfirmAccount;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

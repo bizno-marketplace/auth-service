@@ -2,7 +2,6 @@ package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.config.PostgresContainerBase;
 import com.biznopay.authservice.config.TestConfig;
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
@@ -19,9 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Tag("integration")
 @ActiveProfiles("test")
@@ -40,16 +36,16 @@ public class AccountControllerTests extends PostgresContainerBase {
     private ActivationTokenJpaRepository activationTokenJpaRepository;
     @Autowired
     private UserJpaRepository userJpaRepository;
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
-
 
     @AfterAll
     static void tearDown() {
         if (postgres != null && postgres.isRunning()) {
             postgres.stop();
         }
+    }
+
+    private String url(String path) {
+        return "http://localhost:" + port + path;
     }
 
     @BeforeEach
