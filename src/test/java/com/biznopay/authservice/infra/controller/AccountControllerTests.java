@@ -47,7 +47,7 @@ public class AccountControllerTests extends PostgresContainerBase {
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
-    
+
     private String url(String path) {
         return "http://localhost:" + port + path;
     }
