@@ -1,5 +1,6 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
+import com.biznopay.authservice.config.PostgresContainerBase;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.*;
@@ -17,16 +18,9 @@ import java.util.Optional;
 
 @Tag("unit")
 @DataJpaTest
-@Testcontainers
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserJpaRepositoryTests {
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer postgres = new PostgreSQLContainer(
-            DockerImageName.parse("postgres:latest")
-    );
-
+public class UserJpaRepositoryTests extends PostgresContainerBase {
     @Autowired
     private UserJpaRepository userJpaRepository;
 

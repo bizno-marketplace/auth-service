@@ -1,5 +1,6 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
+import com.biznopay.authservice.config.PostgresContainerBase;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,9 @@ import java.util.UUID;
 
 @Tag("unit")
 @DataJpaTest
-@Testcontainers
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ActivationTokenJpaRepositoryTests {
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer postgres = new PostgreSQLContainer(
-            DockerImageName.parse("postgres:latest")
-    );
+public class ActivationTokenJpaRepositoryTests extends PostgresContainerBase {
 
     @Autowired
     private ActivationTokenJpaRepository activationTokenJpaRepository;

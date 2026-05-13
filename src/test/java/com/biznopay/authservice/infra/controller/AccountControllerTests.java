@@ -41,22 +41,15 @@ public class AccountControllerTests extends PostgresContainerBase {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-    @AfterAll
-    static void tearDown() {
-        if (postgres != null && postgres.isRunning()) {
-            postgres.stop();
-        }
-    }
-
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
-
     @BeforeEach
     void setUp() {
         restTemplate = new TestRestTemplate();
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+    }
+    
+    private String url(String path) {
+        return "http://localhost:" + port + path;
     }
 
     @Test

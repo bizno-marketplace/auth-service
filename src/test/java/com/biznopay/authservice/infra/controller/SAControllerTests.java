@@ -17,6 +17,7 @@ import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +41,6 @@ public class SAControllerTests extends PostgresContainerBase {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
-
-    @AfterAll
-    static void tearDown() {
-        if (postgres != null && postgres.isRunning()) {
-            postgres.stop();
-        }
-    }
 
     private String url(String path) {
         return "http://localhost:" + port + path;

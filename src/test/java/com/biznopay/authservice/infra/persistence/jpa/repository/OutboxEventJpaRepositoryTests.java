@@ -1,5 +1,6 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
+import com.biznopay.authservice.config.PostgresContainerBase;
 import com.biznopay.authservice.infra.outbox.OutboxStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
 import org.junit.jupiter.api.*;
@@ -19,16 +20,9 @@ import java.util.UUID;
 
 @Tag("unit")
 @DataJpaTest
-@Testcontainers
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class OutboxEventJpaRepositoryTests {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer postgres = new PostgreSQLContainer(
-            DockerImageName.parse("postgres:latest")
-    );
+public class OutboxEventJpaRepositoryTests extends PostgresContainerBase {
 
     @Autowired
     private OutboxEventJpaRepository outboxEventJpaRepository;

@@ -35,13 +35,6 @@ public class ControllerHandlerTests extends PostgresContainerBase {
     @MockitoBean
     private RegisterSA registerSA;
 
-    @AfterAll
-    static void tearDown() {
-        if (postgres != null && postgres.isRunning()) {
-            postgres.stop();
-        }
-    }
-
     @BeforeEach
     public void setup() {
         mvc = MockMvcBuilders
