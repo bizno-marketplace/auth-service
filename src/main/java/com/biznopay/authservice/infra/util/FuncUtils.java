@@ -15,11 +15,23 @@ public class FuncUtils {
         return new ApiResponse<Object>(success, data, error, Instant.now());
     }
 
-    public static ResponseEntity<ApiResponse<Object>> handleBadRequest(RequiredFieldException exception, HttpServletRequest request, Logger log) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
-                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
-        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+    public static ResponseEntity<ApiResponse<Object>> handleBadRequest(RuntimeException exception, HttpServletRequest request, Logger log) {
+        ApiError error = null;
+        if(exception instanceof RequiredFieldException){
+            RequiredFieldException ex = (RequiredFieldException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if(exception instanceof InvalidConfirmationTokenException){
+            InvalidConfirmationTokenException ex = (InvalidConfirmationTokenException) exception;
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
     }
 

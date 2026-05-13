@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleExceptions(RuntimeException exception, HttpServletRequest request) {
         return switch (exception) {
             case RequiredFieldException ex -> FuncUtils.handleBadRequest(ex, request, log);
+            case InvalidConfirmationTokenException ex -> FuncUtils.handleBadRequest(ex, request, log);
             case ConflictException ex -> FuncUtils.handleConflict(ex, request, log);
             case EmailAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
             case ExpiredConfirmationTokenException ex -> FuncUtils.handleGone(ex, request, log);
