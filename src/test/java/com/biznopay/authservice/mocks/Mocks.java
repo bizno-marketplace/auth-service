@@ -7,10 +7,7 @@ import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.outbox.OutboxStatus;
-import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.*;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 
 import java.time.LocalDateTime;
@@ -91,5 +88,9 @@ public class Mocks {
     public static OutboxEventJpaEntity exhaustedOutboxEventJpaEntityMock() {
         return new OutboxEventJpaEntity(UUID.randomUUID(), UUID.randomUUID(), "eventType",
                 "subject", "payload", OutboxStatus.PENDING, 3, null, LocalDateTime.now(), null);
+    }
+
+    public static ActivationTokenJpaEntity unusedActivationTokenJpaEntityFromBuyerMock(UserJpaEntity user) {
+        return new ActivationTokenJpaEntity(UUID.randomUUID(), user.getId(), false, LocalDateTime.now().plusMinutes(15), LocalDateTime.now());
     }
 }

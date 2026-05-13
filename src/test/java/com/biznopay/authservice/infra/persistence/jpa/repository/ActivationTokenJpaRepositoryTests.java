@@ -1,6 +1,5 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class ActivationTokenJpaRepositoryTests {
     @Test
     @DisplayName("Should save ActivationTokenJpaEntity with correct values")
     public void shouldSaveActivationTokenWithCorrectValues() {
-        ActivationTokenJpaEntity entity = new ActivationTokenJpaEntity(UUID.randomUUID(),UUID.randomUUID(),false, LocalDateTime.now(),LocalDateTime.now());
+        ActivationTokenJpaEntity entity = new ActivationTokenJpaEntity(UUID.randomUUID(), UUID.randomUUID(), false, LocalDateTime.now(), LocalDateTime.now());
         activationTokenJpaRepository.save(entity);
         Optional<ActivationTokenJpaEntity> result = activationTokenJpaRepository.findById(entity.getId());
 
