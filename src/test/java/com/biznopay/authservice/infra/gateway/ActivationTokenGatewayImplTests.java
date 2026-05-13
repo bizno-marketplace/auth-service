@@ -4,6 +4,7 @@ package com.biznopay.authservice.infra.gateway;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
+import com.biznopay.authservice.infra.mapper.ActivationTokenMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import org.junit.jupiter.api.Assertions;
@@ -42,5 +43,24 @@ public class ActivationTokenGatewayImplTests {
             ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
             Optional<ActivationToken> token = activationTokenGateway.findById(tokenId);
             Assertions.assertTrue(token.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should return activation token if found on find by id")
+    public void shouldReturnActivationTokenIfFoundOnFindById(){
+        UUID tokenId = UUID.randomUUID();
+        UserId userId =  UserId.of(UUID.randomUUID());
+        ActivationToken activationToken =  ActivationToken.generate(userId);
+        ActivationTokenJpaEntity entity = ActivationTokenMapper.toJpaEntity(activationToken);
+        Mockito.when(activationTokenJpaRepository.findById(tokenId)).thenReturn(Optional.of(entity));
+        ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
+        Optional<ActivationToken> token = activationTokenGateway.findById(tokenId);
+        Assertions.assertTrue(token.isPresent());
+        Assertions.assertEquals(activationToken.getId(), token.get().getId());
+        Assertions.assertEquals(activationToken.getUserId(), token.get().getUserId());
+        Assertions.assertEquals(activationToken.getExpiresAt(), token.get().getExpiresAt());
+        Assertions.assertEquals(activationToken.getCreatedAt(), token.get().getCreatedAt());
+        Assertions.assertEquals(activationToken.isUsed(), token.get().isUsed());
+
     }
 }
