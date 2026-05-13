@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -72,6 +73,18 @@ public class UserGatewayImplTests {
         Assertions.assertEquals(entity.getUpdatedAt(), result.get().getUpdatedAt());
 
         Mockito.verify(userJpaRepository).findByEmail(user.getEmail());
+        Mockito.verifyNoMoreInteractions(userJpaRepository);
+    }
+
+    @Test
+    @DisplayName("Should return optional empty when user does not exists")
+    public void shouldReturnOptionalEmptyWhenUserDoesNotExists(){
+        UUID useId = UUID.randomUUID();
+        Mockito.when(userJpaRepository.findById(useId)).thenReturn(Optional.empty());
+        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        Optional<User> result = userGatewayImpl.findById(useId);
+        Assertions.assertTrue(result.isEmpty());
+        Mockito.verify(userJpaRepository).findById(useId);
         Mockito.verifyNoMoreInteractions(userJpaRepository);
     }
 }
