@@ -81,4 +81,17 @@ public class AccountControllerTests extends PostgresContainerBase {
         Assertions.assertEquals(HttpStatus.GONE, response.getStatusCode());
         Assertions.assertEquals("Confirmation link expired", response.getBody().error().message());
     }
+
+    @Test
+    @DisplayName("Should return 400 on invalid token")
+    void shouldReturn400OnInvalidToken() {
+        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        userJpaRepository.save(user);
+        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        entity.setExpiresAt(LocalDateTime.now().minusMinutes(15));
+        activationTokenJpaRepository.save(entity);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + user.getId()), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Invalid confirmation link", response.getBody().error().message());
+    }
 }
