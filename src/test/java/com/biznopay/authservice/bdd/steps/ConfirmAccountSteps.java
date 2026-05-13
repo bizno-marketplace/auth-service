@@ -64,18 +64,7 @@ public class ConfirmAccountSteps {
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
     }
 
-//    SCENARIO: Successfully confirm account with valid token
-    @Given("a user registered with email {string} has a valid confirmation token")
-    public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
-        User user = Buyer.register("John", "Smith", email, "Password@123");
-        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
-        userJpaRepository.save(entity);
-
-        ActivationToken activationToken = ActivationToken.generate(user.getId());
-        ActivationTokenJpaEntity activationTokenEntity = ActivationTokenMapper.toJpaEntity(activationToken);
-        activationTokenJpaRepository.save(activationTokenEntity);
-    }
-
+//  COMMON STEPS
     @When("i send a confirmation request with the valid token")
     public void iSendAConfirmationRequestWithTheValidToken() {
         ActivationTokenJpaEntity activationTokenEntity = activationTokenJpaRepository.findAll().get(0);
@@ -88,13 +77,30 @@ public class ConfirmAccountSteps {
         Assertions.assertEquals(expectedStatus, response.getStatusCode().value());
     }
 
+    @And("the response body should contain error {string}")
+    public void theResponseBodyShouldContainError(String message) {
+        Assertions.assertEquals(message, response.getBody().error().message());
+    }
+
+//  SCENARIO: Successfully confirm account with valid token
+    @Given("a user registered with email {string} has a valid confirmation token")
+    public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
+        User user = Buyer.register("John", "Smith", email, "Password@123");
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+
+        ActivationToken activationToken = ActivationToken.generate(user.getId());
+        ActivationTokenJpaEntity activationTokenEntity = ActivationTokenMapper.toJpaEntity(activationToken);
+        activationTokenJpaRepository.save(activationTokenEntity);
+    }
+
     @And("the user account status should be {string}")
     public void theUserAccountStatusShouldBe(String expectedStatus) {
         UserJpaEntity userEntity = userJpaRepository.findAll().get(0);
         Assertions.assertEquals(expectedStatus, userEntity.getStatus().name());
     }
 
-//    SCENARIO: Reject confirmation with expired token
+//  SCENARIO: Reject confirmation with expired token
     @Given("a user registered with email {string} has an expired confirmation token")
     public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email){
         User user = Buyer.register("John", "Smith", email, "Password@123");
@@ -107,8 +113,5 @@ public class ConfirmAccountSteps {
         activationTokenJpaRepository.save(activationTokenEntity);
     }
 
-    @And("the response body should contain error {string}")
-    public void theResponseBodyShouldContainError(String message) {
-        Assertions.assertEquals(message, response.getBody().error().message());
-    }
+
 }
