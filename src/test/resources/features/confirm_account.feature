@@ -12,9 +12,8 @@ Feature: Confirm Account
   * A missing token must be rejected
 
   Scenario: Successfully confirm account with valid token
-    Given a user regitration was made with email "user@example.com"
-    And the confirmation token has not expired
-    When i send a GET request to "/confirm-account?token={validToken}"
+    Given a user registered with email "user@example.com" has a valid confirmation token
+    When i send a confirmation request with the valid token
     Then the response code is 204
     And the user account status should be "ACTIVE"
 
