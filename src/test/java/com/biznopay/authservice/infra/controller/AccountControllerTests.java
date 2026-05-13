@@ -72,7 +72,7 @@ public class AccountControllerTests extends PostgresContainerBase {
 
     @Test
     @DisplayName("Should return 410 on expired token")
-    public void shouldReturn410OnExpiredToken(){
+    public void shouldReturn410OnExpiredToken() {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
@@ -97,7 +97,7 @@ public class AccountControllerTests extends PostgresContainerBase {
 
     @Test
     @DisplayName("Should return 409 on account already active")
-    public void shouldReturn409OnAccountAlreadyActive(){
+    public void shouldReturn409OnAccountAlreadyActive() {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();
         user.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(user);

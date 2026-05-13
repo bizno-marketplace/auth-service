@@ -17,7 +17,7 @@ public class FuncUtils {
 
     public static ResponseEntity<ApiResponse<Object>> handleBadRequest(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
-        if(exception instanceof RequiredFieldException){
+        if (exception instanceof RequiredFieldException) {
             RequiredFieldException ex = (RequiredFieldException) exception;
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
@@ -25,7 +25,7 @@ public class FuncUtils {
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if(exception instanceof InvalidConfirmationTokenException){
+        if (exception instanceof InvalidConfirmationTokenException) {
             InvalidConfirmationTokenException ex = (InvalidConfirmationTokenException) exception;
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
@@ -53,7 +53,7 @@ public class FuncUtils {
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if(exception instanceof AccountAlreadyConfirmedException){
+        if (exception instanceof AccountAlreadyConfirmedException) {
             AccountAlreadyConfirmedException ex = (AccountAlreadyConfirmedException) exception;
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),

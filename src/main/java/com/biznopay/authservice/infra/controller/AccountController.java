@@ -22,8 +22,8 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity confirmAccount(@RequestParam("token") String token) {
-        if(token == null || token.isEmpty())
-            throw new RequiredFieldException("Token","AccountController", "ACCOUNT_CONTROLLER-001");
+        if (token == null || token.isEmpty())
+            throw new RequiredFieldException("Token", "AccountController", "ACCOUNT_CONTROLLER-001");
         UUID tokenId = UUID.fromString(token);
         confirmAccount.execute(tokenId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
