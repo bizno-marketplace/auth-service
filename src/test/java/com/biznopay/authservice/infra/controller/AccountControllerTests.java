@@ -108,4 +108,12 @@ public class AccountControllerTests extends PostgresContainerBase {
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         Assertions.assertEquals("Account already confirmed", response.getBody().error().message());
     }
+
+    @Test
+    @DisplayName("Should return 400 when token is missing")
+    void shouldReturn400WhenTokenIsMissing() {
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token="), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Token is required", response.getBody().error().message());
+    }
 }
