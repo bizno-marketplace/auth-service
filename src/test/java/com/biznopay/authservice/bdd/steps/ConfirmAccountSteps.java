@@ -3,7 +3,6 @@ package com.biznopay.authservice.bdd.steps;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.ActivationTokenMapper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
@@ -17,7 +16,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
@@ -30,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class ConfirmAccountSteps {
     @LocalServerPort
@@ -67,7 +64,7 @@ public class ConfirmAccountSteps {
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
     }
 
-//  COMMON STEPS
+    //  COMMON STEPS
     @When("i send a confirmation request with the valid token")
     public void iSendAConfirmationRequestWithTheValidToken() {
         ActivationTokenJpaEntity activationTokenEntity = activationTokenJpaRepository.findAll().get(0);
@@ -85,7 +82,7 @@ public class ConfirmAccountSteps {
         Assertions.assertEquals(message, response.getBody().error().message());
     }
 
-//  SCENARIO: Successfully confirm account with valid token
+    //  SCENARIO: Successfully confirm account with valid token
     @Given("a user registered with email {string} has a valid confirmation token")
     public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
         User user = Buyer.register("John", "Smith", email, "Password@123");
@@ -103,9 +100,9 @@ public class ConfirmAccountSteps {
         Assertions.assertEquals(expectedStatus, userEntity.getStatus().name());
     }
 
-//  SCENARIO: Reject confirmation with expired token
+    //  SCENARIO: Reject confirmation with expired token
     @Given("a user registered with email {string} has an expired confirmation token")
-    public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email){
+    public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email) {
         User user = Buyer.register("John", "Smith", email, "Password@123");
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
@@ -116,7 +113,7 @@ public class ConfirmAccountSteps {
         activationTokenJpaRepository.save(activationTokenEntity);
     }
 
-//  SCENARIO: Reject confirmation with invalid or tampered token
+    //  SCENARIO: Reject confirmation with invalid or tampered token
     @Given("a user registered with email {string}")
     public void aUserRegisteredWithEmail(String email) {
         User user = Buyer.register("John", "Smith", email, "Password@123");
@@ -129,7 +126,7 @@ public class ConfirmAccountSteps {
         response = restTemplate.getForEntity(url("/accounts/confirm-account?token=invalidToken"), ApiResponse.class);
     }
 
-//  SCENARIO:Reject confirmation when account is already active
+    //  SCENARIO:Reject confirmation when account is already active
     @Given("a user with email {string} has already confirmed the account")
     public void aUserWithEmailHasAlreadyConfirmedTheAccount(String email) {
         User user = Buyer.register("John", "Smith", email, "Password@123");
@@ -142,7 +139,7 @@ public class ConfirmAccountSteps {
         activationTokenJpaRepository.save(activationTokenEntity);
     }
 
-//    SCENARIO: Reject confirmation when token is missing
+    //    SCENARIO: Reject confirmation when token is missing
     @When("i send a confirmation request with the missing token")
     public void iSendAConfirmationRequestWithTheMissingToken() {
         response = restTemplate.getForEntity(url("/accounts/confirm-account?token="), ApiResponse.class);

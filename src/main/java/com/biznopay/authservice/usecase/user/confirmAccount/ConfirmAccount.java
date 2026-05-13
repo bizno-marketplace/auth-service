@@ -36,11 +36,11 @@ public class ConfirmAccount {
         tokenGateway.save(activationToken);
     }
 
-    private UUID validateActivationTokenId(String rawTokenId){
+    private UUID validateActivationTokenId(String rawTokenId) {
         UUID tokenId = null;
         try {
             tokenId = UUID.fromString(rawTokenId);
-        }catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             throw new InvalidConfirmationTokenException("ACTIVATION_TOKEN-001");
         }
         return tokenId;
