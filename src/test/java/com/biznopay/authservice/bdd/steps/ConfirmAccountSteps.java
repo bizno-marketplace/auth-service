@@ -142,4 +142,9 @@ public class ConfirmAccountSteps {
         activationTokenJpaRepository.save(activationTokenEntity);
     }
 
+//    SCENARIO: Reject confirmation when token is missing
+    @When("i send a confirmation request with the missing token")
+    public void iSendAConfirmationRequestWithTheMissingToken() {
+        response = restTemplate.getForEntity(url("/accounts/confirm-account?token="), ApiResponse.class);
+    }
 }

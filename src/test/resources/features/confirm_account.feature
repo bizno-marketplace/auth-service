@@ -33,10 +33,9 @@ Feature: Confirm Account
     Given a user with email "user@bizno.co.mz" has already confirmed the account
     When i send a confirmation request with the valid token
     Then the response code is 409
-    Then the response code is 409
     And the response body should contain error "Account already confirmed"
 
   Scenario: Reject confirmation when token is missing
-    When I send a GET request to "/confirm-account"
-    Then the response status should be 400
+    When i send a confirmation request with the missing token
+    Then the response code is 400
     And the response body should contain error "Token is required"
