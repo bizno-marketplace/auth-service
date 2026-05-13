@@ -12,7 +12,7 @@ public class ActivationTokenMapper {
     }
 
     public static ActivationToken toDomainEntity(ActivationTokenJpaEntity jpaEntity) {
-        ActivationTokenId activationTokenId =  ActivationTokenId.of(jpaEntity.getId());
+        ActivationTokenId activationTokenId = ActivationTokenId.of(jpaEntity.getId());
         return ActivationToken.reconstitute(activationTokenId, UserId.of(jpaEntity.getUserId()), jpaEntity.isUsed(),
                 jpaEntity.getExpiresAt(), jpaEntity.getCreatedAt());
     }

@@ -38,19 +38,19 @@ public class ActivationTokenGatewayImplTests {
     @Test
     @DisplayName("Should return optional empty if activation token is not found on find by id")
     public void shouldReturnOptionalEmptyIfActivationTokenIdIsNotFoundOnFindById() {
-            UUID tokenId = UUID.randomUUID();
-            Mockito.when(activationTokenJpaRepository.findById(tokenId)).thenReturn(Optional.empty());
-            ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
-            Optional<ActivationToken> token = activationTokenGateway.findById(tokenId);
-            Assertions.assertTrue(token.isEmpty());
+        UUID tokenId = UUID.randomUUID();
+        Mockito.when(activationTokenJpaRepository.findById(tokenId)).thenReturn(Optional.empty());
+        ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
+        Optional<ActivationToken> token = activationTokenGateway.findById(tokenId);
+        Assertions.assertTrue(token.isEmpty());
     }
 
     @Test
     @DisplayName("Should return activation token if found on find by id")
-    public void shouldReturnActivationTokenIfFoundOnFindById(){
+    public void shouldReturnActivationTokenIfFoundOnFindById() {
         UUID tokenId = UUID.randomUUID();
-        UserId userId =  UserId.of(UUID.randomUUID());
-        ActivationToken activationToken =  ActivationToken.generate(userId);
+        UserId userId = UserId.of(UUID.randomUUID());
+        ActivationToken activationToken = ActivationToken.generate(userId);
         ActivationTokenJpaEntity entity = ActivationTokenMapper.toJpaEntity(activationToken);
         Mockito.when(activationTokenJpaRepository.findById(tokenId)).thenReturn(Optional.of(entity));
         ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);

@@ -78,7 +78,7 @@ public class UserGatewayImplTests {
 
     @Test
     @DisplayName("Should return optional empty when user does not exists on find by id")
-    public void shouldReturnOptionalEmptyWhenUserDoesNotExistsOnFindById(){
+    public void shouldReturnOptionalEmptyWhenUserDoesNotExistsOnFindById() {
         UUID useId = UUID.randomUUID();
         Mockito.when(userJpaRepository.findById(useId)).thenReturn(Optional.empty());
         UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
@@ -90,8 +90,8 @@ public class UserGatewayImplTests {
 
     @Test
     @DisplayName("Should return user when exists on find by id")
-    public void shouldReturnUserWhenExistsOnFindById(){
-        User user =  Mocks.buyerMock();
+    public void shouldReturnUserWhenExistsOnFindById() {
+        User user = Mocks.buyerMock();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Mockito.when(userJpaRepository.findById(user.getId().value())).thenReturn(Optional.of(entity));
         UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
