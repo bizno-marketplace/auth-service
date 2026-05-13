@@ -2,6 +2,7 @@ package com.biznopay.authservice.usecase.user.confirmAccount;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.ExpiredConfirmationTokenException;
 import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
@@ -24,9 +25,10 @@ public class ConfirmAccount {
         ActivationToken activationToken = tokenGateway.findById(rawTokenId).
                 orElseThrow(() -> new InvalidConfirmationTokenException("ACTIVATION_TOKEN-001"));
         if (activationToken.isExpired()) throw new ExpiredConfirmationTokenException("ACTIVATION_TOKEN-002");
-        if (activationToken.isUsed()) throw new AccountAlreadyConfirmedException("ACTIVATION_TOKEN-003");
         User user = userGateway.findById(activationToken.getUserId().value()).
                 orElseThrow(() -> new ResourceNotFoundException("User", "ACTIVATION_TOKEN-004"));
+        if (activationToken.isUsed() && UserStatus.ACTIVE ==  user.getStatus())
+            throw new AccountAlreadyConfirmedException("ACTIVATION_TOKEN-003");
         user.activate();
         userGateway.save(user);
         activationToken.markAsUsed();
