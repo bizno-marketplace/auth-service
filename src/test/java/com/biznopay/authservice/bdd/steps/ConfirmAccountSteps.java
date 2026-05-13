@@ -3,6 +3,7 @@ package com.biznopay.authservice.bdd.steps;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.ActivationTokenMapper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
@@ -115,6 +116,7 @@ public class ConfirmAccountSteps {
         activationTokenJpaRepository.save(activationTokenEntity);
     }
 
+//  SCENARIO: Reject confirmation with invalid or tampered token
     @Given("a user registered with email {string}")
     public void aUserRegisteredWithEmail(String email) {
         User user = Buyer.register("John", "Smith", email, "Password@123");
@@ -126,4 +128,18 @@ public class ConfirmAccountSteps {
     public void iSendAConfirmationRequestWithTheInvalidToken() {
         response = restTemplate.getForEntity(url("/accounts/confirm-account?token=invalidToken"), ApiResponse.class);
     }
+
+//  SCENARIO:Reject confirmation when account is already active
+    @Given("a user with email {string} has already confirmed the account")
+    public void aUserWithEmailHasAlreadyConfirmedTheAccount(String email) {
+        User user = Buyer.register("John", "Smith", email, "Password@123");
+        user.activate();
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
+
+        ActivationToken activationToken = ActivationToken.generate(user.getId());
+        ActivationTokenJpaEntity activationTokenEntity = ActivationTokenMapper.toJpaEntity(activationToken);
+        activationTokenJpaRepository.save(activationTokenEntity);
+    }
+
 }
