@@ -63,6 +63,12 @@ public class ConfirmAccountTests {
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, true, expiredAt, expiredAt);
+
+        User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "email@test",
+                "any_phone", "Password@0199", UserStatus.ACTIVE, LocalDateTime.now(),
+                LocalDateTime.now(), LocalDateTime.now());
+
+        Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
         Assertions.assertThrows(AccountAlreadyConfirmedException.class, () -> confirmAccount.execute(rawTokenId));
@@ -78,8 +84,8 @@ public class ConfirmAccountTests {
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, false, expiredAt, expiredAt);
-        Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.empty());
+        Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
 
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
         Assertions.assertThrows(ResourceNotFoundException.class, () -> confirmAccount.execute(rawTokenId));
