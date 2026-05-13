@@ -2,6 +2,7 @@ package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.config.PostgresContainerBase;
 import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
@@ -88,10 +89,23 @@ public class AccountControllerTests extends PostgresContainerBase {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
-        entity.setExpiresAt(LocalDateTime.now().minusMinutes(15));
         activationTokenJpaRepository.save(entity);
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + user.getId()), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Invalid confirmation link", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should return 409 on account already active")
+    public void shouldReturn409OnAccountAlreadyActive(){
+        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        user.setStatus(UserStatus.ACTIVE);
+        userJpaRepository.save(user);
+        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        entity.setUsed(true);
+        activationTokenJpaRepository.save(entity);
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts?token=" + entity.getId()), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Account already confirmed", response.getBody().error().message());
     }
 }
