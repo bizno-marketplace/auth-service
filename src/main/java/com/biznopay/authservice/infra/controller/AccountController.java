@@ -1,5 +1,6 @@
 package com.biznopay.authservice.infra.controller;
 
+import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.usecase.user.confirmAccount.ConfirmAccount;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity confirmAccount(@RequestParam("token") String token) {
+        if(token == null || token.isEmpty())
+            throw new RequiredFieldException("Token","AccountController", "ACCOUNT_CONTROLLER-001");
         UUID tokenId = UUID.fromString(token);
         confirmAccount.execute(tokenId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
