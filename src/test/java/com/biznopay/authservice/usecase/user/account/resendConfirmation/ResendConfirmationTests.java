@@ -20,6 +20,16 @@ public class ResendConfirmationTests {
     private UserGateway userGateway;
 
     @Test
+    @DisplayName("Should return successfully message when account does not exist")
+    public void shouldReturnSuccessfullyMessageWhenAccountDoesNotExist(){
+        String email = "user@example.com";
+        Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.empty());
+        ResendConformation resendConformation =  new ResendConformation(userGateway);
+        String result = resendConformation.execute(email);
+        Assertions.assertEquals("Successfully requested a new confirmation email.", result);
+    }
+
+    @Test
     @DisplayName("Should throw AccountAlreadyConfirmedException when account has confirmed ")
     public void shouldThrowAccountAlreadyConfirmedExceptionWhenAccountHasConfirmed() {
         String email = "user@example.com";
@@ -27,6 +37,6 @@ public class ResendConfirmationTests {
         user.activate();
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         ResendConformation resendConformation =  new ResendConformation(userGateway);
-       Assertions.assertThrows(AccountAlreadyConfirmedException.class, () -> resendConformation.execute(email));
+        Assertions.assertThrows(AccountAlreadyConfirmedException.class, () -> resendConformation.execute(email));
     }
 }
