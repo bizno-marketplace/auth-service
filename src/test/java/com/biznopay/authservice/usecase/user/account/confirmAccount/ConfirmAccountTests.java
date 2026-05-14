@@ -12,6 +12,7 @@ import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenExcepti
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -56,6 +57,24 @@ public class ConfirmAccountTests {
     }
 
     @Test
+    @DisplayName("Should throw ResourceNotFoundException if user does not exist")
+    public void shouldThrowResourceNotFoundExceptionIfUserDoesNotExist() {
+        UUID rawTokenId = UUID.randomUUID();
+        UserId userId = new UserId(UUID.randomUUID());
+        ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
+        LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
+        ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, false, expiredAt, expiredAt);
+        Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.empty());
+        Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
+
+        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> confirmAccount.execute(rawTokenId.toString()));
+        Assertions.assertTrue(activationToken.isValid());
+        Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
+        Mockito.verify(userGateway, Mockito.times(1)).findById(userId.value());
+    }
+
+    @Test
     @DisplayName("Should throw AccountAlreadyConfirmedException if account is already confirmed")
     public void shouldThrowAccountAlreadyConfirmedExceptionIfAccountIsAlreadyConfirmed() {
         UUID rawTokenId = UUID.randomUUID();
@@ -75,46 +94,24 @@ public class ConfirmAccountTests {
         Assertions.assertFalse(activationToken.isValid());
     }
 
-
-    @Test
-    @DisplayName("Should throw ResourceNotFoundException if user does not exist")
-    public void shouldThrowResourceNotFoundExceptionIfUserDoesNotExist() {
-        UUID rawTokenId = UUID.randomUUID();
-        UserId userId = new UserId(UUID.randomUUID());
-        ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
-        LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
-        ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, false, expiredAt, expiredAt);
-        Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.empty());
-        Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
-
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> confirmAccount.execute(rawTokenId.toString()));
-        Assertions.assertTrue(activationToken.isValid());
-        Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
-        Mockito.verify(userGateway, Mockito.times(1)).findById(userId.value());
-    }
-
     @Test
     @DisplayName("Should active user and mark activation token as used")
     public void shouldActiveUserAndMarkActivationTokenAsUsed() {
-        UUID rawTokenId = UUID.randomUUID();
-        UserId userId = new UserId(UUID.randomUUID());
-        ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
-        LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
-        ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, false, expiredAt, expiredAt);
+       User user = Mocks.buyerMock();
+        ActivationToken activationToken = ActivationToken.generate(user.getId());
+        UUID rawTokenId = activationToken.getId().value();
+
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
+        Mockito.when(userGateway.findById(user.getId().value())).thenReturn(Optional.of(user));
+        Mockito.doNothing().when(userGateway).save(user);
+        Mockito.doNothing().when(tokenGateway).delete(activationToken);
 
-        User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "email@test",
-                "any_phone", "Password@0199", UserStatus.PENDING, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now());
-
-        Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
         confirmAccount.execute(rawTokenId.toString());
-        Assertions.assertFalse(activationToken.isValid());
+
         Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
-        Mockito.verify(userGateway, Mockito.times(1)).findById(userId.value());
+        Mockito.verify(userGateway, Mockito.times(1)).findById(user.getId().value());
         Mockito.verify(userGateway, Mockito.times(1)).save(user);
-        Mockito.verify(tokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
+        Mockito.verify(tokenGateway, Mockito.times(1)).delete(Mockito.any(ActivationToken.class));
     }
 }
