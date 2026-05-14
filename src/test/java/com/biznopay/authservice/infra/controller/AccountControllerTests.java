@@ -145,4 +145,18 @@ public class AccountControllerTests extends ContainerBase {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    @DisplayName("Should return 429 during resend cooldown on resend confirmation")
+    public void shouldReturn429DuringResendCooldownOnResendConfirmation(){
+        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        userJpaRepository.save(user);
+        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        activationTokenJpaRepository.save(entity);
+        ResendConfirmationRequest request =  new ResendConfirmationRequest(user.getEmail());
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.TOO_MANY_REQUESTS, response.getStatusCode());
+        Assertions.assertEquals("Please wait before requesting a new confirmation email", response.getBody().error().message());
+    }
+
 }
