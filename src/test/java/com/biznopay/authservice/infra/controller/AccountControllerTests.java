@@ -137,4 +137,12 @@ public class AccountControllerTests extends ContainerBase {
         Assertions.assertEquals("Account already confirmed", response.getBody().error().message());
     }
 
+    @Test
+    @DisplayName("Should return 200 when email does not exists")
+    public void shouldReturn200WhenEmailDoesNotExistsOnResendConfirmation(){
+        ResendConfirmationRequest request =  new ResendConfirmationRequest("email");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 }
