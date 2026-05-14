@@ -12,7 +12,7 @@ import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenExcepti
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
-import com.biznopay.authservice.usecase.user.confirmAccount.ConfirmAccount;
+import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

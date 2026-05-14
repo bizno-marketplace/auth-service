@@ -1,7 +1,7 @@
 package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
-import com.biznopay.authservice.usecase.user.confirmAccount.ConfirmAccount;
+import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

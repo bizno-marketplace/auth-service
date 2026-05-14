@@ -3,7 +3,7 @@ package com.biznopay.authservice.infra.config;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.DomainEventGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
-import com.biznopay.authservice.usecase.user.confirmAccount.ConfirmAccount;
+import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
