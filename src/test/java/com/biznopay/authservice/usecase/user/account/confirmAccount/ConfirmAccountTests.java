@@ -97,7 +97,7 @@ public class ConfirmAccountTests {
     @Test
     @DisplayName("Should active user and mark activation token as used")
     public void shouldActiveUserAndMarkActivationTokenAsUsed() {
-       User user = Mocks.buyerMock();
+        User user = Mocks.buyerMock();
         ActivationToken activationToken = ActivationToken.generate(user.getId());
         UUID rawTokenId = activationToken.getId().value();
 

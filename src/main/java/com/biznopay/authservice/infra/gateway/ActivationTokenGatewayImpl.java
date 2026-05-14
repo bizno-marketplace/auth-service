@@ -36,7 +36,7 @@ public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
 
     @Override
     public Optional<ActivationToken> findActiveByUserId(UUID userId) {
-        Optional<ActivationTokenJpaEntity> entity = activationTokenJpaRepository.findByUsedAndUserId(false,userId);
+        Optional<ActivationTokenJpaEntity> entity = activationTokenJpaRepository.findByUsedAndUserId(false, userId);
         return entity.map(ActivationTokenMapper::toDomainEntity);
     }
 }
