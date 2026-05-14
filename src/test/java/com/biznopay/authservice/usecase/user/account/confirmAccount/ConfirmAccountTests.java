@@ -1,4 +1,4 @@
-package com.biznopay.authservice.usecase.user.register.confirmAccount;
+package com.biznopay.authservice.usecase.user.account.confirmAccount;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
