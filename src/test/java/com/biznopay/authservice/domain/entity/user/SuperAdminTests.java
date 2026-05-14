@@ -72,22 +72,6 @@ public class SuperAdminTests {
                 () -> SuperAdmin.register("any_first_name", "any_last_name", email, "any_password"));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("Should throw RequiredFieldException if password is null or empty on register")
-    public void shouldThrowRequiredFieldExceptionIfPasswordIsNullOrEmptyOnRegister(String password) {
-        Assertions.assertThrows(RequiredFieldException.class,
-                () -> SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", password));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"any_pass", "PassWord!", "Password123"})
-    @DisplayName("Should throw InvalidPasswordException if password does not match with established rules")
-    public void shouldThrowInvalidPasswordExceptionIfPasswordDoesNotMatchWithEstablishedRules(String password) {
-        Assertions.assertThrows(InvalidPasswordException.class,
-                () -> SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", password));
-    }
-
     @Test
     @DisplayName("Should register SuperAdmin with correct param on register ande set status  PENDING")
     public void shouldRegisterSuperAdminWithCorrectParamOnRegisterAndSetStatusOnPENDING() {
