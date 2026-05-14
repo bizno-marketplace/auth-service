@@ -2,11 +2,15 @@ package com.biznopay.authservice.infra.gateway;
 
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
+import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.infra.mapper.ActivationTokenMapper;
+import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
+import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -33,6 +37,15 @@ public class ActivationTokenGatewayImplTests {
         ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
         activationTokenGateway.save(token);
         Mockito.verify(activationTokenJpaRepository).save(Mockito.any(ActivationTokenJpaEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should delete activation token if exists")
+    public void shouldDeleteActivationTokenIfExists(){
+       ActivationToken token = ActivationToken.generate(new UserId(UUID.randomUUID()));
+       ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
+       activationTokenGateway.delete(token);
+       Mockito.verify(activationTokenJpaRepository).delete(Mockito.any(ActivationTokenJpaEntity.class));
     }
 
     @Test
