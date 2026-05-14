@@ -14,12 +14,13 @@ Feature: Resend Confirmation Email
   Scenario: Successfully resend confirmation email for a pending account
     Given a user registered with email "user@example.com" with status "PENDING"
     And the previous confirmation token has expired
-    When I send a POST request to "/accounts/resend-confirmation" with body:
+      When i send a POST request to "/accounts/resend-confirmation" with body:
       | email | user@example.com |
     Then the response status should be 200
     And the previous token should be invalidated
     And a new confirmation email should be sent to "user@example.com"
     And the new token should expire in 15 minutes
+    And the response body should contain message "Successfully requested a new confirmation email."
 
   Scenario: Reject resend when account is already active
     Given a user with email "user@example.com" has status "ACTIVE"

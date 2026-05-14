@@ -31,7 +31,7 @@ public class AccountController {
 
     @PostMapping("/resend-confirmation")
     public ResponseEntity<ApiResponse<Object>> resendConfirmation(@RequestBody @Valid ResendConfirmationRequest request) {
-        resendConformation.execute(request.email());
-        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));
+        String output = resendConformation.execute(request.email());
+        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
     }
 }
