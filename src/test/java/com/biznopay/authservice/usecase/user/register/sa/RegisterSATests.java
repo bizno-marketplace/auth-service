@@ -31,14 +31,14 @@ public class RegisterSATests {
     @Mock
     private UserGateway userGateway;
     @Mock
-    private  EncoderGateway encoderGateway;
+    private EncoderGateway encoderGateway;
     @Mock
-    private  DomainEventGateway domainEventGateway;
+    private DomainEventGateway domainEventGateway;
     @Mock
-    private  ActivationTokenGateway activationTokenGateway;
+    private ActivationTokenGateway activationTokenGateway;
 
     private RegisterSA setupRegisterSA() {
-        return new RegisterSA(userGateway, encoderGateway, domainEventGateway,activationTokenGateway);
+        return new RegisterSA(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 
     @Test
