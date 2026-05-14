@@ -19,12 +19,12 @@ public class EncoderGatewayTests {
     @DisplayName("Should encode the password")
     public void shouldEncodePassword() {
         String rawPassword = "any_raw_password";
-        String encodePassword =  "any_encoded_password";
+        String encodePassword = "any_encoded_password";
         Mockito.when(encoder.encode(rawPassword)).thenReturn(encodePassword);
-        EncoderGateway encoderGateway =  new EncoderGatewayImpl(encoder);
+        EncoderGateway encoderGateway = new EncoderGatewayImpl(encoder);
         String result = encoderGateway.encode(rawPassword);
         Assertions.assertNotNull(rawPassword);
-        Assertions.assertEquals(encodePassword,result);
-        Mockito.verify(encoder,Mockito.times(1)).encode(rawPassword);
+        Assertions.assertEquals(encodePassword, result);
+        Mockito.verify(encoder, Mockito.times(1)).encode(rawPassword);
     }
 }
