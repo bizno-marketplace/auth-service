@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation.COOLDOWN;
 
 @ExtendWith(MockitoExtension.class)
 public class ResendConfirmationTests {
@@ -89,7 +88,7 @@ public class ResendConfirmationTests {
         Mockito.verify(activationTokenGateway, Mockito.times(1)).findActiveByUserId(user.getId().value());
         Mockito.verify(activationTokenGateway, Mockito.times(1)).delete(Mockito.any(ActivationToken.class));
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, COOLDOWN);
+        Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, ResendConformation.COOLDOWN);
         Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
         Assertions.assertEquals("Successfully requested a new confirmation email.", output);
     }
@@ -110,7 +109,7 @@ public class ResendConfirmationTests {
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).isInCooldown(email);
         Mockito.verify(activationTokenGateway, Mockito.times(1)).findActiveByUserId(user.getId().value());
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, COOLDOWN);
+        Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, ResendConformation.COOLDOWN);
         Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
         Assertions.assertEquals("Successfully requested a new confirmation email.", output);
     }
