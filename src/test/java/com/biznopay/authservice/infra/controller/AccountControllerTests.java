@@ -122,4 +122,19 @@ public class AccountControllerTests extends ContainerBase {
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
+    @Test
+    @DisplayName("Should return 409 when account is already active on resend confirmation")
+    public void shouldReturn409WhenAccountIsAlreadyActiveOnResendConfirmation(){
+        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        user.setStatus(UserStatus.ACTIVE);
+        userJpaRepository.save(user);
+        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        activationTokenJpaRepository.save(entity);
+        ResendConfirmationRequest request =  new ResendConfirmationRequest(user.getEmail());
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Account already confirmed", response.getBody().error().message());
+    }
+
 }
