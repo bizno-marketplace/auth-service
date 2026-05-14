@@ -1,15 +1,16 @@
 package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
+import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
+import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
+import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Accounts")
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/accounts")
 public class AccountController {
     private final ConfirmAccount confirmAccount;
+    private final ResendConformation resendConformation;
 
     @GetMapping("/confirm-account")
     public ResponseEntity confirmAccount(@RequestParam("token") String token) {
@@ -25,4 +27,9 @@ public class AccountController {
         confirmAccount.execute(token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-}
+
+    @PostMapping("/resend-confirmation")
+    public ResponseEntity<ApiResponse<Object>> resendConfirmation(@RequestBody ResendConfirmationRequest request) {
+        resendConformation.execute(request.email());
+        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));
+    }}
