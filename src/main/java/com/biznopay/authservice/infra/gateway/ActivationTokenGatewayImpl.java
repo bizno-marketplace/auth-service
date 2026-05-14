@@ -24,7 +24,8 @@ public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
 
     @Override
     public void delete(ActivationToken token) {
-
+        ActivationTokenJpaEntity jpaEntity = ActivationTokenMapper.toJpaEntity(token);
+        activationTokenJpaRepository.delete(jpaEntity);
     }
 
     @Override
@@ -35,6 +36,7 @@ public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
 
     @Override
     public Optional<ActivationToken> findActiveByUserId(UUID userId) {
-        return Optional.empty();
+        Optional<ActivationTokenJpaEntity> entity = activationTokenJpaRepository.findByUsedAndUserId(false,userId);
+        return entity.map(ActivationTokenMapper::toDomainEntity);
     }
 }
