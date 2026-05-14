@@ -1,5 +1,7 @@
 package com.biznopay.authservice.usecase.user.account.resendConfirmation;
 
+import com.biznopay.authservice.domain.entity.activation.ActivationToken;
+import com.biznopay.authservice.domain.entity.event.UserRegistered;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.TokenCooldownException;
@@ -17,6 +19,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+
+import static com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation.COOLDOWN;
 
 @ExtendWith(MockitoExtension.class)
 public class ResendConfirmationTests {
@@ -63,5 +67,28 @@ public class ResendConfirmationTests {
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(true);
         ResendConformation resendConformation =  setUp();
         Assertions.assertThrows(TokenCooldownException.class, () -> resendConformation.execute(email));
+    }
+
+    @Test
+    @DisplayName("Should publish email event, delete older token if exists, start cooldown and return successfully message")
+    public void shouldPublishEmailEventDeleteOlderTokenIfExistsStartCooldownAndReturnSuccessfullyMessage(){
+        String email = "user@example.com";
+        User user = Mocks.buyerMock();
+        ActivationToken token = ActivationToken.generate(user.getId());
+
+        Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
+        Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(false);
+        Mockito.when(activationTokenGateway.findActiveByUserId(user.getId().value())).thenReturn(Optional.of(token));
+        ResendConformation resendConformation =  setUp();
+        String output = resendConformation.execute(email);
+
+        Mockito.verify(userGateway, Mockito.times(1)).findByEmail(email);
+        Mockito.verify(resendCooldownGateway, Mockito.times(1)).isInCooldown(email);
+        Mockito.verify(activationTokenGateway, Mockito.times(1)).findActiveByUserId(user.getId().value());
+        Mockito.verify(activationTokenGateway, Mockito.times(1)).delete(Mockito.any(ActivationToken.class));
+        Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
+        Mockito.verify(resendCooldownGateway,Mockito.times(1)).startCooldown(email, COOLDOWN);
+        Mockito.verify(domainEventGateway,Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
+        Assertions.assertEquals("Successfully requested a new confirmation email.", output);
     }
 }
