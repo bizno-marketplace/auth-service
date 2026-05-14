@@ -14,6 +14,7 @@ import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class ConfirmAccountTests {
     @Mock

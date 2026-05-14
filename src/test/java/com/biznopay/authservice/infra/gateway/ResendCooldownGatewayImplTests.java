@@ -1,10 +1,7 @@
 package com.biznopay.authservice.infra.gateway;
 
 import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -17,6 +14,7 @@ import java.time.Duration;
 import static com.biznopay.authservice.infra.gateway.ResendCooldownGatewayImpl.KEY_PREFIX;
 import static org.mockito.Mockito.when;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class ResendCooldownGatewayImplTests {
     @Mock

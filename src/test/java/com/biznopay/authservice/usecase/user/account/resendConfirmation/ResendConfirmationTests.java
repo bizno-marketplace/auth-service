@@ -12,6 +12,7 @@ import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -38,6 +39,7 @@ public class ResendConfirmationTests {
     }
 
     @Test
+    @Tag("unit")
     @DisplayName("Should return successfully message when account does not exist")
     public void shouldReturnSuccessfullyMessageWhenAccountDoesNotExist() {
         String email = "user@example.com";
