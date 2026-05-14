@@ -26,4 +26,14 @@ public class ResendCooldownGatewayImplTests {
         boolean result = resendCooldownGateway.isInCooldown(email);
         Assertions.assertFalse(result);
     }
+
+    @Test
+    @DisplayName("Should return true when activation token is in cooldown")
+    public void shouldReturnTrueWhenActivationTokenIsInCooldown(){
+        String email = "test@example.com";
+        Mockito.when(stringRedisTemplate.hasKey(KEY_PREFIX + email)).thenReturn(true);
+        ResendCooldownGateway resendCooldownGateway =  new ResendCooldownGatewayImpl(stringRedisTemplate);
+        boolean result = resendCooldownGateway.isInCooldown(email);
+        Assertions.assertTrue(result);
+    }
 }
