@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 public class ResendConformation {
-    private static final Duration COOLDOWN        = Duration.ofMinutes(2);
+    public static final Duration COOLDOWN = Duration.ofMinutes(2);
 
     private final UserGateway userGateway;
     private final DomainEventGateway domainEventGateway;
@@ -41,7 +41,7 @@ public class ResendConformation {
         if (isOnCooldown)
             throw new TokenCooldownException("RESEND_CONFIRMATION-002");
 
-        Optional<ActivationToken> optActivationToken = activationTokenGateway.findById(user.getId().value());
+        Optional<ActivationToken> optActivationToken = activationTokenGateway.findActiveByUserId(user.getId().value());
         optActivationToken.ifPresent(activationTokenGateway::delete);
         ActivationToken token = ActivationToken.generate(user.getId());
         activationTokenGateway.save(token);
