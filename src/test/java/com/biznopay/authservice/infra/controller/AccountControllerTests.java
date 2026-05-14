@@ -1,9 +1,10 @@
 package com.biznopay.authservice.infra.controller;
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
@@ -28,7 +29,7 @@ import java.time.LocalDateTime;
 @Import({TestConfig.class})
 @AutoConfigureRestTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AccountControllerTests extends PostgresContainerBase {
+public class AccountControllerTests extends ContainerBase {
     @LocalServerPort
     private int port;
 
@@ -108,5 +109,17 @@ public class AccountControllerTests extends PostgresContainerBase {
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token="), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Token is required", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should return 200 on successfully resend confirmation email for a pending account on resend confirmation")
+    public void shouldReturn200OnSuccessfullyResendConfirmationEmailForAPendingAccountOnResendConfirmation(){
+        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        userJpaRepository.save(user);
+        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        activationTokenJpaRepository.save(entity);
+        ResendConfirmationRequest request =  new ResendConfirmationRequest(user.getEmail());
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

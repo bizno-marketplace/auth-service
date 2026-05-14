@@ -1,7 +1,7 @@
 package com.biznopay.authservice.infra.controller;
 
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
@@ -28,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Import({TestConfig.class})
 @AutoConfigureRestTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SAControllerTests extends PostgresContainerBase {
+public class SAControllerTests extends ContainerBase {
 
     @LocalServerPort
     private int port;

@@ -1,6 +1,6 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.infra.outbox.OutboxStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
 import org.junit.jupiter.api.*;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class OutboxEventJpaRepositoryTests extends PostgresContainerBase {
+public class OutboxEventJpaRepositoryTests extends ContainerBase {
 
     @Autowired
     private OutboxEventJpaRepository outboxEventJpaRepository;

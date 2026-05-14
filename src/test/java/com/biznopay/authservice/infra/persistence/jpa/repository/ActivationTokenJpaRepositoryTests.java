@@ -1,6 +1,6 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ActivationTokenJpaRepositoryTests extends PostgresContainerBase {
+public class ActivationTokenJpaRepositoryTests extends ContainerBase {
 
     @Autowired
     private ActivationTokenJpaRepository activationTokenJpaRepository;
