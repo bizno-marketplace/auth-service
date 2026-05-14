@@ -166,4 +166,12 @@ public class AccountControllerTests extends ContainerBase {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("E-mail is required", response.getBody().error().message());
     }
+
+    @Test
+    @DisplayName("Should return 400 when email format is invalid on resend confirmation")
+    public void shouldReturn400WhenEmailFormatIsInvalidOnResendConfirmation(){
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), new ResendConfirmationRequest("email"), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Invalid email format", response.getBody().error().message());
+    }
 }
