@@ -8,6 +8,10 @@ import java.util.UUID;
 public interface ActivationTokenGateway {
     void save(ActivationToken token);
 
+    void delete(ActivationToken token);
+
     Optional<ActivationToken> findById(UUID tokenId);
+
+    Optional<ActivationToken> findActiveByUserId(UUID userId);
 
 }

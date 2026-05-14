@@ -27,22 +27,22 @@ public class ResendConfirmationTests {
     @Mock
     private UserGateway userGateway;
     @Mock
-    private  DomainEventGateway domainEventGateway;
+    private DomainEventGateway domainEventGateway;
     @Mock
     private ResendCooldownGateway resendCooldownGateway;
     @Mock
     private ActivationTokenGateway activationTokenGateway;
 
-    private ResendConformation setUp(){
-        return new ResendConformation(userGateway,domainEventGateway,resendCooldownGateway,activationTokenGateway);
+    private ResendConformation setUp() {
+        return new ResendConformation(userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
     }
 
     @Test
     @DisplayName("Should return successfully message when account does not exist")
-    public void shouldReturnSuccessfullyMessageWhenAccountDoesNotExist(){
+    public void shouldReturnSuccessfullyMessageWhenAccountDoesNotExist() {
         String email = "user@example.com";
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.empty());
-        ResendConformation resendConformation =  setUp();
+        ResendConformation resendConformation = setUp();
         String result = resendConformation.execute(email);
         Assertions.assertEquals("Successfully requested a new confirmation email.", result);
     }
@@ -54,24 +54,24 @@ public class ResendConfirmationTests {
         User user = Mocks.buyerMock();
         user.activate();
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
-        ResendConformation resendConformation =  setUp();
+        ResendConformation resendConformation = setUp();
         Assertions.assertThrows(AccountAlreadyConfirmedException.class, () -> resendConformation.execute(email));
     }
 
     @Test
     @DisplayName("Should throw TokenCooldownException when account is on cooldown")
-    public void shouldThrowTokenCooldownExceptionWhenAccountIsOnCoolDown(){
+    public void shouldThrowTokenCooldownExceptionWhenAccountIsOnCoolDown() {
         String email = "user@example.com";
         User user = Mocks.buyerMock();
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(true);
-        ResendConformation resendConformation =  setUp();
+        ResendConformation resendConformation = setUp();
         Assertions.assertThrows(TokenCooldownException.class, () -> resendConformation.execute(email));
     }
 
     @Test
     @DisplayName("Should publish email event, delete older token if exists, start cooldown and return successfully message")
-    public void shouldPublishEmailEventDeleteOlderTokenIfExistsStartCooldownAndReturnSuccessfullyMessage(){
+    public void shouldPublishEmailEventDeleteOlderTokenIfExistsStartCooldownAndReturnSuccessfullyMessage() {
         String email = "user@example.com";
         User user = Mocks.buyerMock();
         ActivationToken token = ActivationToken.generate(user.getId());
@@ -79,7 +79,7 @@ public class ResendConfirmationTests {
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(false);
         Mockito.when(activationTokenGateway.findActiveByUserId(user.getId().value())).thenReturn(Optional.of(token));
-        ResendConformation resendConformation =  setUp();
+        ResendConformation resendConformation = setUp();
         String output = resendConformation.execute(email);
 
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(email);
@@ -87,29 +87,29 @@ public class ResendConfirmationTests {
         Mockito.verify(activationTokenGateway, Mockito.times(1)).findActiveByUserId(user.getId().value());
         Mockito.verify(activationTokenGateway, Mockito.times(1)).delete(Mockito.any(ActivationToken.class));
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(resendCooldownGateway,Mockito.times(1)).startCooldown(email, COOLDOWN);
-        Mockito.verify(domainEventGateway,Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
+        Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, COOLDOWN);
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
         Assertions.assertEquals("Successfully requested a new confirmation email.", output);
     }
 
     @Test
     @DisplayName("Should publish email event, not delete older token when not exists, start cooldown and return successfully message")
-    public void shouldPublishEmailEventNotDeleteOlderTokenWhenNotExistsStartCooldownAndReturnSuccessfullyMessage(){
+    public void shouldPublishEmailEventNotDeleteOlderTokenWhenNotExistsStartCooldownAndReturnSuccessfullyMessage() {
         String email = "user@example.com";
         User user = Mocks.buyerMock();
 
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(false);
         Mockito.when(activationTokenGateway.findActiveByUserId(user.getId().value())).thenReturn(Optional.empty());
-        ResendConformation resendConformation =  setUp();
+        ResendConformation resendConformation = setUp();
         String output = resendConformation.execute(email);
 
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(email);
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).isInCooldown(email);
         Mockito.verify(activationTokenGateway, Mockito.times(1)).findActiveByUserId(user.getId().value());
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(resendCooldownGateway,Mockito.times(1)).startCooldown(email, COOLDOWN);
-        Mockito.verify(domainEventGateway,Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
+        Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, COOLDOWN);
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
         Assertions.assertEquals("Successfully requested a new confirmation email.", output);
     }
 }

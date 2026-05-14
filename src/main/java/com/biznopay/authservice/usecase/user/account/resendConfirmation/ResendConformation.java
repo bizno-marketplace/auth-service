@@ -30,7 +30,7 @@ public class ResendConformation {
         this.activationTokenGateway = activationTokenGateway;
     }
 
-    public  String execute(String email) {
+    public String execute(String email) {
         Optional<User> existingUser = userGateway.findByEmail(email);
         if (existingUser.isEmpty()) return "Successfully requested a new confirmation email.";
         User user = existingUser.get();
