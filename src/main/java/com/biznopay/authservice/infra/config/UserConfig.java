@@ -26,7 +26,7 @@ public class UserConfig {
 
     @Bean
     public ResendConformation resendConformation() {
-        return new ResendConformation(userGateway,domainEventGateway,resendCooldownGateway,activationTokenGateway);
+        return new ResendConformation(userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
     }
 
     @Bean

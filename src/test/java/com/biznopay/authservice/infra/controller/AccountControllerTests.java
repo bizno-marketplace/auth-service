@@ -113,55 +113,55 @@ public class AccountControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should return 200 on successfully resend confirmation email for a pending account on resend confirmation")
-    public void shouldReturn200OnSuccessfullyResendConfirmationEmailForAPendingAccountOnResendConfirmation(){
+    public void shouldReturn200OnSuccessfullyResendConfirmationEmailForAPendingAccountOnResendConfirmation() {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         activationTokenJpaRepository.save(entity);
-        ResendConfirmationRequest request =  new ResendConfirmationRequest(user.getEmail());
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        ResendConfirmationRequest request = new ResendConfirmationRequest(user.getEmail());
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     @DisplayName("Should return 409 when account is already active on resend confirmation")
-    public void shouldReturn409WhenAccountIsAlreadyActiveOnResendConfirmation(){
+    public void shouldReturn409WhenAccountIsAlreadyActiveOnResendConfirmation() {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();
         user.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         activationTokenJpaRepository.save(entity);
-        ResendConfirmationRequest request =  new ResendConfirmationRequest(user.getEmail());
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        ResendConfirmationRequest request = new ResendConfirmationRequest(user.getEmail());
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         Assertions.assertEquals("Account already confirmed", response.getBody().error().message());
     }
 
     @Test
     @DisplayName("Should return 200 when email does not exists")
-    public void shouldReturn200WhenEmailDoesNotExistsOnResendConfirmation(){
-        ResendConfirmationRequest request =  new ResendConfirmationRequest("email");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+    public void shouldReturn200WhenEmailDoesNotExistsOnResendConfirmation() {
+        ResendConfirmationRequest request = new ResendConfirmationRequest("email");
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     @DisplayName("Should return 429 during resend cooldown on resend confirmation")
-    public void shouldReturn429DuringResendCooldownOnResendConfirmation(){
+    public void shouldReturn429DuringResendCooldownOnResendConfirmation() {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
         activationTokenJpaRepository.save(entity);
-        ResendConfirmationRequest request =  new ResendConfirmationRequest(user.getEmail());
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
-        response = restTemplate.postForEntity(url("/accounts/resend-confirmation"),request, ApiResponse.class);
+        ResendConfirmationRequest request = new ResendConfirmationRequest(user.getEmail());
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
+        response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.TOO_MANY_REQUESTS, response.getStatusCode());
         Assertions.assertEquals("Please wait before requesting a new confirmation email", response.getBody().error().message());
     }
 
     @Test
     @DisplayName("Should return 400 when email is missing in the body on resend confirmation")
-    public void shouldReturn400WhenEmailIsMissingInTheBodyOnResendConfirmation(){
+    public void shouldReturn400WhenEmailIsMissingInTheBodyOnResendConfirmation() {
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), new ResendConfirmationRequest(null), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("E-mail is required", response.getBody().error().message());
@@ -169,7 +169,7 @@ public class AccountControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should return 400 when email format is invalid on resend confirmation")
-    public void shouldReturn400WhenEmailFormatIsInvalidOnResendConfirmation(){
+    public void shouldReturn400WhenEmailFormatIsInvalidOnResendConfirmation() {
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), new ResendConfirmationRequest("email"), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Invalid email format", response.getBody().error().message());

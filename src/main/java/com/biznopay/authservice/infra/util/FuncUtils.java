@@ -106,7 +106,6 @@ public class FuncUtils {
     }
 
 
-
     public static ResponseEntity<ApiResponse<Object>> handleUnexpectedException(RuntimeException exception, HttpServletRequest request, Logger log) {
         TechnicalException ex = new UnexpectedException("UNEXPECTED_ERROR-001");
         log.error("[{}] {} {} | code={} | message={} | metadata={}",
