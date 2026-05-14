@@ -24,7 +24,7 @@ Feature: Resend Confirmation Email
 
   Scenario: Reject resend when account is already active
     Given a user with email "user@example.com" has status "ACTIVE"
-    When I send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with body:
       | email | user@example.com |
     Then the response status should be 409
     And the response body should contain error "Account already confirmed"

@@ -77,6 +77,11 @@ public class ResendConformationSteps {
         Assertions.assertEquals(statusCode, response.getStatusCode().value());
     }
 
+    @And("the response body should contain error {string}")
+    public void theResponseBodyShouldContainError(String error) {
+        Assertions.assertEquals(error, response.getBody().error().message());
+    }
+
 //  SCENARIO: Successfully resend confirmation email for a pending account
     @Given("a user registered with email {string} with status {string}")
     public void aUserRegisteredWithStatus(String email, String status) {
@@ -125,4 +130,12 @@ public class ResendConformationSteps {
         Assertions.assertEquals(message, response.getBody().data());
     }
 
+//  SCENARIO: Reject resend when account is already active
+    @Given("a user with email {string} has status {string}")
+    public void aUserEmailHasStatus(String email, String status){
+        entity = Mocks.buyerJpaEntityMock();
+        entity.setEmail(email);
+        entity.setStatus(UserStatus.valueOf(status));
+        userJpaRepository.save(entity);
+    }
 }
