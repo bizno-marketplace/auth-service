@@ -17,6 +17,7 @@ import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTe
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,12 +42,15 @@ public class AccountControllerTests extends ContainerBase {
     private ActivationTokenJpaRepository activationTokenJpaRepository;
     @Autowired
     private UserJpaRepository userJpaRepository;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @BeforeEach
     void setUp() {
         restTemplate = new TestRestTemplate();
-        jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
     }
 
     private String url(String path) {
@@ -140,7 +144,7 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 200 when email does not exists")
     public void shouldReturn200WhenEmailDoesNotExistsOnResendConfirmation() {
-        ResendConfirmationRequest request = new ResendConfirmationRequest("email");
+        ResendConfirmationRequest request = new ResendConfirmationRequest("example@example.com");
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
