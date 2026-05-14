@@ -159,4 +159,11 @@ public class AccountControllerTests extends ContainerBase {
         Assertions.assertEquals("Please wait before requesting a new confirmation email", response.getBody().error().message());
     }
 
+    @Test
+    @DisplayName("Should return 400 when email is missing in the body on resend confirmation")
+    public void shouldReturn400WhenEmailIsMissingInTheBodyOnResendConfirmation(){
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), new ResendConfirmationRequest(null), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("E-mail is required", response.getBody().error().message());
+    }
 }
