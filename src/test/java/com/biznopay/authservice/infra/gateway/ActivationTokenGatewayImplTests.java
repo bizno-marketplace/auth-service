@@ -76,4 +76,14 @@ public class ActivationTokenGatewayImplTests {
         Assertions.assertEquals(activationToken.isUsed(), token.get().isUsed());
 
     }
+
+    @Test
+    @DisplayName("Should return optional empty if activation token is not found on find active by  user id")
+    public void shouldReturnOptionalEmptyIfActivationTokenIdIsNotFoundOnFindActiveByUserId() {
+        UUID userId = UUID.randomUUID();
+        Mockito.when(activationTokenJpaRepository.findByUsedAndUserId(false,userId)).thenReturn(Optional.empty());
+        ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
+        Optional<ActivationToken> token = activationTokenGateway.findActiveByUserId(userId);
+        Assertions.assertTrue(token.isEmpty());
+    }
 }
