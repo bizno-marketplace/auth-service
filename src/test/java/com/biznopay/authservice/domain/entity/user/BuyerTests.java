@@ -30,7 +30,7 @@ public class BuyerTests {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("Should throw RequiredFieldException when phone number is empty or null on register")
-    public void shouldThrowRequiredFieldExceptionWhenPhoneNumberIsEmptyOrNullOnRegister(String phone){
+    public void shouldThrowRequiredFieldExceptionWhenPhoneNumberIsEmptyOrNullOnRegister(String phone) {
         Assertions.assertThrows(RequiredFieldException.class, () -> Buyer.register("any_first_name",
                 "any_last_name", "admin@bizno.co.mz", phone, "Password@123", addressMock()));
     }

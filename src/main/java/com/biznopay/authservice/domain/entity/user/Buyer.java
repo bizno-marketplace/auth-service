@@ -30,10 +30,10 @@ public class Buyer extends User {
         return new Buyer(id, firstName, lastName, email, phone, password, status, deliveryAddress, expiresAt, createdAt, updatedAt);
     }
 
-    private static String validatePhone(String phone){
+    private static String validatePhone(String phone) {
         if (phone == null || phone.isEmpty())
             throw new RequiredFieldException("Phone number", Buyer.class.getName(), "BUYER-001");
-        if(!phone.matches(MOZ_PHONE_REGEX))
+        if (!phone.matches(MOZ_PHONE_REGEX))
             throw new InvalidPhoneNumberException("BUYER-002");
         return phone;
     }
