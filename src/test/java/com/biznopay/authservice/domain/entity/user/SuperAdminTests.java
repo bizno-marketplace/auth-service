@@ -1,7 +1,10 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.exception.*;
+import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
+import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
+import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
+import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
@@ -70,22 +73,6 @@ public class SuperAdminTests {
     public void shouldThrowNonBiznoInstitutionalEmailExceptionIfEmailIsNotBiznoInstitutional(String email) {
         Assertions.assertThrows(NonBiznoInstitutionalEmailException.class,
                 () -> SuperAdmin.register("any_first_name", "any_last_name", email, "any_password"));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("Should throw RequiredFieldException if password is null or empty on register")
-    public void shouldThrowRequiredFieldExceptionIfPasswordIsNullOrEmptyOnRegister(String password) {
-        Assertions.assertThrows(RequiredFieldException.class,
-                () -> SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", password));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"any_pass", "PassWord!", "Password123"})
-    @DisplayName("Should throw InvalidPasswordException if password does not match with established rules")
-    public void shouldThrowInvalidPasswordExceptionIfPasswordDoesNotMatchWithEstablishedRules(String password) {
-        Assertions.assertThrows(InvalidPasswordException.class,
-                () -> SuperAdmin.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", password));
     }
 
     @Test

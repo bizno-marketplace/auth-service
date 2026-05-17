@@ -31,6 +31,6 @@ public class UserConfig {
 
     @Bean
     public RegisterSA registerSA() {
-        return new RegisterSA(userGateway, activationTokenGateway, domainEventGateway);
+        return new RegisterSA(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 }
