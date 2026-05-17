@@ -17,6 +17,13 @@ public class AddressTests {
     }
 
     @Test
+    @DisplayName("Should throw RequiredFieldException when longitude is null on build")
+    public void shouldThrowRequiredFieldExceptionWhenLongitudeIsNullOnBuild(){
+        Assertions.assertThrows(RequiredFieldException.class, () ->
+                new Address(32.5732, null, null, null, null, null, null));
+    }
+
+    @Test
     @DisplayName("Should throw InvalidFieldException when latitude is out of bounds on build Address")
     public void shouldThrowInvalidFieldWhenLatitudeIsOutOfBoundsExceptionOnBuildAddress() {
         Assertions.assertThrows(InvalidFieldException.class, () ->
