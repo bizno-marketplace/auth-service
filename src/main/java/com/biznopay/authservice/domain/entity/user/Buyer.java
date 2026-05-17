@@ -16,6 +16,7 @@ public class Buyer extends User {
     }
 
     public static Buyer register(String firstName, String lastname, String email, String phone, String password, Address deliveryAddress) {
+        phone = validatePhone(phone);
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(2);
         return new Buyer(UserId.generate(), firstName, lastname, email, phone, password, UserStatus.PENDING, deliveryAddress, expiresAt, createdAt, createdAt);
@@ -27,10 +28,15 @@ public class Buyer extends User {
         return new Buyer(id, firstName, lastName, email, phone, password, status, deliveryAddress, expiresAt, createdAt, updatedAt);
     }
 
+    private static String validatePhone(String phone){
+        if (phone == null || phone.isEmpty())
+            throw new RequiredFieldException("Phone number", Buyer.class.getName(), "BUYER-001");
+        return phone;
+    }
 
     private Address validateAddress(Address deliveryAddress) {
         if (deliveryAddress == null)
-            throw new RequiredFieldException("Delivery address0", Buyer.class.getName(), "BUYER-001");
+            throw new RequiredFieldException("Delivery address0", Buyer.class.getName(), "BUYER-002");
         return deliveryAddress;
     }
 
