@@ -4,6 +4,7 @@ import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
@@ -88,7 +89,8 @@ public class RegisterSASteps {
     // SCENARIO: Reject registration if email is already in use
     @Given("a user with email {string} exists in the system")
     public void aUserWithEmailExistsInTheSystem(String email) {
-        User user = Buyer.register("John", "Smith", email, "Password@123");
+        Address address =  null;
+        User user = Buyer.register("John", "Smith", email, "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }

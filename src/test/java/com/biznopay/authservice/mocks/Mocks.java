@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.outbox.OutboxStatus;
@@ -61,12 +62,16 @@ public class Mocks {
         return UserMapper.toUserJpaEntity(user);
     }
 
-    public static User buyerMock() {
-        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+    public static Address addressMock(){
+        return new Address( -25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
+    }
+
+    public static Buyer buyerMock() {
+        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123",addressMock());
     }
 
     public static User buyerMockFromRegisterSARequest(RegisterSARequest request) {
-        return Buyer.register(request.firstName(), request.lastName(), request.email(), request.password());
+        return Buyer.register(request.firstName(), request.lastName(), request.email(), request.password(), addressMock());
     }
 
     public static UserJpaEntity buyerJpaEntityMock() {

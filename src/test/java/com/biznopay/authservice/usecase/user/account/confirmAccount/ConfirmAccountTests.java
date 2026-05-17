@@ -12,6 +12,7 @@ import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenExcepti
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -83,8 +84,9 @@ public class ConfirmAccountTests {
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, true, expiredAt, expiredAt);
 
+        Address address = null;
         User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "email@test",
-                "any_phone", "Password@0199", UserStatus.ACTIVE, LocalDateTime.now(),
+                "any_phone", "Password@0199", UserStatus.ACTIVE, address,LocalDateTime.now(),
                 LocalDateTime.now(), LocalDateTime.now());
 
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
