@@ -38,7 +38,7 @@ public class AddressTests {
 
     @Test
     @DisplayName("Should build Address with correct values on build address")
-    public void shouldBuildAddressWithCorrectValuesOnBuildAddress(){
+    public void shouldBuildAddressWithCorrectValuesOnBuildAddress() {
         Address address = new Address(32.5732, 32.5732, "any_street", "any_neighbourhood", "any_city", "any_province", "any_country");
         Assertions.assertEquals(32.5732, address.latitude());
         Assertions.assertEquals(32.5732, address.longitude());
