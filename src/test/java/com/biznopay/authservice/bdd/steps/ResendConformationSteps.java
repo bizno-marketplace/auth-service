@@ -29,27 +29,20 @@ import java.util.Optional;
 
 public class ResendConformationSteps {
 
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private ScenarioContext scenarioContext;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private UserJpaRepository userJpaRepository;
-
-    @Autowired
-    private ActivationTokenJpaRepository activationTokenJpaRepository;
-
-    @Autowired
-    private ResendCooldownGateway resendCooldownGateway;
-
     @Autowired
     StringRedisTemplate redisTemplate;
-
+    @LocalServerPort
+    private int port;
+    @Autowired
+    private ScenarioContext scenarioContext;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+    @Autowired
+    private ActivationTokenJpaRepository activationTokenJpaRepository;
+    @Autowired
+    private ResendCooldownGateway resendCooldownGateway;
     private UserJpaEntity entity;
     private ActivationTokenJpaEntity previousActivationToken;
 
