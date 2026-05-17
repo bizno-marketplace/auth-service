@@ -28,9 +28,9 @@ public class Buyer extends User {
     }
 
 
-    private Address validateAddress(Address deliveryAddress){
+    private Address validateAddress(Address deliveryAddress) {
         if (deliveryAddress == null)
-            throw new RequiredFieldException("Delivery address0",Buyer.class.getName(),"BUYER-001");
+            throw new RequiredFieldException("Delivery address0", Buyer.class.getName(), "BUYER-001");
         return deliveryAddress;
     }
 

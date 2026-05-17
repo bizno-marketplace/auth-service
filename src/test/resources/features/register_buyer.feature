@@ -49,9 +49,9 @@ Feature: Register Buyer
     Then <outcome>
 
     Examples:
-      | status  | outcome                                       |
-      | PENDING | the buyer account is removed from the system  |
-      | ACTIVE  | the buyer account remains in the system       |
+      | status  | outcome                                      |
+      | PENDING | the buyer account is removed from the system |
+      | ACTIVE  | the buyer account remains in the system      |
 
   Scenario Outline: Attempt to register with invalid or missing fields
     When I submit a registration request with:

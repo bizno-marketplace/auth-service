@@ -62,12 +62,12 @@ public class Mocks {
         return UserMapper.toUserJpaEntity(user);
     }
 
-    public static Address addressMock(){
-        return new Address( -25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
+    public static Address addressMock() {
+        return new Address(-25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
     }
 
     public static Buyer buyerMock() {
-        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123",addressMock());
+        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123", addressMock());
     }
 
     public static User buyerMockFromRegisterSARequest(RegisterSARequest request) {

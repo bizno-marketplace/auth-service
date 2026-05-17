@@ -86,7 +86,7 @@ public class ConfirmAccountTests {
 
         Address address = null;
         User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "email@test",
-                "any_phone", "Password@0199", UserStatus.ACTIVE, address,LocalDateTime.now(),
+                "any_phone", "Password@0199", UserStatus.ACTIVE, address, LocalDateTime.now(),
                 LocalDateTime.now(), LocalDateTime.now());
 
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));

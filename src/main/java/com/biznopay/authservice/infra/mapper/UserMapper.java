@@ -69,9 +69,9 @@ public class UserMapper {
     }
 
     private static Buyer toBuyerDomainEntity(BuyerJpaEntity entity) {
-        Address address =  null;
+        Address address = null;
         return Buyer.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
-                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(),address, entity.getExpiresAt(),
+                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), address, entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt());
     }
 

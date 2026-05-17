@@ -72,7 +72,7 @@ public class ConfirmAccountSteps {
     @Given("a user registered with email {string} has a valid confirmation token")
     public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
         Address address = null;
-        User user = Buyer.register("John", "Smith", email, "Password@123",address);
+        User user = Buyer.register("John", "Smith", email, "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
 
