@@ -14,7 +14,7 @@ Feature: Resend Confirmation Email
   Scenario: Successfully resend confirmation email for a pending account
     Given a user registered with email "user@example.com" with status "PENDING"
     And the previous confirmation token has expired
-    When i send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with:
       | email | user@example.com |
     Then the response status should be 200
     And the previous token should be invalidated
@@ -24,32 +24,33 @@ Feature: Resend Confirmation Email
 
   Scenario: Reject resend when account is already active
     Given a user with email "user@example.com" has status "ACTIVE"
-    When i send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with:
       | email | user@example.com |
     Then the response status should be 409
     And the response body should contain error "Account already confirmed"
 
   Scenario: Return 200 for non-existent email (security — no enumeration)
     Given no user exists with email "ghost@example.com"
-    When i send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with:
       | email | ghost@example.com |
     Then the response status should be 200
 
   Scenario: Reject resend during cooldown period
     Given a user registered with email "user@example.com" with status "PENDING"
     And a confirmation email was already sent less than 2 minutes ago
-    When i send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with:
       | email | user@example.com |
     Then the response status should be 429
     And the response body should contain error "Please wait before requesting a new confirmation email"
 
   Scenario: Reject resend when email is missing in request body
-    When I send a POST request to "/accounts/resend-confirmation" with empty body
+    When i send a POST request to "/accounts/resend-confirmation" with:
+      | email |  |
     Then the response status should be 400
-    And the response body should contain error "Email is required"
+    And the response body should contain error "E-mail is required"
 
   Scenario: Reject resend when email format is invalid
-    When I send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with:
       | email | not-an-email |
     Then the response status should be 400
     And the response body should contain error "Invalid email format"

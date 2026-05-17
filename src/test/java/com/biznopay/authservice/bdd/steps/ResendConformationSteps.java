@@ -3,18 +3,14 @@ package com.biznopay.authservice.bdd.steps;
 import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;
-import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.mocks.Mocks;
-import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -23,14 +19,11 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
-import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
-
 
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 public class ResendConformationSteps {
@@ -94,15 +87,6 @@ public class ResendConformationSteps {
         activationTokenJpaRepository.save(previousActivationToken);
     }
 
-    @When("i send a POST request to {string} with body:")
-    public void iSendAPOSTRequestToWithBody(String path, DataTable dataTable) {
-        Map<String, String> data = dataTable.asMap(String.class, String.class);
-        ResendConfirmationRequest request = new ResendConfirmationRequest(data.get("email"));
-        scenarioContext.setResponse(
-                scenarioContext.getRestTemplate().postForEntity(url(path), request, ApiResponse.class)
-        );
-    }
-
     @And("the previous token should be invalidated")
     public void thePreviousTokenShouldBeInvalidated() {
         Optional<ActivationTokenJpaEntity> opToken =
@@ -137,13 +121,13 @@ public class ResendConformationSteps {
         userJpaRepository.save(entity);
     }
 
-// SCENARIO: Return 200 for non-existent email (security — no enumeration)
+    // SCENARIO: Return 200 for non-existent email (security — no enumeration)
     @Given("no user exists with email {string}")
     public void noUserExistsWithEmail(String email) {
         // setup method does it
     }
 
-// SCENARIO: Reject resend during cooldown period
+    // SCENARIO: Reject resend during cooldown period
     @And("a confirmation email was already sent less than {int} minutes ago")
     public void aConfirmationEmailWasAlreadySentLessThanMinutesAgo(int minutes) {
         previousActivationToken = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(entity);

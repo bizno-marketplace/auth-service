@@ -4,19 +4,14 @@ import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,9 +24,6 @@ import java.util.Map;
 
 public class RegisterSASteps {
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
     private ScenarioContext scenarioContext;
 
@@ -40,10 +32,6 @@ public class RegisterSASteps {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
-
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
 
     @Before
     public void setUp() {
@@ -67,20 +55,6 @@ public class RegisterSASteps {
     @Given("no super admin exists in the system")
     public void noSuperAdminExistsInTheSystem() {
         // o setUp já faz o truncate
-    }
-
-    @When("i send a POST request to {string} with:")
-    public void iSendAPOSTRequestToWith(String path, DataTable dataTable) {
-        Map<String, String> data = dataTable.asMap(String.class, String.class);
-        RegisterSARequest request = new RegisterSARequest(
-                data.get("firstName"),
-                data.get("lastName"),
-                data.get("email"),
-                data.get("password")
-        );
-        scenarioContext.setResponse(
-                scenarioContext.getRestTemplate().postForEntity(url(path), request, ApiResponse.class)
-        );
     }
 
     // SCENARIO: Successfully register super admin when none exists
