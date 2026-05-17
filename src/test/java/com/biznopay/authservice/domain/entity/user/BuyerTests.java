@@ -6,13 +6,25 @@ import com.biznopay.authservice.domain.vo.Address;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+
+import static com.biznopay.authservice.mocks.Mocks.addressMock;
 
 public class BuyerTests {
     @Test
-    @DisplayName("Should return RequiredFieldException when delivery address is null on register")
+    @DisplayName("Should throw  RequiredFieldException when delivery address is null on register")
     public void shouldReturnRequiredFieldExceptionWhenDeliveryAddressIsNull() {
         Assertions.assertThrows(RequiredFieldException.class, () -> Buyer.register("any_first_name",
                 "any_last_name", "admin@bizno.co.mz", "8484848484", "Password@123", null));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should throw RequiredFieldException when phone number is empty or null")
+    public void shouldThrowRequiredFieldExceptionWhenPhoneNumberIsEmptyOrNull(String phone){
+        Assertions.assertThrows(RequiredFieldException.class, () -> Buyer.register("any_first_name",
+                "any_last_name", "admin@bizno.co.mz", phone, "Password@123", addressMock()));
     }
 
     @Test
