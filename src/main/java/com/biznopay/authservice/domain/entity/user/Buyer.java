@@ -27,6 +27,7 @@ public class Buyer extends User {
     public static Buyer reconstitute(UserId id, String firstName, String lastName, String email, String phone,
                                      String password, UserStatus status, Address deliveryAddress, LocalDateTime expiresAt,
                                      LocalDateTime createdAt, LocalDateTime updatedAt) {
+        phone = validatePhone(phone);
         return new Buyer(id, firstName, lastName, email, phone, password, status, deliveryAddress, expiresAt, createdAt, updatedAt);
     }
 

@@ -1,5 +1,7 @@
 package com.biznopay.authservice.domain.vo;
 
+import com.biznopay.authservice.domain.exception.InvalidFieldException;
+
 public record Address(
         Double latitude,
         Double longitude,
@@ -12,7 +14,7 @@ public record Address(
     public Address {
         if (latitude == null) throw new IllegalArgumentException("Latitude is required");
         if (longitude == null) throw new IllegalArgumentException("Longitude is required");
-        if (latitude < -90 || latitude > 90) throw new IllegalArgumentException("Invalid latitude value");
+        if (latitude < -90 || latitude > 90) throw new InvalidFieldException("Latitude", "Address", "ADDRESS-003");
         if (longitude < -180 || longitude > 180) throw new IllegalArgumentException("Invalid longitude value");
     }
 }
