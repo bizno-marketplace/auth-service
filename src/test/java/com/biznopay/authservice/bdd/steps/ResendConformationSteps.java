@@ -129,4 +129,10 @@ public class ResendConformationSteps {
         entity.setStatus(UserStatus.valueOf(status));
         userJpaRepository.save(entity);
     }
+
+// SCENARIO: Return 200 for non-existent email (security — no enumeration)
+    @Given("no user exists with email {string}")
+    public void noUserExistsWithEmail(String email) {
+        // setup method does it
+    }
 }

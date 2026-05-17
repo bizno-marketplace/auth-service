@@ -31,7 +31,7 @@ Feature: Resend Confirmation Email
 
   Scenario: Return 200 for non-existent email (security — no enumeration)
     Given no user exists with email "ghost@example.com"
-    When I send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with body:
       | email | ghost@example.com |
     Then the response status should be 200
 
