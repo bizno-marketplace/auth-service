@@ -90,7 +90,7 @@ public class RegisterSASteps {
     @Given("a user with email {string} exists in the system")
     public void aUserWithEmailExistsInTheSystem(String email) {
         Address address = null;
-        User user = Buyer.register("John", "Smith", email, "Password@123", address);
+        User user = Buyer.register("John", "Smith", email, "848484848","Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
