@@ -5,6 +5,7 @@ import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
+import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
@@ -68,8 +69,9 @@ public class UserMapper {
     }
 
     private static Buyer toBuyerDomainEntity(BuyerJpaEntity entity) {
+        Address address =  null;
         return Buyer.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
-                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
+                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(),address, entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt());
     }
 
