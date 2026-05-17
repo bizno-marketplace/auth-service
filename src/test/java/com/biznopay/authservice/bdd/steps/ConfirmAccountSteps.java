@@ -72,7 +72,7 @@ public class ConfirmAccountSteps {
     @Given("a user registered with email {string} has a valid confirmation token")
     public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
         Address address = null;
-        User user = Buyer.register("John", "Smith", email, "848484848","Password@123", address);
+        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
 
@@ -102,7 +102,7 @@ public class ConfirmAccountSteps {
     @Given("a user registered with email {string} has an expired confirmation token")
     public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email) {
         Address address = null;
-        User user = Buyer.register("John", "Smith", email, "848484848","Password@123", address);
+        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
 
@@ -116,7 +116,7 @@ public class ConfirmAccountSteps {
     @Given("a user registered with email {string}")
     public void aUserRegisteredWithEmail(String email) {
         Address address = null;
-        User user = Buyer.register("John", "Smith", email, "848484848","Password@123", address);
+        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
@@ -135,7 +135,7 @@ public class ConfirmAccountSteps {
     @Given("a user with email {string} has already confirmed the account")
     public void aUserWithEmailHasAlreadyConfirmedTheAccount(String email) {
         Address address = null;
-        User user = Buyer.register("John", "Smith", email, "848484848","Password@123", address);
+        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         user.activate();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);

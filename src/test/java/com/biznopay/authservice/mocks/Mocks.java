@@ -67,11 +67,11 @@ public class Mocks {
     }
 
     public static Buyer buyerMock() {
-        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "848484848","Password@123", addressMock());
+        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "848484848", "Password@123", addressMock());
     }
 
     public static User buyerMockFromRegisterSARequest(RegisterSARequest request) {
-        return Buyer.register(request.firstName(), request.lastName(), request.email(),"848484848" ,request.password(), addressMock());
+        return Buyer.register(request.firstName(), request.lastName(), request.email(), "848484848", request.password(), addressMock());
     }
 
     public static UserJpaEntity buyerJpaEntityMock() {

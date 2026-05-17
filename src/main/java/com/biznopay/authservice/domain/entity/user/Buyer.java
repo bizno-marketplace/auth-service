@@ -15,7 +15,7 @@ public class Buyer extends User {
         this.deliveryAddress = validateAddress(deliveryAddress);
     }
 
-    public static Buyer register(String firstName, String lastname, String email,String phone, String password, Address deliveryAddress) {
+    public static Buyer register(String firstName, String lastname, String email, String phone, String password, Address deliveryAddress) {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiresAt = LocalDateTime.now().plusDays(2);
         return new Buyer(UserId.generate(), firstName, lastname, email, phone, password, UserStatus.PENDING, deliveryAddress, expiresAt, createdAt, createdAt);
