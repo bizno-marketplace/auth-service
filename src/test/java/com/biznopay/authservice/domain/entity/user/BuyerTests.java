@@ -1,6 +1,7 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.exception.InvalidPhoneNumberException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.vo.Address;
 import org.junit.jupiter.api.Assertions;
@@ -13,23 +14,30 @@ import static com.biznopay.authservice.mocks.Mocks.addressMock;
 
 public class BuyerTests {
     @Test
+    @DisplayName("Should throw InvalidPhoneNumberException when phone number is invalid or not Mozambican phone number on register")
+    public void shouldThrowInvalidPhoneNumberExceptionWhenPhoneNumberIsInvalidOrNotMozambicanPhoneNumberOnRegister() {
+        Assertions.assertThrows(InvalidPhoneNumberException.class, () -> Buyer.register("any_first_name",
+                "any_last_name", "admin@bizno.co.mz", "8884848484", "Password@123", addressMock()));
+    }
+
+    @Test
     @DisplayName("Should throw  RequiredFieldException when delivery address is null on register")
     public void shouldReturnRequiredFieldExceptionWhenDeliveryAddressIsNull() {
         Assertions.assertThrows(RequiredFieldException.class, () -> Buyer.register("any_first_name",
-                "any_last_name", "admin@bizno.co.mz", "8484848484", "Password@123", null));
+                "any_last_name", "admin@bizno.co.mz", "848484848", "Password@123", null));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("Should throw RequiredFieldException when phone number is empty or null")
-    public void shouldThrowRequiredFieldExceptionWhenPhoneNumberIsEmptyOrNull(String phone){
+    @DisplayName("Should throw RequiredFieldException when phone number is empty or null on register")
+    public void shouldThrowRequiredFieldExceptionWhenPhoneNumberIsEmptyOrNullOnRegister(String phone){
         Assertions.assertThrows(RequiredFieldException.class, () -> Buyer.register("any_first_name",
                 "any_last_name", "admin@bizno.co.mz", phone, "Password@123", addressMock()));
     }
 
     @Test
-    @DisplayName("Should return Buyer with correct values")
-    public void shouldReturnBuyerWithCorrectValues() {
+    @DisplayName("Should return Buyer with correct values on register")
+    public void shouldReturnBuyerWithCorrectValuesOnRegister() {
         Address address = new Address(-25.9692, 32.5732, "any_street", "any_neighbourhood", "any_city", "any_province", "any_country");
         Buyer buyer = Buyer.register("any_first_name", "any_last_name", "anybizno@bizno.co.mz", "848484848", "Password@123", address);
         Assertions.assertNotNull(buyer);
