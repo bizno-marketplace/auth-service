@@ -2,6 +2,7 @@ package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
@@ -22,9 +23,12 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
+
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +49,9 @@ public class ResendConformationSteps {
 
     @Autowired
     private ActivationTokenJpaRepository activationTokenJpaRepository;
+
+    @Autowired
+    private ResendCooldownGateway resendCooldownGateway;
 
     private UserJpaEntity entity;
     private ActivationTokenJpaEntity previousActivationToken;
@@ -134,5 +141,13 @@ public class ResendConformationSteps {
     @Given("no user exists with email {string}")
     public void noUserExistsWithEmail(String email) {
         // setup method does it
+    }
+
+// SCENARIO: Reject resend during cooldown period
+    @And("a confirmation email was already sent less than {int} minutes ago")
+    public void aConfirmationEmailWasAlreadySentLessThanMinutesAgo(int minutes) {
+        previousActivationToken = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(entity);
+        activationTokenJpaRepository.save(previousActivationToken);
+        resendCooldownGateway.startCooldown(entity.getEmail(), Duration.ofMinutes(minutes));
     }
 }

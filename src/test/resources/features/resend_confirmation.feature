@@ -38,7 +38,7 @@ Feature: Resend Confirmation Email
   Scenario: Reject resend during cooldown period
     Given a user registered with email "user@example.com" with status "PENDING"
     And a confirmation email was already sent less than 2 minutes ago
-    When I send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with body:
       | email | user@example.com |
     Then the response status should be 429
     And the response body should contain error "Please wait before requesting a new confirmation email"
