@@ -14,6 +14,7 @@ import io.cucumber.java.en.Given;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,12 +47,11 @@ public class ResendConformationSteps {
     @Autowired
     private ResendCooldownGateway resendCooldownGateway;
 
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
     private UserJpaEntity entity;
     private ActivationTokenJpaEntity previousActivationToken;
-
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
 
     @Before
     public void setUp() {
@@ -66,10 +66,13 @@ public class ResendConformationSteps {
             public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
             }
         });
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
         scenarioContext.setRestTemplate(restTemplate);
+        scenarioContext.setRedisTemplate(redisTemplate);
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
+
 
     // SCENARIO: Successfully resend confirmation email for a pending account
     @Given("a user registered with email {string} with status {string}")
