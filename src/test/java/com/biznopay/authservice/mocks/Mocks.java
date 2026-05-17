@@ -91,11 +91,11 @@ public class Mocks {
     }
 
     public static ActivationTokenJpaEntity unusedActivationTokenJpaEntityFromBuyerMock(UserJpaEntity user) {
-        LocalDateTime dateTime =  LocalDateTime.now();
+        LocalDateTime dateTime = LocalDateTime.now();
         return new ActivationTokenJpaEntity(UUID.randomUUID(), user.getId(), false, dateTime.plusMinutes(15), dateTime);
     }
 
-    public static ActivationTokenJpaEntity unusedActivationTokenJpaEntityFromBuyerMock(UserJpaEntity user,LocalDateTime dateTime) {
+    public static ActivationTokenJpaEntity unusedActivationTokenJpaEntityFromBuyerMock(UserJpaEntity user, LocalDateTime dateTime) {
         return new ActivationTokenJpaEntity(UUID.randomUUID(), user.getId(), false, dateTime.plusMinutes(15), dateTime);
     }
 }

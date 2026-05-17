@@ -14,7 +14,7 @@ Feature: Resend Confirmation Email
   Scenario: Successfully resend confirmation email for a pending account
     Given a user registered with email "user@example.com" with status "PENDING"
     And the previous confirmation token has expired
-      When i send a POST request to "/accounts/resend-confirmation" with body:
+    When i send a POST request to "/accounts/resend-confirmation" with body:
       | email | user@example.com |
     Then the response status should be 200
     And the previous token should be invalidated

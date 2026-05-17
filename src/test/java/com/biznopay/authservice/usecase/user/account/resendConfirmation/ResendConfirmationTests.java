@@ -33,7 +33,7 @@ public class ResendConfirmationTests {
     @Mock
     private ActivationTokenGateway activationTokenGateway;
 
-    private ResendConformation setUp() {
+    private com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation setUp() {
         return new ResendConformation(userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
     }
 
