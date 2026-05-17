@@ -1,12 +1,14 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.exception.InvalidPhoneNumberException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.vo.Address;
 
 import java.time.LocalDateTime;
 
 public class Buyer extends User {
+    private static final String MOZ_PHONE_REGEX = "^(\\+258)?(82|83|84|85|86|87)\\d{7}$";
     private Address deliveryAddress;
 
     private Buyer(UserId id, String firstName, String lastname, String email, String phone, String password, UserStatus status, Address deliveryAddress,
@@ -31,12 +33,14 @@ public class Buyer extends User {
     private static String validatePhone(String phone){
         if (phone == null || phone.isEmpty())
             throw new RequiredFieldException("Phone number", Buyer.class.getName(), "BUYER-001");
+        if(!phone.matches(MOZ_PHONE_REGEX))
+            throw new InvalidPhoneNumberException("BUYER-002");
         return phone;
     }
 
     private Address validateAddress(Address deliveryAddress) {
         if (deliveryAddress == null)
-            throw new RequiredFieldException("Delivery address0", Buyer.class.getName(), "BUYER-002");
+            throw new RequiredFieldException("Delivery address", Buyer.class.getName(), "BUYER-003");
         return deliveryAddress;
     }
 
