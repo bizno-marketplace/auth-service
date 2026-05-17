@@ -5,14 +5,20 @@ import com.biznopay.authservice.domain.entity.event.UserRegistered;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.exception.ConflictException;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
+import com.biznopay.authservice.domain.exception.InvalidPasswordException;
+import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.DomainEventGateway;
+import com.biznopay.authservice.domain.gateway.EncoderGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,15 +30,15 @@ import java.util.Optional;
 public class RegisterSATests {
     @Mock
     private UserGateway userGateway;
-
+    @Mock
+    private EncoderGateway encoderGateway;
+    @Mock
+    private DomainEventGateway domainEventGateway;
     @Mock
     private ActivationTokenGateway activationTokenGateway;
 
-    @Mock
-    private DomainEventGateway domainEventGateway;
-
     private RegisterSA setupRegisterSA() {
-        return new RegisterSA(userGateway, activationTokenGateway, domainEventGateway);
+        return new RegisterSA(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 
     @Test
@@ -58,12 +64,42 @@ public class RegisterSATests {
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should throw RequiredFieldException if password is null or empty on register SA")
+    public void shouldThrowRequiredFieldExceptionIfPasswordIsNullOrEmptyOnRegisterSA(String password) {
+        RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", password);
+        Mockito.when(userGateway.countSAs()).thenReturn(0L);
+        Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
+        RegisterSA useCase = setupRegisterSA();
+        Assertions.assertThrows(RequiredFieldException.class, () -> useCase.execute(input), "Password is required");
+        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
+        Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
+        Mockito.verify(encoderGateway, Mockito.times(0)).encode(input.password());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"any_pass", "PassWord!", "Password123"})
+    @DisplayName("Should throw InvalidPasswordException if password does not match with established rules")
+    public void shouldThrowInvalidPasswordExceptionIfPasswordDoesNotMatchWithEstablishedRules(String password) {
+        String msgError = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character";
+        RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", password);
+        Mockito.when(userGateway.countSAs()).thenReturn(0L);
+        Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
+        RegisterSA useCase = setupRegisterSA();
+        Assertions.assertThrows(InvalidPasswordException.class, () -> useCase.execute(input), msgError);
+        Mockito.verify(userGateway, Mockito.times(1)).countSAs();
+        Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
+        Mockito.verify(encoderGateway, Mockito.times(0)).encode(input.password());
+    }
+
     @Test
     @DisplayName("Should registry supper admin, send activation link with 15 mins of expiration to provided email and return message to notify user")
     public void shouldRegisterSupperAdminSendActivationLinkWith15minsOfExpirationToProvidedEmailAndReturnMessageToNotifyUser() {
         RegisterSAInput input = new RegisterSAInput("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
         Mockito.when(userGateway.countSAs()).thenReturn(0L);
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
+        Mockito.when(encoderGateway.encode(input.password())).thenReturn("GGSGGnxhgajhasfsklm)0199");
         Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserRegistered.class));
         RegisterSA useCase = setupRegisterSA();
         RegisterSAOutput output = useCase.execute(input);
