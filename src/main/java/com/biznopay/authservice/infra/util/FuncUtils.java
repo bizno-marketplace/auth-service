@@ -97,6 +97,15 @@ public class FuncUtils {
         return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
     }
 
+    public static ResponseEntity<ApiResponse<Object>> handleToManyRequests(TokenCooldownException exception, HttpServletRequest request, Logger log) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                exception.getSeverity(), request.getMethod(), request.getRequestURI(),
+                exception.getErrorCode(), exception.getMetadata(), exception.getMessage());
+        ApiError error = new ApiError(exception.getErrorCode(), exception.getMessage());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+
     public static ResponseEntity<ApiResponse<Object>> handleUnexpectedException(RuntimeException exception, HttpServletRequest request, Logger log) {
         TechnicalException ex = new UnexpectedException("UNEXPECTED_ERROR-001");
         log.error("[{}] {} {} | code={} | message={} | metadata={}",

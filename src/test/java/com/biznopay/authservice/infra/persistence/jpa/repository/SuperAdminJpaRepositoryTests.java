@@ -1,6 +1,6 @@
 package com.biznopay.authservice.infra.persistence.jpa.repository;
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.*;
@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class SuperAdminJpaRepositoryTests extends PostgresContainerBase {
+public class SuperAdminJpaRepositoryTests extends ContainerBase {
     @Autowired
     private SuperAdminJpaRepository superAdminJpaRepository;
 

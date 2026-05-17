@@ -1,6 +1,6 @@
 package com.biznopay.authservice.infra.controller;
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;
@@ -25,7 +25,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 @Tag("integration")
 @ActiveProfiles("test")
 @WebMvcTest(SAController.class)
-public class ControllerHandlerTests extends PostgresContainerBase {
+public class ControllerHandlerTests extends ContainerBase {
     @Autowired
     private WebApplicationContext context;
 

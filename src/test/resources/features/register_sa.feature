@@ -18,7 +18,7 @@ Feature: Register Super Admin
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
-    Then the response should be 200
+    Then the response status should be 200
     And a confirmation email should be sent to "admin@bizno.co.mz"
     And the confirmation email should have a link that expires after 15 minutes
 
@@ -29,8 +29,8 @@ Feature: Register Super Admin
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
-    Then the response should be 409
-    And the response should have a message "Super admin already exists"
+    Then the response status should be 409
+    And the response body should contain error "Super admin already exists"
 
   Scenario: Reject registration if email is already in use
     Given a user with email "admin@bizno.co.mz" exists in the system
@@ -39,8 +39,8 @@ Feature: Register Super Admin
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
-    Then the response should be 409
-    And the response should have a message "Email already in use"
+    Then the response status should be 409
+    And the response body should contain error "Email already in use"
 
   Scenario: Reject registration if firstname is missing
     Given no super admin exists in the system
@@ -48,8 +48,8 @@ Feature: Register Super Admin
       | lastName | Admin             |
       | email    | admin@bizno.co.mz |
       | password | Password@1234     |
-    Then the response should be 400
-    And the response should have a message "First name is required"
+    Then the response status should be 400
+    And the response body should contain error "First name is required"
 
   Scenario: Reject registration if firstname as less than 3 characters
     Given no super admin exists in the system
@@ -58,8 +58,8 @@ Feature: Register Super Admin
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
-    Then the response should be 422
-    And the response should have a message "First name must be at least 3 characters long"
+    Then the response status should be 422
+    And the response body should contain error "First name must be at least 3 characters long"
 
   Scenario: Reject registration if lastname is missing
     Given no super admin exists in the system
@@ -67,8 +67,8 @@ Feature: Register Super Admin
       | firstName | Super             |
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
-    Then the response should be 400
-    And the response should have a message "Last name is required"
+    Then the response status should be 400
+    And the response body should contain error "Last name is required"
 
   Scenario: Reject registration if lastname as less than 3 characters
     Given no super admin exists in the system
@@ -77,8 +77,8 @@ Feature: Register Super Admin
       | lastName  | Ad                |
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
-    Then the response should be 422
-    And the response should have a message "Last name must be at least 3 characters long"
+    Then the response status should be 422
+    And the response body should contain error "Last name must be at least 3 characters long"
 
   Scenario: Reject registration if email is missing
     Given no super admin exists in the system
@@ -86,8 +86,8 @@ Feature: Register Super Admin
       | firstName | Super         |
       | lastName  | Admin         |
       | password  | Password@1234 |
-    Then the response should be 400
-    And the response should have a message "E-mail is required"
+    Then the response status should be 400
+    And the response body should contain error "E-mail is required"
 
   Scenario: Reject registration with non bizno institutional email
     Given no super admin exists in the system
@@ -96,8 +96,8 @@ Feature: Register Super Admin
       | lastName  | Admin           |
       | email     | admin@gmail.com |
       | password  | Password@1234   |
-    Then the response should be 422
-    And the response should have a message "E-mail must be a bizno institutional email"
+    Then the response status should be 422
+    And the response body should contain error "E-mail must be a bizno institutional email"
 
   Scenario: Reject registration if password is missing
     Given no super admin exists in the system
@@ -105,8 +105,8 @@ Feature: Register Super Admin
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
-    Then the response should be 400
-    And the response should have a message "Password is required"
+    Then the response status should be 400
+    And the response body should contain error "Password is required"
 
   Scenario: Reject registration if weak password
     Given no super admin exists in the system
@@ -115,6 +115,6 @@ Feature: Register Super Admin
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
       | password  | password          |
-    Then the response should be 422
-    And the response should have a message "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    Then the response status should be 422
+    And the response body should contain error "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
 

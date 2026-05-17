@@ -1,4 +1,4 @@
-package com.biznopay.authservice.usecase.user.confirmAccount;
+package com.biznopay.authservice.usecase.user.account.confirmAccount;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.User;
@@ -25,15 +25,19 @@ public class ConfirmAccount {
         UUID tokenId = validateActivationTokenId(rawTokenId);
         ActivationToken activationToken = tokenGateway.findById(tokenId).
                 orElseThrow(() -> new InvalidConfirmationTokenException("ACTIVATION_TOKEN-002"));
-        if (activationToken.isExpired()) throw new ExpiredConfirmationTokenException("ACTIVATION_TOKEN-003");
+
+        if (activationToken.isExpired())
+            throw new ExpiredConfirmationTokenException("ACTIVATION_TOKEN-003");
+
         User user = userGateway.findById(activationToken.getUserId().value()).
                 orElseThrow(() -> new ResourceNotFoundException("User", "ACTIVATION_TOKEN-004"));
+
         if (activationToken.isUsed() && UserStatus.ACTIVE == user.getStatus())
             throw new AccountAlreadyConfirmedException("ACTIVATION_TOKEN-005");
+
         user.activate();
         userGateway.save(user);
-        activationToken.markAsUsed();
-        tokenGateway.save(activationToken);
+        tokenGateway.delete(activationToken);
     }
 
     private UUID validateActivationTokenId(String rawTokenId) {

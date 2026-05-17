@@ -1,6 +1,6 @@
 package com.biznopay.authservice.bdd;
 
-import com.biznopay.authservice.config.PostgresContainerBase;
+import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +11,6 @@ import org.springframework.test.context.ActiveProfiles;
 @Import(TestConfig.class)
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CucumberSpringConfig extends PostgresContainerBase {
+public class CucumberSpringConfig extends ContainerBase {
 
 }

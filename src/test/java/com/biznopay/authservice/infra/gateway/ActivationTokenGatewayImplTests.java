@@ -36,6 +36,15 @@ public class ActivationTokenGatewayImplTests {
     }
 
     @Test
+    @DisplayName("Should delete activation token if exists")
+    public void shouldDeleteActivationTokenIfExists() {
+        ActivationToken token = ActivationToken.generate(new UserId(UUID.randomUUID()));
+        ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
+        activationTokenGateway.delete(token);
+        Mockito.verify(activationTokenJpaRepository).delete(Mockito.any(ActivationTokenJpaEntity.class));
+    }
+
+    @Test
     @DisplayName("Should return optional empty if activation token is not found on find by id")
     public void shouldReturnOptionalEmptyIfActivationTokenIdIsNotFoundOnFindById() {
         UUID tokenId = UUID.randomUUID();
@@ -62,5 +71,15 @@ public class ActivationTokenGatewayImplTests {
         Assertions.assertEquals(activationToken.getCreatedAt(), token.get().getCreatedAt());
         Assertions.assertEquals(activationToken.isUsed(), token.get().isUsed());
 
+    }
+
+    @Test
+    @DisplayName("Should return optional empty if activation token is not found on find active by  user id")
+    public void shouldReturnOptionalEmptyIfActivationTokenIdIsNotFoundOnFindActiveByUserId() {
+        UUID userId = UUID.randomUUID();
+        Mockito.when(activationTokenJpaRepository.findByUsedAndUserId(false, userId)).thenReturn(Optional.empty());
+        ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
+        Optional<ActivationToken> token = activationTokenGateway.findActiveByUserId(userId);
+        Assertions.assertTrue(token.isEmpty());
     }
 }

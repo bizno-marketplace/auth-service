@@ -23,8 +23,20 @@ public class ActivationTokenGatewayImpl implements ActivationTokenGateway {
     }
 
     @Override
+    public void delete(ActivationToken token) {
+        ActivationTokenJpaEntity jpaEntity = ActivationTokenMapper.toJpaEntity(token);
+        activationTokenJpaRepository.delete(jpaEntity);
+    }
+
+    @Override
     public Optional<ActivationToken> findById(UUID tokenId) {
         Optional<ActivationTokenJpaEntity> jpaEntity = activationTokenJpaRepository.findById(tokenId);
         return jpaEntity.map(ActivationTokenMapper::toDomainEntity);
+    }
+
+    @Override
+    public Optional<ActivationToken> findActiveByUserId(UUID userId) {
+        Optional<ActivationTokenJpaEntity> entity = activationTokenJpaRepository.findByUsedAndUserId(false, userId);
+        return entity.map(ActivationTokenMapper::toDomainEntity);
     }
 }
