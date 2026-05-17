@@ -16,6 +16,6 @@ public record Address(
         if (latitude == null) throw new RequiredFieldException("Latitude", "Address", "ADDRESS-001");
         if (longitude == null) throw new RequiredFieldException("Longitude", "Address", "ADDRESS-002");
         if (latitude < -90 || latitude > 90) throw new InvalidFieldException("Latitude", "Address", "ADDRESS-003");
-        if (longitude < -180 || longitude > 180) throw new IllegalArgumentException("Invalid longitude value");
+        if (longitude < -180 || longitude > 180) throw new InvalidFieldException("Longitude", "Address", "ADDRESS-004");
     }
 }
