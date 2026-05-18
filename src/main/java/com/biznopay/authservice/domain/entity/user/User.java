@@ -2,12 +2,15 @@ package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
+import com.biznopay.authservice.domain.exception.InvalidEmailException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
 
 public abstract class User {
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$";
+
     private final UserId id;
     private final String firstName;
     private final String lastname;
@@ -24,7 +27,7 @@ public abstract class User {
         this.id = id;
         this.firstName = this.validateFirstName(firstName);
         this.lastname = this.validateLastName(lastname);
-        this.email = email;
+        this.email = this.validateEmail(email);
         this.phone = phone;
         this.password = password;
         this.status = status;
@@ -49,6 +52,14 @@ public abstract class User {
         if (lastname.length() < 3)
             throw new InvalidStringFieldLengException("Last name", 3, User.class.getName(), "USER-005");
         return lastname;
+    }
+
+    private String validateEmail(String email){
+        if (email == null || email.isEmpty())
+            throw new RequiredFieldException("Email", User.class.getName(), "USER-006");
+        if(!email.matches(EMAIL_REGEX))
+            throw new InvalidEmailException("USER-007");
+        return email;
     }
     //END VALIDATIONS
 

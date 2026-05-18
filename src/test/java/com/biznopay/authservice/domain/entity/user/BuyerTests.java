@@ -1,6 +1,7 @@
 package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.exception.InvalidEmailException;
 import com.biznopay.authservice.domain.exception.InvalidPhoneNumberException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.vo.Address;
@@ -9,10 +10,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.biznopay.authservice.mocks.Mocks.addressMock;
 
 public class BuyerTests {
+
+    @ParameterizedTest
+    @ValueSource(strings = {"any_email", "test.com", "someone"})
+    @DisplayName("Should throw InvalidEmailException if email is not valid")
+    public void shouldThrowInvalidEmailExceptionIfEmailIsNotValid(String email) {
+        Assertions.assertThrows(InvalidEmailException.class,
+                () -> Buyer.register("any_first_name",
+                        "any_last_name", email, "848484848", "Password@123", addressMock()));
+    }
+
     @Test
     @DisplayName("Should throw InvalidPhoneNumberException when phone number is invalid or not Mozambican phone number on register")
     public void shouldThrowInvalidPhoneNumberExceptionWhenPhoneNumberIsInvalidOrNotMozambicanPhoneNumberOnRegister() {
