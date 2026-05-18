@@ -54,10 +54,10 @@ public abstract class User {
         return lastname;
     }
 
-    private String validateEmail(String email){
+    private String validateEmail(String email) {
         if (email == null || email.isEmpty())
             throw new RequiredFieldException("Email", User.class.getName(), "USER-006");
-        if(!email.matches(EMAIL_REGEX))
+        if (!email.matches(EMAIL_REGEX))
             throw new InvalidEmailException("USER-007");
         return email;
     }

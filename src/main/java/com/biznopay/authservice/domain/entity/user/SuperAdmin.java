@@ -2,7 +2,6 @@ package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
 
@@ -28,8 +27,8 @@ public class SuperAdmin extends User {
     }
 
     private static String validateBiznoInstitutionalEmail(String email) throws NonBiznoInstitutionalEmailException {
-     if (!email.endsWith(BIZNO_EMAIL_DOMAIN))
-         throw new NonBiznoInstitutionalEmailException("SUPER_ADMIN-002");
-     return email;
+        if (!email.endsWith(BIZNO_EMAIL_DOMAIN))
+            throw new NonBiznoInstitutionalEmailException("SUPER_ADMIN-002");
+        return email;
     }
 }
