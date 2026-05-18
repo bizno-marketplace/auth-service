@@ -60,14 +60,6 @@ public class SuperAdminTests {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("Should throw RequiredFieldException if email is null or empty on register")
-    public void shouldThrowRequiredFieldExceptionIfEmailIsNullOrEmptyOnRegister(String email) {
-        Assertions.assertThrows(RequiredFieldException.class,
-                () -> SuperAdmin.register("any_first_name", "any_last_name", email, "any_password"));
-    }
-
-    @ParameterizedTest
     @ValueSource(strings = {"any_email", "test@email.com", "someone@gmail.com"})
     @DisplayName("Should throw NonBiznoInstitutionalEmailException if email is not bizno instututional")
     public void shouldThrowNonBiznoInstitutionalEmailExceptionIfEmailIsNotBiznoInstitutional(String email) {

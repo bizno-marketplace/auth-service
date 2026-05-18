@@ -6,6 +6,7 @@ import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
+import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformationOutput;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AccountController {
 
     @PostMapping("/resend-confirmation")
     public ResponseEntity<ApiResponse<Object>> resendConfirmation(@RequestBody @Valid ResendConfirmationRequest request) {
-        String output = resendConformation.execute(request.email());
+        ResendConformationOutput output = resendConformation.execute(request.email());
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
     }
 }

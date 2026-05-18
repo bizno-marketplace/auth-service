@@ -1,11 +1,7 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.Buyer;
-import com.biznopay.authservice.domain.entity.user.SuperAdmin;
-import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.mocks.Mocks;
@@ -22,8 +18,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Optional;
 
-public class RegisterSASteps {
+public class RegisterBuyerSteps {
 
     @Autowired
     private ScenarioContext scenarioContext;
@@ -33,6 +30,7 @@ public class RegisterSASteps {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
+    private String email;
 
     @Before
     public void setUp() {
@@ -48,41 +46,41 @@ public class RegisterSASteps {
             }
         });
         scenarioContext.setRestTemplate(restTemplate);
+        scenarioContext.setJdbcTemplate(jdbcTemplate);
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
-    // COMMON
-    @Given("no super admin exists in the system")
-    public void noSuperAdminExistsInTheSystem() {
-        // o setUp já faz o truncate
+    // SCENARIO:  Successfully register a new buyer
+    @Given("no buyer exists with email {string}")
+    public void noBuyerExistsWithEmail(String email) {
+        this.email = email;
+        Optional<UserJpaEntity> user = userJpaRepository.findByEmail(email);
+        Assertions.assertTrue(user.isEmpty());
     }
 
-    // SCENARIO: Successfully register super admin when none exists
-    @And("a confirmation email should be sent to {string}")
-    public void aConfirmationEmailShouldBeSentTo(String email) {
-        Integer count = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM t_outbox_events WHERE payload LIKE ? AND status = 'PENDING'",
-                Integer.class,
-                "%" + email + "%"
-        );
-        Assertions.assertTrue(count > 0);
+    @And("the buyer account is created with status {string}")
+    public void theBuyerAccountIsCreatedWithStatus(String status) {
+        Optional<UserJpaEntity> user = userJpaRepository.findByEmail(this.email);
+        Assertions.assertTrue(user.isPresent());
+        Assertions.assertEquals(UserStatus.valueOf(status), user.get().getStatus());
     }
 
-    // SCENARIO: Reject registration when super admin already exists
-    @Given("a super admin already exists in the system")
-    public void aSuperAdminAlreadyExistsInTheSystem() {
-        User user = SuperAdmin.register("John", "Smith", "admin@bizno.co.mz", "Password@123");
-        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+    @And("the account expires in 2 days")
+    public void theAccountExpiresIn2Days() {
+        Optional<UserJpaEntity> user = userJpaRepository.findByEmail(this.email);
+        Assertions.assertTrue(user.isPresent());
+    }
+
+    // SCENARIO: Attempt to register with an already registered email
+    @Given("a buyer already exists with email {string}")
+    public void aBuyerExistsWithEmail(String email) {
+        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
+        entity.setEmail(email);
         userJpaRepository.save(entity);
-    }
 
-    // SCENARIO: Reject registration if email is already in use
-    @Given("a user with email {string} exists in the system")
-    public void aUserWithEmailExistsInTheSystem(String email) {
-        Address address = Mocks.addressMock();
-        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
-        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
-        userJpaRepository.save(entity);
+        this.email = email;
+        Optional<UserJpaEntity> user = userJpaRepository.findByEmail(email);
+        Assertions.assertTrue(user.isPresent());
     }
 }

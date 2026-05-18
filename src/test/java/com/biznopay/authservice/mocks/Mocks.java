@@ -4,6 +4,9 @@ import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
+import com.biznopay.authservice.domain.vo.Address;
+import com.biznopay.authservice.infra.dto.AddressRequest;
+import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.outbox.OutboxStatus;
@@ -12,6 +15,8 @@ import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.biznopay.authservice.infra.mapper.UserMapper.toAddressJpaEntity;
 
 public class Mocks {
     public static RegisterSARequest registerSARequestMock() {
@@ -61,17 +66,22 @@ public class Mocks {
         return UserMapper.toUserJpaEntity(user);
     }
 
-    public static User buyerMock() {
-        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "Password@123");
+    public static Address addressMock() {
+        return new Address(-25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
+    }
+
+    public static Buyer buyerMock() {
+        return Buyer.register("any_first_name", "any_last_name", "admin@bizno.co.mz", "848484848", "Password@123", addressMock());
     }
 
     public static User buyerMockFromRegisterSARequest(RegisterSARequest request) {
-        return Buyer.register(request.firstName(), request.lastName(), request.email(), request.password());
+        return Buyer.register(request.firstName(), request.lastName(), request.email(), "848484848", request.password(), addressMock());
     }
 
     public static UserJpaEntity buyerJpaEntityMock() {
+        AddressJpaEntity address = toAddressJpaEntity(addressMock());
         return new BuyerJpaEntity(UUID.randomUUID(), "any_first_name", "any_last_name",
-                "admin@bizno.co.mz", "", "Password@123", UserStatus.PENDING, LocalDateTime.now().plusDays(2),
+                "admin@bizno.co.mz", "848484848", "Password@123", UserStatus.PENDING, address, LocalDateTime.now().plusDays(2),
                 LocalDateTime.now(), LocalDateTime.now());
     }
 
@@ -97,5 +107,22 @@ public class Mocks {
 
     public static ActivationTokenJpaEntity unusedActivationTokenJpaEntityFromBuyerMock(UserJpaEntity user, LocalDateTime dateTime) {
         return new ActivationTokenJpaEntity(UUID.randomUUID(), user.getId(), false, dateTime.plusMinutes(15), dateTime);
+    }
+
+    public static RegisterBuyerRequest registerBuyerRequestMock() {
+        AddressRequest redeliveryAddress = new AddressRequest(-25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
+        return new RegisterBuyerRequest("John", "Smith", "johnsmith@email.co.mz", "Password@123", "848484848", redeliveryAddress);
+    }
+
+    public static AddressRequest validAddressRequestMock() {
+        return new AddressRequest(-25.9692, 32.5732, "Av. Eduardo Mondlane", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    }
+
+    public static AddressRequest addressRequestWithLatitude(Double latitude) {
+        return new AddressRequest(latitude, 32.5732, "Av. Eduardo Mondlane", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    }
+
+    public static AddressRequest addressRequestWithLongitude(Double longitude) {
+        return new AddressRequest(-25.9692, longitude, "Av. Eduardo Mondlane", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     }
 }

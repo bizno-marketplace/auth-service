@@ -17,16 +17,21 @@ public class FuncUtils {
 
     public static ResponseEntity<ApiResponse<Object>> handleBadRequest(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
-        if (exception instanceof RequiredFieldException) {
-            RequiredFieldException ex = (RequiredFieldException) exception;
+        if (exception instanceof RequiredFieldException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if (exception instanceof InvalidConfirmationTokenException) {
-            InvalidConfirmationTokenException ex = (InvalidConfirmationTokenException) exception;
+        if (exception instanceof InvalidConfirmationTokenException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof InvalidEmailException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
@@ -37,24 +42,21 @@ public class FuncUtils {
 
     public static ResponseEntity<ApiResponse<Object>> handleConflict(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
-        if (exception instanceof ConflictException) {
-            ConflictException ex = (ConflictException) exception;
+        if (exception instanceof ConflictException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if (exception instanceof EmailAlreadyInUseException) {
-            EmailAlreadyInUseException ex = (EmailAlreadyInUseException) exception;
+        if (exception instanceof EmailAlreadyInUseException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if (exception instanceof AccountAlreadyConfirmedException) {
-            AccountAlreadyConfirmedException ex = (AccountAlreadyConfirmedException) exception;
+        if (exception instanceof AccountAlreadyConfirmedException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
@@ -71,24 +73,28 @@ public class FuncUtils {
 
     public static ResponseEntity<ApiResponse<Object>> handleUnprocessableContent(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
-        if (exception instanceof InvalidStringFieldLengException) {
-            InvalidStringFieldLengException ex = (InvalidStringFieldLengException) exception;
+        if (exception instanceof InvalidStringFieldLengException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if (exception instanceof InvalidPasswordException) {
-            InvalidPasswordException ex = (InvalidPasswordException) exception;
+        if (exception instanceof InvalidPasswordException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
 
-        if (exception instanceof NonBiznoInstitutionalEmailException) {
-            NonBiznoInstitutionalEmailException ex = (NonBiznoInstitutionalEmailException) exception;
+        if (exception instanceof NonBiznoInstitutionalEmailException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof InvalidFieldException ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());

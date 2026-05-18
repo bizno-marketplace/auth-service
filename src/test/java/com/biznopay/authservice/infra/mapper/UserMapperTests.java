@@ -74,7 +74,7 @@ public class UserMapperTests {
         Assertions.assertEquals(user.getFirstName(), entity.getFirstName());
         Assertions.assertEquals(user.getLastName(), entity.getLastName());
         Assertions.assertEquals(user.getEmail(), entity.getEmail());
-        Assertions.assertEquals("", entity.getPhone());
+        Assertions.assertEquals("848484848", entity.getPhone());
         Assertions.assertEquals(user.getPassword(), entity.getPassword());
         Assertions.assertEquals(user.getStatus(), entity.getStatus());
         Assertions.assertEquals(user.getExpiresAt(), entity.getExpiresAt());
@@ -117,7 +117,7 @@ public class UserMapperTests {
         Assertions.assertEquals(entity.getFirstName(), user.getFirstName());
         Assertions.assertEquals(entity.getLastName(), user.getLastName());
         Assertions.assertEquals(entity.getEmail(), user.getEmail());
-        Assertions.assertEquals("", user.getPhone());
+        Assertions.assertEquals("848484848", user.getPhone());
         Assertions.assertEquals(entity.getPassword(), user.getPassword());
         Assertions.assertEquals(entity.getStatus(), user.getStatus());
         Assertions.assertEquals(entity.getExpiresAt(), user.getExpiresAt());
