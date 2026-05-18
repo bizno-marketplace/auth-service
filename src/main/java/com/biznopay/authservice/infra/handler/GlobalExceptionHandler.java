@@ -38,6 +38,7 @@ public class GlobalExceptionHandler {
         return switch (exception) {
             case RequiredFieldException ex -> FuncUtils.handleBadRequest(ex, request, log);
             case InvalidConfirmationTokenException ex -> FuncUtils.handleBadRequest(ex, request, log);
+            case InvalidEmailException ex -> FuncUtils.handleBadRequest(ex, request, log);
             case ConflictException ex -> FuncUtils.handleConflict(ex, request, log);
             case EmailAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
             case AccountAlreadyConfirmedException ex -> FuncUtils.handleConflict(ex, request, log);
@@ -45,6 +46,7 @@ public class GlobalExceptionHandler {
             case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case NonBiznoInstitutionalEmailException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
+            case InvalidFieldException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case TokenCooldownException ex -> FuncUtils.handleToManyRequests(ex, request, log);
             default -> FuncUtils.handleUnexpectedException(exception, request, log);
         };
