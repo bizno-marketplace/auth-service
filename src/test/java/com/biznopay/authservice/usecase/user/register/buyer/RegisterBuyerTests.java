@@ -2,6 +2,7 @@ package com.biznopay.authservice.usecase.user.register.buyer;
 
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
+import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.domain.vo.Address;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,6 +49,20 @@ public class RegisterBuyerTests {
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         RegisterBuyer registerBuyer = new RegisterBuyer(userGateway);
         Assertions.assertThrows(RequiredFieldException.class, () -> registerBuyer.execute(input));
+        Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Senha@Senha", "senha@1234", "Senha123"})
+    @DisplayName("Should throw InvalidPasswordException when password does not match with established rules")
+    public void shouldThrowInvalidPasswordExceptionWhenPasswordDoesNotMatchWithEstablishedRules(String password){
+        User user = Mocks.buyerMock();
+        Address address = Mocks.addressMock();
+        RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
+                user.getEmail(), password, user.getPhone(),address );
+        Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
+        RegisterBuyer registerBuyer = new RegisterBuyer(userGateway);
+        Assertions.assertThrows(InvalidPasswordException.class, () -> registerBuyer.execute(input));
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
 }
