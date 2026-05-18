@@ -30,9 +30,10 @@ public class ResendConformation {
         this.activationTokenGateway = activationTokenGateway;
     }
 
-    public String execute(String email) {
+    public ResendConformationOutput execute(String email) {
+        ResendConformationOutput output = new ResendConformationOutput("Successfully requested a new confirmation email.");
         Optional<User> existingUser = userGateway.findByEmail(email);
-        if (existingUser.isEmpty()) return "Successfully requested a new confirmation email.";
+        if (existingUser.isEmpty()) return output;
         User user = existingUser.get();
         if (user.getStatus() == UserStatus.ACTIVE)
             throw new AccountAlreadyConfirmedException("RESEND_CONFIRMATION-001");
@@ -48,6 +49,6 @@ public class ResendConformation {
         resendCooldownGateway.startCooldown(email, COOLDOWN);
         UserRegistered event = UserRegistered.of(user.getId(), user.getEmail(), user.getFirstName(), token.getId());
         domainEventGateway.publish(event);
-        return "Successfully requested a new confirmation email.";
+        return output;
     }
 }

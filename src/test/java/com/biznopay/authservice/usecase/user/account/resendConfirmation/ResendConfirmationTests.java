@@ -45,8 +45,8 @@ public class ResendConfirmationTests {
         String email = "user@example.com";
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.empty());
         ResendConformation resendConformation = setUp();
-        String result = resendConformation.execute(email);
-        Assertions.assertEquals("Successfully requested a new confirmation email.", result);
+        ResendConformationOutput result = resendConformation.execute(email);
+        Assertions.assertEquals("Successfully requested a new confirmation email.", result.message());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ResendConfirmationTests {
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(false);
         Mockito.when(activationTokenGateway.findActiveByUserId(user.getId().value())).thenReturn(Optional.of(token));
         ResendConformation resendConformation = setUp();
-        String output = resendConformation.execute(email);
+        ResendConformationOutput output = resendConformation.execute(email);
 
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(email);
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).isInCooldown(email);
@@ -91,7 +91,7 @@ public class ResendConfirmationTests {
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, ResendConformation.COOLDOWN);
         Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
-        Assertions.assertEquals("Successfully requested a new confirmation email.", output);
+        Assertions.assertEquals("Successfully requested a new confirmation email.", output.message());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class ResendConfirmationTests {
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(false);
         Mockito.when(activationTokenGateway.findActiveByUserId(user.getId().value())).thenReturn(Optional.empty());
         ResendConformation resendConformation = setUp();
-        String output = resendConformation.execute(email);
+        ResendConformationOutput output = resendConformation.execute(email);
 
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(email);
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).isInCooldown(email);
@@ -112,6 +112,6 @@ public class ResendConfirmationTests {
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, ResendConformation.COOLDOWN);
         Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
-        Assertions.assertEquals("Successfully requested a new confirmation email.", output);
+        Assertions.assertEquals("Successfully requested a new confirmation email.", output.message());
     }
 }
