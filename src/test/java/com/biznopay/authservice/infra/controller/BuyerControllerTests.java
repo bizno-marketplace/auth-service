@@ -5,6 +5,8 @@ import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.mocks.Mocks;
@@ -65,5 +67,24 @@ public class BuyerControllerTests extends ContainerBase {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         RegisterBuyerOutput output = response.getBody().data();
         Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
+    }
+
+    @Test
+    @DisplayName("Should return 409 when email is already in use")
+    public void shouldReturn409WhenEmailIsAlreadyInUse(){
+        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
+        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
+        entity.setEmail(request.email());
+        userJpaRepository.save(entity);
+
+        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
+                url("/buyers"),
+                HttpMethod.POST,
+                new HttpEntity<>(request),
+                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Email already in use",response.getBody().error().message());
     }
 }

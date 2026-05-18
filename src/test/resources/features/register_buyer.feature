@@ -43,7 +43,7 @@ Feature: Register Buyer
       | province      |                       |
       | country       |                       |
     Then the response status should be 409
-    And the registration is rejected with error "Buyer already registered with email: ana.machava@gmail.com"
+    And the response body should contain error "Email already in use"
     And no event is published to NATS
 
   Scenario Outline: Attempt to register with invalid or missing fields
