@@ -31,7 +31,7 @@ public class RegisterBuyerTests {
         User user = Mocks.buyerMock();
         Address address = Mocks.addressMock();
         RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
-                user.getEmail(), user.getPassword(), user.getPhone(),address );
+                user.getEmail(), user.getPassword(), user.getPhone(), address);
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.of(user));
         RegisterBuyer registerBuyer = new RegisterBuyer(userGateway);
         Assertions.assertThrows(EmailAlreadyInUseException.class, () -> registerBuyer.execute(input));
@@ -41,11 +41,11 @@ public class RegisterBuyerTests {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("Should throw RequiredFieldException when password is null or empty")
-    public void shouldThrowRequiredFieldExceptionWhenPasswordIsNulOrEmpty(String password){
+    public void shouldThrowRequiredFieldExceptionWhenPasswordIsNulOrEmpty(String password) {
         User user = Mocks.buyerMock();
         Address address = Mocks.addressMock();
         RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
-                user.getEmail(), password, user.getPhone(),address );
+                user.getEmail(), password, user.getPhone(), address);
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         RegisterBuyer registerBuyer = new RegisterBuyer(userGateway);
         Assertions.assertThrows(RequiredFieldException.class, () -> registerBuyer.execute(input));
@@ -55,11 +55,11 @@ public class RegisterBuyerTests {
     @ParameterizedTest
     @ValueSource(strings = {"Senha@Senha", "senha@1234", "Senha123"})
     @DisplayName("Should throw InvalidPasswordException when password does not match with established rules")
-    public void shouldThrowInvalidPasswordExceptionWhenPasswordDoesNotMatchWithEstablishedRules(String password){
+    public void shouldThrowInvalidPasswordExceptionWhenPasswordDoesNotMatchWithEstablishedRules(String password) {
         User user = Mocks.buyerMock();
         Address address = Mocks.addressMock();
         RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
-                user.getEmail(), password, user.getPhone(),address );
+                user.getEmail(), password, user.getPhone(), address);
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         RegisterBuyer registerBuyer = new RegisterBuyer(userGateway);
         Assertions.assertThrows(InvalidPasswordException.class, () -> registerBuyer.execute(input));

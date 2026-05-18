@@ -2,15 +2,13 @@ package com.biznopay.authservice.usecase.user.register.buyer;
 
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
-import com.biznopay.authservice.domain.exception.InvalidPasswordException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 
 import java.util.Optional;
 
-public class RegisterBuyer {
-    public static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&._#-])[A-Za-z\\d@$!%*?&._#-]{8,}$";
+import static com.biznopay.authservice.domain.util.DomainFuncUtils.validatePassword;
 
+public class RegisterBuyer {
     private final UserGateway userGateway;
 
     public RegisterBuyer(UserGateway userGateway) {
@@ -24,13 +22,5 @@ public class RegisterBuyer {
         }
         String rawPassword = validatePassword(input.password());
         return new RegisterBuyerOutput("Buyer registered successfully");
-    }
-
-    private String validatePassword(String password) {
-        if (password == null || password.isEmpty())
-            throw new RequiredFieldException("Password", User.class.getName(), "REGISTER_SA-003");
-        if (!password.matches(PASSWORD_REGEX))
-            throw new InvalidPasswordException("REGISTER_SA-004");
-        return password;
     }
 }
