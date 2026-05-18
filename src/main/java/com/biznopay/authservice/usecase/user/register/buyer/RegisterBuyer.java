@@ -17,10 +17,8 @@ public class RegisterBuyer {
 
     public RegisterBuyerOutput execute(RegisterBuyerInput input) {
         Optional<User> optUser = userGateway.findByEmail(input.email());
-        if (optUser.isPresent()) {
-            throw new EmailAlreadyInUseException("REGISTER_BUYER-001");
-        }
-        String rawPassword = validatePassword(input.password());
+        if (optUser.isPresent()) throw new EmailAlreadyInUseException("REGISTER_BUYER-001");
+        String rawPassword = validatePassword(input.password(), "User", "REGISTER_BUYER-002");
         return new RegisterBuyerOutput("Buyer registered successfully");
     }
 }

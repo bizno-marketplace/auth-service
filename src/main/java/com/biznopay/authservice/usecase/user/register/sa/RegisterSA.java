@@ -35,7 +35,7 @@ public class RegisterSA {
         if (contSAs > 0) throw new ConflictException("Super admin", "REGISTER_SA-001");
         Optional<User> user = userGateway.findByEmail(input.email());
         if (user.isPresent()) throw new EmailAlreadyInUseException("REGISTER_SA-002");
-        String rawPassword = validatePassword(input.password());
+        String rawPassword = validatePassword(input.password(), SuperAdmin.class.getName(), "REGISTER_SA-003");
         String encodedPassword = encoderGateway.encode(rawPassword);
         SuperAdmin superAdmin = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), encodedPassword);
         userGateway.save(superAdmin);
