@@ -21,8 +21,6 @@ public class CommonSteps {
 
     @Autowired
     private ScenarioContext scenarioContext;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToWith(String path, DataTable dataTable) {
@@ -63,6 +61,7 @@ public class CommonSteps {
     @Then("the response status should be {int}")
     public void theResponseStatusShouldBe(int statusCode) {
         System.out.println(scenarioContext.getResponse().getBody());
+        System.out.println(statusCode);
         Assertions.assertEquals(statusCode, scenarioContext.getResponse().getStatusCode().value());
     }
 
@@ -74,7 +73,7 @@ public class CommonSteps {
     @And("the response body should contain message {string}")
     public void theResponseBodyShouldContainMessage(String message) {
         Object data = scenarioContext.getResponse().getBody().data();
-        Map<String, Object> dataMap = objectMapper.convertValue(data, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> dataMap = scenarioContext.getObjectMapper().convertValue(data, new TypeReference<Map<String, Object>>() {});
         Assertions.assertEquals(message, dataMap.get("message"));
     }
 

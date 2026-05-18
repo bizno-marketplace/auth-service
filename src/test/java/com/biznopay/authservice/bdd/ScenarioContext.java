@@ -19,6 +19,9 @@ public class ScenarioContext {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private ResponseEntity<ApiResponse> response;
     private RestTemplate restTemplate;
     private StringRedisTemplate redisTemplate;
@@ -58,5 +61,13 @@ public class ScenarioContext {
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 }

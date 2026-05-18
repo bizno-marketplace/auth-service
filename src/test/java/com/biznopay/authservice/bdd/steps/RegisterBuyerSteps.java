@@ -20,6 +20,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 import java.net.URI;
