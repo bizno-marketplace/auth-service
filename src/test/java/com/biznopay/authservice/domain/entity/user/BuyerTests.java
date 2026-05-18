@@ -7,6 +7,7 @@ import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.vo.Address;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.biznopay.authservice.mocks.Mocks.addressMock;
 
+@Tag("unit")
 public class BuyerTests {
 
     @ParameterizedTest
