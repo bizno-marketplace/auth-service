@@ -21,6 +21,7 @@ Feature: Register Super Admin
     Then the response status should be 200
     And a confirmation email should be sent to "admin@bizno.co.mz"
     And the confirmation email should have a link that expires after 15 minutes
+    And the response body should contain message "We've sent an activation link to provided email: admin@bizno.co.mz"
 
   Scenario: Reject registration when user already exists
     Given a super admin already exists in the system
