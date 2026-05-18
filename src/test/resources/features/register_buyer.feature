@@ -3,17 +3,14 @@ Feature: Register Buyer
   I want to register as a buyer
   So that I can browse and purchase products from local merchants
 
-  Background:
-    Given the system is available
-
   Scenario: Successfully register a new buyer
     Given no buyer exists with email "ana.machava@gmail.com"
-    When I submit a registration request with:
+    When i send a POST request to "/buyers" with:
       | firstName     | Ana                   |
       | lastName      | Machava               |
       | email         | ana.machava@gmail.com |
-      | phone         | +258841234567         |
-      | password      | segura123             |
+      | phoneNumber   | +258841234567         |
+      | password      | Segura@123             |
       | latitude      | -25.9692              |
       | longitude     | 32.5732               |
       | street        | Av. Eduardo Mondlane  |
@@ -24,7 +21,7 @@ Feature: Register Buyer
     Then the response status should be 200
     And the buyer account is created with status "PENDING"
     And the account expires in 2 days
-    And a "auth.buyer.registered" event is published to NATS
+    And the confirmation email should have a link that expires after 15 minutes
     And the response body should contain message "We've sent an activation link to provided email: ana.machava@gmail.com"
 
   Scenario: Attempt to register with an already registered email
@@ -33,7 +30,7 @@ Feature: Register Buyer
       | firstName     | Ana                   |
       | lastName      | Machava               |
       | email         | ana.machava@gmail.com |
-      | phone         | +258841234567         |
+      | phoneNumber   | +258841234567         |
       | password      | segura123             |
       | latitude      | -25.9692              |
       | longitude     | 32.5732               |

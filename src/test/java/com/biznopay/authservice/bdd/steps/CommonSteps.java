@@ -2,6 +2,8 @@ package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.dto.AddressRequest;
+import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import io.cucumber.datatable.DataTable;
@@ -10,6 +12,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -17,6 +21,8 @@ public class CommonSteps {
 
     @Autowired
     private ScenarioContext scenarioContext;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToWith(String path, DataTable dataTable) {
@@ -29,6 +35,25 @@ public class CommonSteps {
                     data.get("password")
             );
             case "/accounts/resend-confirmation" -> new ResendConfirmationRequest(data.get("email"));
+            case "/buyers" -> {
+                AddressRequest address = new AddressRequest(
+                        data.get("latitude") != null && !data.get("latitude").isBlank() ? Double.parseDouble(data.get("latitude")) : null,
+                        data.get("longitude") != null && !data.get("longitude").isBlank() ? Double.parseDouble(data.get("longitude")) : null,
+                        data.get("street"),
+                        data.get("neighbourhood"),
+                        data.get("city"),
+                        data.get("province"),
+                        data.get("country")
+                );
+                yield new RegisterBuyerRequest(
+                        data.get("firstName"),
+                        data.get("lastName"),
+                        data.get("email"),
+                        data.get("password"),
+                        data.get("phoneNumber"),
+                        address
+                );
+            }
             default -> throw new IllegalArgumentException("Unknown path: " + path);
         };
 
@@ -37,6 +62,7 @@ public class CommonSteps {
 
     @Then("the response status should be {int}")
     public void theResponseStatusShouldBe(int statusCode) {
+        System.out.println(scenarioContext.getResponse().getBody());
         Assertions.assertEquals(statusCode, scenarioContext.getResponse().getStatusCode().value());
     }
 
@@ -47,6 +73,17 @@ public class CommonSteps {
 
     @And("the response body should contain message {string}")
     public void theResponseBodyShouldContainMessage(String message) {
-        Assertions.assertEquals(message, scenarioContext.getResponse().getBody().data());
+        Object data = scenarioContext.getResponse().getBody().data();
+        Map<String, Object> dataMap = objectMapper.convertValue(data, new TypeReference<Map<String, Object>>() {});
+        Assertions.assertEquals(message, dataMap.get("message"));
+    }
+
+    @And("the confirmation email should have a link that expires after 15 minutes")
+    public void theConfirmationEmailShouldHaveALinkThatExpiresAfter15Minutes() {
+        Map<String, Object> event = scenarioContext.getJdbcTemplate().queryForMap(
+                "SELECT payload FROM t_outbox_events WHERE status = 'PENDING' ORDER BY created_at DESC LIMIT 1"
+        );
+        String payload = (String) event.get("payload");
+        Assertions.assertTrue(payload.contains("activationTokenId"));
     }
 }
