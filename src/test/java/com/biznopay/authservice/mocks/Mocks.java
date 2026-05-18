@@ -113,4 +113,16 @@ public class Mocks {
         AddressRequest redeliveryAddress =  new AddressRequest( -25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
         return new RegisterBuyerRequest("John", "Smith", "johnsmith@email.co.mz", "Password@123","848484848",redeliveryAddress);
     }
+
+    public static AddressRequest validAddressRequestMock() {
+        return new AddressRequest(-25.9692, 32.5732, "Av. Eduardo Mondlane", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    }
+
+    public static AddressRequest addressRequestWithLatitude(Double latitude) {
+        return new AddressRequest(latitude, 32.5732, "Av. Eduardo Mondlane", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    }
+
+    public static AddressRequest addressRequestWithLongitude(Double longitude) {
+        return new AddressRequest(-25.9692, longitude, "Av. Eduardo Mondlane", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    }
 }
