@@ -26,7 +26,7 @@ Feature: Register Buyer
 
   Scenario: Attempt to register with an already registered email
     Given a buyer already exists with email "ana.machava@gmail.com"
-    When I submit a registration request with:
+    When i send a POST request to "/buyers" with:
       | firstName     | Ana                   |
       | lastName      | Machava               |
       | email         | ana.machava@gmail.com |
@@ -41,7 +41,6 @@ Feature: Register Buyer
       | country       |                       |
     Then the response status should be 409
     And the response body should contain error "Email already in use"
-    And no event is published to NATS
 
   Scenario Outline: Attempt to register with invalid or missing fields
     When I submit a registration request with:

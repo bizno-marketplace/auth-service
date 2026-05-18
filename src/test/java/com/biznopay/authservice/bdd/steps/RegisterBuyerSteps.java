@@ -80,4 +80,15 @@ public class RegisterBuyerSteps {
         Assertions.assertEquals(user.get().getCreatedAt().plusDays(2), user.get().getExpiresAt());
     }
 
+    // SCENARIO: Attempt to register with an already registered email
+    @Given("a buyer already exists with email {string}")
+    public void aBuyerExistsWithEmail(String email) {
+        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
+        entity.setEmail(email);
+        userJpaRepository.save(entity);
+
+        this.email = email;
+        Optional<UserJpaEntity> user = userJpaRepository.findByEmail(email);
+        Assertions.assertTrue(user.isPresent());
+    }
 }
