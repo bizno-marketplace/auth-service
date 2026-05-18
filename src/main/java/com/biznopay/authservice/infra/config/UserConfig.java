@@ -3,6 +3,7 @@ package com.biznopay.authservice.infra.config;
 import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
+import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +31,10 @@ public class UserConfig {
     @Bean
     public RegisterSA registerSA() {
         return new RegisterSA(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
+    }
+
+    @Bean
+    public RegisterBuyer registerBuyer() {
+        return new RegisterBuyer(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 }

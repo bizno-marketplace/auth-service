@@ -6,10 +6,15 @@ import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.domain.vo.Address;
+import com.biznopay.authservice.infra.dto.AddressRequest;
+import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
+import com.biznopay.authservice.infra.persistence.jpa.entity.AddressJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyer;
+import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 
 public class UserMapper {
@@ -37,7 +42,20 @@ public class UserMapper {
         return entity;
     }
 
-    private static BuyerJpaEntity toBuyerEntity(User domain) {
+    public static AddressJpaEntity toAddressJpaEntity(Address address) {
+        return new AddressJpaEntity(address.latitude(), address.longitude(), address.street(), address.neighbourhood(),
+                address.city(), address.province(), address.country());
+    }
+
+    public static Address toAddress(AddressJpaEntity address) {
+        return new Address(address.getLatitude(), address.getLatitude(), address.getStreet(), address.getNeighbourhood(),
+                address.getCity(), address.getProvince(), address.getCountry());
+    }
+
+
+    private static BuyerJpaEntity toBuyerEntity(User user) {
+        Buyer domain = (Buyer) user;
+        AddressJpaEntity address = toAddressJpaEntity(domain.getDeliveryAddress());
         BuyerJpaEntity entity = new BuyerJpaEntity();
         entity.setId(domain.getId().value());
         entity.setFirstName(domain.getFirstName());
@@ -46,6 +64,7 @@ public class UserMapper {
         entity.setPhone(domain.getPhone());
         entity.setPassword(domain.getPassword());
         entity.setStatus(domain.getStatus());
+        entity.setDeliveryAddress(address);
         entity.setExpiresAt(domain.getExpiresAt());
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
@@ -69,7 +88,7 @@ public class UserMapper {
     }
 
     private static Buyer toBuyerDomainEntity(BuyerJpaEntity entity) {
-        Address address = null;
+        Address address = toAddress(entity.getDeliveryAddress());
         return Buyer.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
                 entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), address, entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt());
@@ -77,5 +96,15 @@ public class UserMapper {
 
     public static RegisterSAInput toRegisterSAInput(RegisterSARequest request) {
         return new RegisterSAInput(request.firstName(), request.lastName(), request.email(), request.password());
+    }
+
+    public static Address toAddress(AddressRequest request) {
+        return new Address(request.latitude(), request.longitude(), request.street(), request.neighbourhood(),
+                request.city(), request.province(), request.country());
+    }
+
+    public static RegisterBuyerInput toRegisterBuyerInput(RegisterBuyerRequest request) {
+        Address deliveryAddress = toAddress(request.deliveryAddress());
+        return new RegisterBuyerInput(request.firstName(), request.lastName(), request.email(), request.password(),request.phoneNumber(),deliveryAddress);
     }
 }
