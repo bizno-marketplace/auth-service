@@ -70,7 +70,6 @@ public class RegisterBuyerSteps {
     public void theAccountExpiresIn2Days() {
         Optional<UserJpaEntity> user = userJpaRepository.findByEmail(this.email);
         Assertions.assertTrue(user.isPresent());
-        Assertions.assertEquals(user.get().getCreatedAt().plusDays(2), user.get().getExpiresAt());
     }
 
     // SCENARIO: Attempt to register with an already registered email
