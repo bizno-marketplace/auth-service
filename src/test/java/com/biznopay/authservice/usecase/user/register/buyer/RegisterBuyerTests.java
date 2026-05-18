@@ -29,16 +29,16 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class RegisterBuyerTests {
     @Mock
-    private  UserGateway userGateway;
+    private UserGateway userGateway;
     @Mock
-    private  EncoderGateway encoderGateway;
+    private EncoderGateway encoderGateway;
     @Mock
-    private  DomainEventGateway domainEventGateway;
+    private DomainEventGateway domainEventGateway;
     @Mock
-    private  ActivationTokenGateway activationTokenGateway;
+    private ActivationTokenGateway activationTokenGateway;
 
-    private RegisterBuyer setUp(){
-        return new RegisterBuyer(userGateway,encoderGateway,domainEventGateway,activationTokenGateway);
+    private RegisterBuyer setUp() {
+        return new RegisterBuyer(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 
     @Test
@@ -84,10 +84,10 @@ public class RegisterBuyerTests {
 
     @Test
     @DisplayName("Should registry buyer, send activation link with 15 min of expiration to provided email and return message to notify user")
-    public void shouldRegistryBuyerSedActivationLinkWith15MinOfExpirationToProvidedEmailAndReturnMessageToNotifyUser(){
+    public void shouldRegistryBuyerSedActivationLinkWith15MinOfExpirationToProvidedEmailAndReturnMessageToNotifyUser() {
         Address address = Mocks.addressMock();
-        RegisterBuyerInput input =  new RegisterBuyerInput("John", "Doe", "john.doe@example.com", "Senha@1234", "848484848", address);
-        String encodedPassword =  "Any@EncodePassword019";
+        RegisterBuyerInput input = new RegisterBuyerInput("John", "Doe", "john.doe@example.com", "Senha@1234", "848484848", address);
+        String encodedPassword = "Any@EncodePassword019";
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         Mockito.when(encoderGateway.encode(input.password())).thenReturn(encodedPassword);
         Mockito.doNothing().when(userGateway).save(Mockito.any(Buyer.class));

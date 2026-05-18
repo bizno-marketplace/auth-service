@@ -1,6 +1,5 @@
 package com.biznopay.authservice.domain.util;
 
-import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 

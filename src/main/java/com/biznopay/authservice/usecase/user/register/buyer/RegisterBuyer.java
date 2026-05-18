@@ -20,7 +20,7 @@ public class RegisterBuyer {
     private final DomainEventGateway domainEventGateway;
     private final ActivationTokenGateway activationTokenGateway;
 
-    public RegisterBuyer(UserGateway userGateway, EncoderGateway encoderGateway, DomainEventGateway domainEventGateway, 
+    public RegisterBuyer(UserGateway userGateway, EncoderGateway encoderGateway, DomainEventGateway domainEventGateway,
                          ActivationTokenGateway activationTokenGateway) {
         this.userGateway = userGateway;
         this.encoderGateway = encoderGateway;
@@ -33,7 +33,7 @@ public class RegisterBuyer {
         if (optUser.isPresent()) throw new EmailAlreadyInUseException("REGISTER_BUYER-001");
         String rawPassword = validatePassword(input.password(), "User", "REGISTER_BUYER-002");
         String encodedPassword = encoderGateway.encode(rawPassword);
-        User buyer = Buyer.register(input.firstName(),input.lastName(),input.email(),input.phoneNumber(),encodedPassword,input.address());
+        User buyer = Buyer.register(input.firstName(), input.lastName(), input.email(), input.phoneNumber(), encodedPassword, input.address());
         userGateway.save(buyer);
         ActivationToken token = ActivationToken.generate(buyer.getId());
         activationTokenGateway.save(token);
