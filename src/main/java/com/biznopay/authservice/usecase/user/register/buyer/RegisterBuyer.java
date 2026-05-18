@@ -9,6 +9,8 @@ import com.biznopay.authservice.domain.gateway.UserGateway;
 import java.util.Optional;
 
 public class RegisterBuyer {
+    public static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&._#-])[A-Za-z\\d@$!%*?&._#-]{8,}$";
+
     private final UserGateway userGateway;
 
     public RegisterBuyer(UserGateway userGateway) {
@@ -27,6 +29,8 @@ public class RegisterBuyer {
     private String validatePassword(String password) {
         if (password == null || password.isEmpty())
             throw new RequiredFieldException("Password", User.class.getName(), "REGISTER_SA-003");
+        if (!password.matches(PASSWORD_REGEX))
+            throw new InvalidPasswordException("REGISTER_SA-004");
         return password;
     }
 }
