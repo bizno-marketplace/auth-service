@@ -13,7 +13,6 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.AddressJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
-import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 
@@ -105,6 +104,6 @@ public class UserMapper {
 
     public static RegisterBuyerInput toRegisterBuyerInput(RegisterBuyerRequest request) {
         Address deliveryAddress = toAddress(request.deliveryAddress());
-        return new RegisterBuyerInput(request.firstName(), request.lastName(), request.email(), request.password(),request.phoneNumber(),deliveryAddress);
+        return new RegisterBuyerInput(request.firstName(), request.lastName(), request.email(), request.password(), request.phoneNumber(), deliveryAddress);
     }
 }

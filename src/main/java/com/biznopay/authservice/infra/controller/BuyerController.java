@@ -2,15 +2,11 @@ package com.biznopay.authservice.infra.controller;
 
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerOutput;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAOutput;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

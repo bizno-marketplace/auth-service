@@ -4,11 +4,8 @@ import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
-import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerOutput;
 import org.junit.jupiter.api.*;
@@ -47,71 +44,6 @@ public class BuyerControllerTests extends ContainerBase {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
-
-    private String url(String path) {
-        return "http://localhost:" + port + path;
-    }
-
-    @BeforeEach
-    void setUp() {
-        restTemplate = new TestRestTemplate();
-        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
-    }
-
-    @Test
-    @DisplayName("Should return 200 on successfully registration")
-    void shouldReturn200OnSuccessfullyRegistration() {
-        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
-        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
-                url("/buyers"),
-                HttpMethod.POST,
-                new HttpEntity<>(request),
-                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {}
-        );
-
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        RegisterBuyerOutput output = response.getBody().data();
-        Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
-    }
-
-    @Test
-    @DisplayName("Should return 409 when email is already in use")
-    public void shouldReturn409WhenEmailIsAlreadyInUse(){
-        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
-        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
-        entity.setEmail(request.email());
-        userJpaRepository.save(entity);
-
-        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
-                url("/buyers"),
-                HttpMethod.POST,
-                new HttpEntity<>(request),
-                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {}
-        );
-
-        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        Assertions.assertEquals("Email already in use",response.getBody().error().message());
-    }
-
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("invalidRegistrationCases")
-    @DisplayName("Should reject registration with invalid or missing fields")
-    void shouldRejectInvalidRegistration(
-            String testName,
-            RegisterBuyerRequest request,
-            HttpStatus expectedStatus,
-            String expectedError
-    ) {
-        ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
-                url("/buyers"),
-                HttpMethod.POST,
-                new HttpEntity<>(request),
-                new ParameterizedTypeReference<ApiResponse<Void>>() {}
-        );
-
-        Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertEquals(expectedError, response.getBody().error().message());
-    }
 
     static Stream<Arguments> invalidRegistrationCases() {
         return Stream.of(
@@ -159,5 +91,73 @@ public class BuyerControllerTests extends ContainerBase {
                         new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.addressRequestWithLongitude(999.0)),
                         HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Longitude on Address")
         );
+    }
+
+    private String url(String path) {
+        return "http://localhost:" + port + path;
+    }
+
+    @BeforeEach
+    void setUp() {
+        restTemplate = new TestRestTemplate();
+        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+    }
+
+    @Test
+    @DisplayName("Should return 200 on successfully registration")
+    void shouldReturn200OnSuccessfullyRegistration() {
+        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
+        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
+                url("/buyers"),
+                HttpMethod.POST,
+                new HttpEntity<>(request),
+                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        RegisterBuyerOutput output = response.getBody().data();
+        Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
+    }
+
+    @Test
+    @DisplayName("Should return 409 when email is already in use")
+    public void shouldReturn409WhenEmailIsAlreadyInUse() {
+        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
+        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
+        entity.setEmail(request.email());
+        userJpaRepository.save(entity);
+
+        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
+                url("/buyers"),
+                HttpMethod.POST,
+                new HttpEntity<>(request),
+                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        Assertions.assertEquals("Email already in use", response.getBody().error().message());
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("invalidRegistrationCases")
+    @DisplayName("Should reject registration with invalid or missing fields")
+    void shouldRejectInvalidRegistration(
+            String testName,
+            RegisterBuyerRequest request,
+            HttpStatus expectedStatus,
+            String expectedError
+    ) {
+        ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
+                url("/buyers"),
+                HttpMethod.POST,
+                new HttpEntity<>(request),
+                new ParameterizedTypeReference<ApiResponse<Void>>() {
+                }
+        );
+
+        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+        Assertions.assertEquals(expectedError, response.getBody().error().message());
     }
 }

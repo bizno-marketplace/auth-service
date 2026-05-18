@@ -110,8 +110,8 @@ public class Mocks {
     }
 
     public static RegisterBuyerRequest registerBuyerRequestMock() {
-        AddressRequest redeliveryAddress =  new AddressRequest( -25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
-        return new RegisterBuyerRequest("John", "Smith", "johnsmith@email.co.mz", "Password@123","848484848",redeliveryAddress);
+        AddressRequest redeliveryAddress = new AddressRequest(-25.9692, 32.6315, "Rua 1", "Neuquen", "Bolivia", "Bolivia", "Bolivia");
+        return new RegisterBuyerRequest("John", "Smith", "johnsmith@email.co.mz", "Password@123", "848484848", redeliveryAddress);
     }
 
     public static AddressRequest validAddressRequestMock() {
