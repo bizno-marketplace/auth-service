@@ -1,12 +1,7 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.Buyer;
-import com.biznopay.authservice.domain.entity.user.SuperAdmin;
-import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.mocks.Mocks;
@@ -20,11 +15,9 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
-import tools.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 import java.util.Optional;
 
 public class RegisterBuyerSteps {
@@ -37,6 +30,7 @@ public class RegisterBuyerSteps {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
+    private String email;
 
     @Before
     public void setUp() {
@@ -56,8 +50,6 @@ public class RegisterBuyerSteps {
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
-
-    private String email;
 
     // SCENARIO:  Successfully register a new buyer
     @Given("no buyer exists with email {string}")

@@ -13,7 +13,6 @@ import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -73,7 +72,8 @@ public class CommonSteps {
     @And("the response body should contain message {string}")
     public void theResponseBodyShouldContainMessage(String message) {
         Object data = scenarioContext.getResponse().getBody().data();
-        Map<String, Object> dataMap = scenarioContext.getObjectMapper().convertValue(data, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> dataMap = scenarioContext.getObjectMapper().convertValue(data, new TypeReference<Map<String, Object>>() {
+        });
         Assertions.assertEquals(message, dataMap.get("message"));
     }
 

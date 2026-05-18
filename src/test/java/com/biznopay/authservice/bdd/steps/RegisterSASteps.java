@@ -22,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 
 public class RegisterSASteps {
 
