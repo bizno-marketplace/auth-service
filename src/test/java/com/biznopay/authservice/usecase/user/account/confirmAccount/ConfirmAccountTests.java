@@ -84,9 +84,9 @@ public class ConfirmAccountTests {
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, true, expiredAt, expiredAt);
 
-        Address address = null;
-        User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "email@test",
-                "any_phone", "Password@0199", UserStatus.ACTIVE, address, LocalDateTime.now(),
+        Address address = Mocks.addressMock();
+        User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "test@test.com",
+                "848484848", "Password@0199", UserStatus.ACTIVE, address, LocalDateTime.now(),
                 LocalDateTime.now(), LocalDateTime.now());
 
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));

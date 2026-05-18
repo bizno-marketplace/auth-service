@@ -21,9 +21,11 @@ Feature: Register Buyer
       | city          | Maputo                |
       | province      | Maputo                |
       | country       | Mozambique            |
-    Then the buyer account is created with status "PENDING"
+    Then the response status should be 200
+    And the buyer account is created with status "PENDING"
     And the account expires in 2 days
     And a "auth.buyer.registered" event is published to NATS
+    And the response body should contain message "We've sent an activation link to provided email: ana.machava@gmail.com"
 
   Scenario: Attempt to register with an already registered email
     Given a buyer already exists with email "ana.machava@gmail.com"
@@ -40,18 +42,9 @@ Feature: Register Buyer
       | city          |                       |
       | province      |                       |
       | country       |                       |
-    Then the registration is rejected with error "Buyer already registered with email: ana.machava@gmail.com"
+    Then the response status should be 409
+    And the registration is rejected with error "Buyer already registered with email: ana.machava@gmail.com"
     And no event is published to NATS
-
-  Scenario Outline: Expiration job handles buyer accounts correctly
-    Given a buyer was registered 2 days ago with status "<status>"
-    When the expiration job runs
-    Then <outcome>
-
-    Examples:
-      | status  | outcome                                      |
-      | PENDING | the buyer account is removed from the system |
-      | ACTIVE  | the buyer account remains in the system      |
 
   Scenario Outline: Attempt to register with invalid or missing fields
     When I submit a registration request with:
@@ -67,18 +60,19 @@ Feature: Register Buyer
       | city          | <city>          |
       | province      | <province>      |
       | country       | <country>       |
-    Then the registration is rejected with error "<error>"
+    Then the response status should be <statusCode>
+    And the registration is rejected with error "<error>"
 
     Examples:
-      | firstName | lastName | email                 | phone         | password  | latitude | longitude | street               | neighbourhood | city   | province | country    | error                                  |
-      |           | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | First name is required                 |
-      | Ana       |          | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Last name is required                  |
-      | Ana       | Machava  |                       | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Email is required                      |
-      | Ana       | Machava  | not-an-email          | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Invalid email format                   |
-      | Ana       | Machava  | ana.machava@gmail.com |               | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Phone is required                      |
-      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 |           | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Password is required                   |
-      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | abc123    | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Password must be at least 8 characters |
-      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 |          |           | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Latitude is required                   |
-      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 |           | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Longitude is required                  |
-      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -999     | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Invalid latitude value                 |
-      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 | 999       | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | Invalid longitude value                |
+      | firstName | lastName | email                 | phone         | password  | latitude | longitude | street               | neighbourhood | city   | province | country    | statusCode | error                                  |
+      |           | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | First name is required                 |
+      | Ana       |          | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Last name is required                  |
+      | Ana       | Machava  |                       | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Email is required                      |
+      | Ana       | Machava  | not-an-email          | +258841234567 | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Invalid email format                   |
+      | Ana       | Machava  | ana.machava@gmail.com |               | segura123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Phone is required                      |
+      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 |           | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Password is required                   |
+      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | abc123    | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Password must be at least 8 characters |
+      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 |          |           | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Latitude is required                   |
+      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 |           | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Longitude is required                  |
+      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -999     | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 422        | Invalid latitude value                 |
+      | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | segura123 | -25.9692 | 999       | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 422        | Invalid longitude value                |

@@ -12,11 +12,13 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaE
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.authservice.mocks.Mocks;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
@@ -71,7 +73,7 @@ public class ConfirmAccountSteps {
     // SCENARIO: Successfully confirm account with valid token
     @Given("a user registered with email {string} has a valid confirmation token")
     public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
-        Address address = null;
+        Address address = Mocks.addressMock();
         User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
@@ -101,7 +103,7 @@ public class ConfirmAccountSteps {
     // SCENARIO: Reject confirmation with expired token
     @Given("a user registered with email {string} has an expired confirmation token")
     public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email) {
-        Address address = null;
+        Address address = Mocks.addressMock();
         User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
@@ -115,7 +117,7 @@ public class ConfirmAccountSteps {
     // SCENARIO: Reject confirmation with invalid or tampered token
     @Given("a user registered with email {string}")
     public void aUserRegisteredWithEmail(String email) {
-        Address address = null;
+        Address address = Mocks.addressMock();
         User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
@@ -134,7 +136,7 @@ public class ConfirmAccountSteps {
     // SCENARIO: Reject confirmation when account is already active
     @Given("a user with email {string} has already confirmed the account")
     public void aUserWithEmailHasAlreadyConfirmedTheAccount(String email) {
-        Address address = null;
+        Address address = Mocks.addressMock();
         User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         user.activate();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
