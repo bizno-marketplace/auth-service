@@ -23,7 +23,7 @@ Feature: Register Super Admin
     And the confirmation email should have a link that expires after 15 minutes
     And the response body should contain message "We've sent an activation link to provided email: admin@bizno.co.mz"
 
-  Scenario: Reject registration when user already exists
+  Scenario: Reject registration when super admin already exists
     Given a super admin already exists in the system
     When i send a POST request to "/supper-admins" with:
       | firstName | Super             |
@@ -43,79 +43,23 @@ Feature: Register Super Admin
     Then the response status should be 409
     And the response body should contain error "Email already in use"
 
-  Scenario: Reject registration if firstname is missing
+  Scenario Outline: Attempt to register with invalid or missing fields
     Given no super admin exists in the system
     When i send a POST request to "/supper-admins" with:
-      | lastName | Admin             |
-      | email    | admin@bizno.co.mz |
-      | password | Password@1234     |
-    Then the response status should be 400
-    And the response body should contain error "First name is required"
+      | firstName | <firstName> |
+      | lastName  | <lastName>  |
+      | email     | <email>     |
+      | password  | <password>  |
+    Then the response status should be <statusCode>
+    And the response body should contain error "<error>"
 
-  Scenario: Reject registration if firstname as less than 3 characters
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Su                |
-      | lastName  | Admin             |
-      | email     | admin@bizno.co.mz |
-      | password  | Password@1234     |
-    Then the response status should be 422
-    And the response body should contain error "First name must be at least 3 characters long"
-
-  Scenario: Reject registration if lastname is missing
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Super             |
-      | email     | admin@bizno.co.mz |
-      | password  | Password@1234     |
-    Then the response status should be 400
-    And the response body should contain error "Last name is required"
-
-  Scenario: Reject registration if lastname as less than 3 characters
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Super             |
-      | lastName  | Ad                |
-      | email     | admin@bizno.co.mz |
-      | password  | Password@1234     |
-    Then the response status should be 422
-    And the response body should contain error "Last name must be at least 3 characters long"
-
-  Scenario: Reject registration if email is missing
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Super         |
-      | lastName  | Admin         |
-      | password  | Password@1234 |
-    Then the response status should be 400
-    And the response body should contain error "E-mail is required"
-
-  Scenario: Reject registration with non bizno institutional email
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Super           |
-      | lastName  | Admin           |
-      | email     | admin@gmail.com |
-      | password  | Password@1234   |
-    Then the response status should be 422
-    And the response body should contain error "E-mail must be a bizno institutional email"
-
-  Scenario: Reject registration if password is missing
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Super             |
-      | lastName  | Admin             |
-      | email     | admin@bizno.co.mz |
-    Then the response status should be 400
-    And the response body should contain error "Password is required"
-
-  Scenario: Reject registration if weak password
-    Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
-      | firstName | Super             |
-      | lastName  | Admin             |
-      | email     | admin@bizno.co.mz |
-      | password  | password          |
-    Then the response status should be 422
-    And the response body should contain error "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-
+    Examples:
+      | firstName | lastName | email             | password      | statusCode | error                                                                                                                                              |
+      |           | Admin    | admin@bizno.co.mz | Password@1234 | 400        | First name is required                                                                                                                             |
+      | Su        | Admin    | admin@bizno.co.mz | Password@1234 | 422        | First name must be at least 3 characters long                                                                                                      |
+      | Super     |          | admin@bizno.co.mz | Password@1234 | 400        | Last name is required                                                                                                                              |
+      | Super     | Ad       | admin@bizno.co.mz | Password@1234 | 422        | Last name must be at least 3 characters long                                                                                                       |
+      | Super     | Admin    |                   | Password@1234 | 400        | E-mail is required                                                                                                                                 |
+      | Super     | Admin    | admin@gmail.com   | Password@1234 | 422        | E-mail must be a bizno institutional email                                                                                                         |
+      | Super     | Admin    | admin@bizno.co.mz |               | 400        | Password is required                                                                                                                               |
+      | Super     | Admin    | admin@bizno.co.mz | password      | 422        | Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character |

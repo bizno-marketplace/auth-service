@@ -43,14 +43,13 @@ Feature: Resend Confirmation Email
     Then the response status should be 429
     And the response body should contain error "Please wait before requesting a new confirmation email"
 
-  Scenario: Reject resend when email is missing in request body
+  Scenario Outline: Attempt to resend with invalid or missing fields
     When i send a POST request to "/accounts/resend-confirmation" with:
-      | email |  |
-    Then the response status should be 400
-    And the response body should contain error "E-mail is required"
+      | email | <email> |
+    Then the response status should be <statusCode>
+    And the response body should contain error "<error>"
 
-  Scenario: Reject resend when email format is invalid
-    When i send a POST request to "/accounts/resend-confirmation" with:
-      | email | not-an-email |
-    Then the response status should be 400
-    And the response body should contain error "Invalid email format"
+    Examples:
+      | email        | statusCode | error                |
+      |              | 400        | E-mail is required   |
+      | not-an-email | 400        | Invalid email format |

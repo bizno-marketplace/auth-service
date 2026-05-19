@@ -57,6 +57,11 @@ public class CommonSteps {
         scenarioContext.setResponse(scenarioContext.getRestTemplate().postForEntity(scenarioContext.url(path), request, ApiResponse.class));
     }
 
+    @When("i send a GET request to {string}")
+    public void iSendAGetRequestTo(String path) {
+        scenarioContext.setResponse(scenarioContext.getRestTemplate().getForEntity(scenarioContext.url(path), ApiResponse.class));
+    }
+
     @Then("the response status should be {int}")
     public void theResponseStatusShouldBe(int statusCode) {
         Assertions.assertEquals(statusCode, scenarioContext.getResponse().getStatusCode().value());
