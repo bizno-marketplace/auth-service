@@ -32,7 +32,6 @@ public class UserRegisteredTests {
     public void shouldReturnUserRegisteredWithCorrectValues() {
         UserRegistered userRegistered = UserRegistered.of(VALID_USER_ID, VALID_USER_EMAIL,
                 VALID_USER_FIRST_NAME, VALID_ACTIVATION_TOKEN_ID);
-
         Assertions.assertNotNull(userRegistered.getEventId());
         Assertions.assertEquals(VALID_USER_ID, userRegistered.getUserId());
         Assertions.assertEquals(VALID_USER_EMAIL, userRegistered.getEmail());
