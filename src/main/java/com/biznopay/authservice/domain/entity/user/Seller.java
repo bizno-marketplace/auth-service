@@ -29,13 +29,13 @@ public class Seller extends User {
         this.biDocument = biDocument;
     }
 
-    public static Seller register(UserId id, String firstName, String lastname, String email, String phone, String password,
+    public static Seller register(String firstName, String lastname, String email, String phone, String password,
                                   String storeName, String storeDescription, String nuit, Address storeAddress, BiDocument biDocument) {
         LocalDateTime now = LocalDateTime.now();
         phone = validatePhone(phone);
         storeName = validateStoreName(storeName);
         storeDescription = validateStoreDescription(storeDescription);
-        return new Seller(id, firstName, lastname, email, phone, password, UserStatus.ACTIVE, null, now,
+        return new Seller(UserId.generate(), firstName, lastname, email, phone, password, UserStatus.ACTIVE, null, now,
                 now, storeName, storeDescription, nuit, storeAddress, biDocument);
     }
 
