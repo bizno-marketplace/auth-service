@@ -2,14 +2,16 @@ package com.biznopay.authservice.domain.entity.activation;
 
 import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+
+import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_USER_ID;
 
 @Tag("unit")
 public class ActivationTokenTests {
@@ -19,20 +21,22 @@ public class ActivationTokenTests {
         Assertions.assertThrows(InvalidEntityIdException.class, () -> new ActivationTokenId(null));
     }
 
-    @Test
-    @DisplayName("Should throw RequiredFieldException if user id is null on generate")
-    public void shouldThrowRequiredFieldExceptionIfUserIdIsNullOnGenerate() {
-        Assertions.assertThrows(RequiredFieldException.class, () -> ActivationToken.generate(null));
+    @ParameterizedTest(name = "{0}")
+    @DisplayName("Should throw exception when data is invalid on generate")
+    @MethodSource("com.biznopay.authservice.testcases.ActivationTokenTestCases#invalidDomainGenerateCases")
+    public void shouldThrowRequiredFieldExceptionIfUserIdIsNullOnGenerate(String message, UserId userId, Class<? extends RuntimeException> expectedException, String expectedMessage) {
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> ActivationToken.generate(userId))
+                .isInstanceOf(expectedException)
+                .hasMessage(expectedMessage);
     }
 
     @Test
     @DisplayName("Should generate ActivationToken with correct values ")
     public void shouldGenerateActivationTokenWithCorrectValues() {
-        UserId userId = new UserId(UUID.randomUUID());
-        ActivationToken activationToken = ActivationToken.generate(userId);
+        ActivationToken activationToken = ActivationToken.generate(VALID_USER_ID);
 
         Assertions.assertNotNull(activationToken.getId());
-        Assertions.assertEquals(userId, activationToken.getUserId());
+        Assertions.assertEquals(VALID_USER_ID, activationToken.getUserId());
         long minutes = ChronoUnit.MINUTES.between(activationToken.getCreatedAt(), activationToken.getExpiresAt());
         Assertions.assertEquals(ActivationToken.EXPIRATION_MINUTES, minutes);
         Assertions.assertFalse(activationToken.isExpired());
@@ -46,12 +50,11 @@ public class ActivationTokenTests {
     @Test
     @DisplayName("Should mark token as used on markAsUsed")
     public void shouldMarkTokenAsUsedOnMarlAsUsed() {
-        UserId userId = new UserId(UUID.randomUUID());
-        ActivationToken activationToken = ActivationToken.generate(userId);
+        ActivationToken activationToken = ActivationToken.generate(VALID_USER_ID);
         activationToken.markAsUsed();
 
         Assertions.assertNotNull(activationToken.getId());
-        Assertions.assertEquals(userId, activationToken.getUserId());
+        Assertions.assertEquals(VALID_USER_ID, activationToken.getUserId());
         long minutes = ChronoUnit.MINUTES.between(activationToken.getCreatedAt(), activationToken.getExpiresAt());
         Assertions.assertEquals(ActivationToken.EXPIRATION_MINUTES, minutes);
         Assertions.assertFalse(activationToken.isExpired());
