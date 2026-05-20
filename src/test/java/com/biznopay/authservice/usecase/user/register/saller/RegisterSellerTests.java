@@ -31,7 +31,7 @@ public class RegisterSellerTests {
                                                                          Class<? extends Exception> expectedException) {
 
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(existingByEmail);
-        if(existingByNuit.isPresent())
+        if (existingByNuit.isPresent())
             Mockito.when(userGateway.findByNuit(input.nuit())).thenReturn(existingByNuit);
         RegisterSeller registerSeller = new RegisterSeller(userGateway);
         Assertions.assertThatThrownBy(() -> registerSeller.execute(input))
