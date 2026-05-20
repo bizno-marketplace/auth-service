@@ -2,8 +2,6 @@ package com.biznopay.authservice.usecase.user.register.saller;
 
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.gateway.UserGateway;
-import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.domain.vo.BiDocumentRequest;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import org.assertj.core.api.Assertions;
