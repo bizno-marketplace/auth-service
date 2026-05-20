@@ -2,9 +2,9 @@ package com.biznopay.authservice.domain.exception;
 
 import com.biznopay.authservice.domain.enums.ExceptionSeverity;
 
-public class EmailAlreadyInUseException extends BiznoException {
-    public EmailAlreadyInUseException(String code) {
-        String message = "E-mail already in use";
+public class NuitAlreadyInUseException extends BiznoException {
+    public NuitAlreadyInUseException(String code) {
+        String message = "Nuit already in use";
         super(message, code, ExceptionSeverity.LOW, null);
     }
 }

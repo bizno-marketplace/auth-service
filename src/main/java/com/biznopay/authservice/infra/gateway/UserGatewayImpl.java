@@ -40,4 +40,9 @@ public class UserGatewayImpl implements UserGateway {
         Optional<UserJpaEntity> entity = userJpaRepository.findById(userId);
         return entity.map(UserMapper::toUserDomain);
     }
+
+    @Override
+    public Optional<User> findByNuit(String nuit) {
+        return Optional.empty();
+    }
 }
