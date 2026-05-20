@@ -5,6 +5,7 @@ import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
+import com.biznopay.authservice.domain.vo.Nuit;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -73,12 +74,21 @@ public class SellerTestCases {
 
     public static Stream<Arguments> invalidUseCaseRegisterSellerCases() {
         return Stream.of(
-                Arguments.of("Email already in use",
+                Arguments.of("E-mail already in use",
                         registerSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
                                 VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST),
                         Optional.of(salerMock()),
+                        Optional.empty(),
                         EmailAlreadyInUseException.class,
-                        "Email already in use")
+                        "E-mail already in use"),
+                Arguments.of("Nuit already in use",
+                        registerSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
+                                VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST),
+                        Optional.empty(),
+                        Optional.of(salerMock()),
+                        NuitAlreadyInUseException.class,
+                        "Nuit already in use"
+                )
         );
     }
 

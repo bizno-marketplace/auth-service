@@ -27,9 +27,12 @@ public class RegisterSellerTests {
     @DisplayName("Should throw exception when seller data already exists or password is weak")
     void shouldThrowExceptionWhenSellerDataAlreadyExistsOrPasswordIsWeak(String testName, RegisterSellerInput input,
                                                                          Optional<User> existingByEmail,
+                                                                         Optional<User> existingByNuit,
                                                                          Class<? extends Exception> expectedException) {
 
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(existingByEmail);
+        if(existingByNuit.isPresent())
+            Mockito.when(userGateway.findByNuit(input.nuit())).thenReturn(existingByNuit);
         RegisterSeller registerSeller = new RegisterSeller(userGateway);
         Assertions.assertThatThrownBy(() -> registerSeller.execute(input))
                 .isInstanceOf(expectedException);
