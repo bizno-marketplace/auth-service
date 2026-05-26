@@ -1,7 +1,6 @@
 package com.biznopay.authservice.usecase.user.account.confirmAccount;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.user.Seller;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;

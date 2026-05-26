@@ -2,22 +2,15 @@ package com.biznopay.authservice.domain.entity.user;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
-import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
-import com.biznopay.authservice.domain.exception.NonBiznoInstitutionalEmailException;
-import com.biznopay.authservice.domain.exception.RequiredFieldException;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
-import com.biznopay.authservice.testcases.SuperAdminTestCases;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.biznopay.authservice.testcases.SuperAdminTestCases.*;
 
@@ -43,7 +36,7 @@ public class SuperAdminTests {
     @Test
     @DisplayName("Should register SuperAdmin with correct param on register ande set status  PENDING")
     public void shouldRegisterSuperAdminWithCorrectParamOnRegisterAndSetStatusOnPENDING() {
-        SuperAdmin superAdmin = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME,VALID_EMAIL, VALID_PASSWORD);
+        SuperAdmin superAdmin = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
         Assertions.assertNotNull(superAdmin);
         Assertions.assertNotNull(superAdmin.getId());
         Assertions.assertEquals(VALID_FIRST_NAME, superAdmin.getFirstName());
@@ -60,7 +53,7 @@ public class SuperAdminTests {
     @Test
     @DisplayName("Should active SuperAdmin on active")
     public void shouldActiveSuperAdminOnActive() {
-        SuperAdmin superAdmin = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME,VALID_EMAIL, VALID_PASSWORD);
+        SuperAdmin superAdmin = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
         superAdmin.activate();
         Assertions.assertEquals(UserStatus.ACTIVE, superAdmin.getStatus());
     }

@@ -19,7 +19,7 @@ public class BuyerTests {
                                                                 String phone, String password, Address address,
                                                                 Class<? extends Exception> expectedException, String expectedMessage) {
         org.assertj.core.api.Assertions.assertThatThrownBy(
-                () -> Buyer.register(firstName, lastName, email, phone, password, address))
+                        () -> Buyer.register(firstName, lastName, email, phone, password, address))
                 .isInstanceOf(expectedException)
                 .hasMessage(expectedMessage);
     }
