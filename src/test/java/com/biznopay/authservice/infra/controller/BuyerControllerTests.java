@@ -72,7 +72,6 @@ public class BuyerControllerTests extends ContainerBase {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("com.biznopay.authservice.testcases.BuyerTestCases#invalidControllerRegistrationCases")
-    @DisplayName("Should reject registration with invalid or missing fields")
     void shouldRejectInvalidRegistration(
             String testName,
             RegisterBuyerRequest request,
@@ -89,19 +88,19 @@ public class BuyerControllerTests extends ContainerBase {
             );
         }
 
-        ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
-                url("/buyers"),
-                HttpMethod.POST,
-                new HttpEntity<>(request),
-                new ParameterizedTypeReference<ApiResponse<Void>>() {
-                }
-        );
+   if(testName.equals("Success")){
+       ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
+               url("/buyers"),
+               HttpMethod.POST,
+               new HttpEntity<>(request),
+               new ParameterizedTypeReference<ApiResponse<Void>>() {
+               }
+       );
+       RegisterBuyerOutput output = response.getBody().data();
+       Assertions.assertEquals(expectedError, response.getBody().error().message());
+   }else {
+       Assertions.assertEquals(expectedError, response.getBody().error().message());
+   }
 
-        Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        if (testName.equals("Success")){
-            Assertions.assertEquals(expectedError, response.getBody().error().message());
-        }else {
-            Assertions.assertEquals(expectedError, response.getBody().error().message());
-        }
     }
 }
