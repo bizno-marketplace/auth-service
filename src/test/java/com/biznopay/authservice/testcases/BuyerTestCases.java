@@ -59,8 +59,10 @@ public class BuyerTestCases {
                 Arguments.of("Latitude is null", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(null, 32.5732, "", "", "", "", "")), HttpStatus.BAD_REQUEST, "Latitude is required"),
                 Arguments.of("Latitude is invalid", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(180.00, 32.5732, "", "", "", "", "")), HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Latitude on Address"),
                 Arguments.of("Longitude is null", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(32.5732, null, "", "", "", "", "")), HttpStatus.BAD_REQUEST, "Longitude is required"),
-                Arguments.of("Longitude is invalid", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(32.5732, 190.00, "", "", "", "", "")), HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Longitude on Address")
-        );
+                Arguments.of("Longitude is invalid", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(32.5732, 190.00, "", "", "", "", "")), HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Longitude on Address"),
+                Arguments.of("Conflict", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS_REQUEST), HttpStatus.CONFLICT, "E-mail already in use"),
+                Arguments.of("Success", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS_REQUEST), HttpStatus.OK, "We've sent an activation link to provided email: "+ VALID_EMAIL)
+                );
     }
 
 }

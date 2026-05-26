@@ -70,26 +70,6 @@ public class BuyerControllerTests extends ContainerBase {
         Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
     }
 
-    @Test
-    @DisplayName("Should return 409 when email is already in use")
-    public void shouldReturn409WhenEmailIsAlreadyInUse() {
-        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
-        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
-        entity.setEmail(request.email());
-        userJpaRepository.save(entity);
-
-        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
-                url("/buyers"),
-                HttpMethod.POST,
-                new HttpEntity<>(request),
-                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {
-                }
-        );
-
-        Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        Assertions.assertEquals("Email already in use", response.getBody().error().message());
-    }
-
     @ParameterizedTest(name = "{0}")
     @MethodSource("com.biznopay.authservice.testcases.BuyerTestCases#invalidControllerRegistrationCases")
     @DisplayName("Should reject registration with invalid or missing fields")
@@ -99,6 +79,16 @@ public class BuyerControllerTests extends ContainerBase {
             HttpStatus expectedStatus,
             String expectedError
     ) {
+        if (testName.equals("Conflict")){
+            restTemplate.exchange(
+                    url("/buyers"),
+                    HttpMethod.POST,
+                    new HttpEntity<>(request),
+                    new ParameterizedTypeReference<ApiResponse<Void>>() {
+                    }
+            );
+        }
+
         ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
                 url("/buyers"),
                 HttpMethod.POST,
@@ -107,8 +97,11 @@ public class BuyerControllerTests extends ContainerBase {
                 }
         );
 
-
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertEquals(expectedError, response.getBody().error().message());
+        if (testName.equals("Success")){
+            Assertions.assertEquals(expectedError, response.getBody().error().message());
+        }else {
+            Assertions.assertEquals(expectedError, response.getBody().error().message());
+        }
     }
 }
