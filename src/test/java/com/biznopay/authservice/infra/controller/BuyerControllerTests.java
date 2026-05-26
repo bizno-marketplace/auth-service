@@ -10,7 +10,6 @@ import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerOutput;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
@@ -25,8 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.stream.Stream;
 
 @Tag("integration")
 @ActiveProfiles("test")
@@ -45,53 +42,6 @@ public class BuyerControllerTests extends ContainerBase {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
-    static Stream<Arguments> invalidRegistrationCases() {
-        return Stream.of(
-                Arguments.of("First name is required",
-                        new RegisterBuyerRequest("", "Machava", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.validAddressRequestMock()),
-                        HttpStatus.BAD_REQUEST, "First name is required"),
-
-                Arguments.of("Last name is required",
-                        new RegisterBuyerRequest("Ana", "", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.validAddressRequestMock()),
-                        HttpStatus.BAD_REQUEST, "Last name is required"),
-
-                Arguments.of("Email is required",
-                        new RegisterBuyerRequest("Ana", "Machava", "", "Segura@123", "+258841234567", Mocks.validAddressRequestMock()),
-                        HttpStatus.BAD_REQUEST, "E-mail is required"),
-
-                Arguments.of("Invalid email",
-                        new RegisterBuyerRequest("Ana", "Machava", "not-an-email", "Segura@123", "+258841234567", Mocks.validAddressRequestMock()),
-                        HttpStatus.BAD_REQUEST, "Invalid E-mail"),
-
-                Arguments.of("Password is required",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "", "+258841234567", Mocks.validAddressRequestMock()),
-                        HttpStatus.BAD_REQUEST, "Password is required"),
-
-                Arguments.of("Phone is required",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "Segura@123", "", Mocks.validAddressRequestMock()),
-                        HttpStatus.BAD_REQUEST, "Phone number is required"),
-
-                Arguments.of("Password must be at least 8 characters",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "abc123", "+258841234567", Mocks.validAddressRequestMock()),
-                        HttpStatus.UNPROCESSABLE_CONTENT, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
-
-                Arguments.of("Latitude is required",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.addressRequestWithLatitude(null)),
-                        HttpStatus.BAD_REQUEST, "Latitude is required"),
-
-                Arguments.of("Longitude is required",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.addressRequestWithLongitude(null)),
-                        HttpStatus.BAD_REQUEST, "Longitude is required"),
-
-                Arguments.of("Invalid latitude value",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.addressRequestWithLatitude(-999.0)),
-                        HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Latitude on Address"),
-
-                Arguments.of("Invalid longitude value",
-                        new RegisterBuyerRequest("Ana", "Machava", "ana.machava@gmail.com", "Segura@123", "+258841234567", Mocks.addressRequestWithLongitude(999.0)),
-                        HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Longitude on Address")
-        );
-    }
 
     private String url(String path) {
         return "http://localhost:" + port + path;
@@ -141,7 +91,7 @@ public class BuyerControllerTests extends ContainerBase {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource("invalidRegistrationCases")
+    @MethodSource("com.biznopay.authservice.testcases.BuyerTestCases#invalidControllerRegistrationCases")
     @DisplayName("Should reject registration with invalid or missing fields")
     void shouldRejectInvalidRegistration(
             String testName,
@@ -156,6 +106,7 @@ public class BuyerControllerTests extends ContainerBase {
                 new ParameterizedTypeReference<ApiResponse<Void>>() {
                 }
         );
+
 
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertEquals(expectedError, response.getBody().error().message());

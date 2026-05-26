@@ -47,6 +47,7 @@ public class GlobalExceptionHandler {
             case NonBiznoInstitutionalEmailException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case InvalidFieldException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
+            case InvalidPhoneNumberException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case TokenCooldownException ex -> FuncUtils.handleToManyRequests(ex, request, log);
             default -> FuncUtils.handleUnexpectedException(exception, request, log);
         };

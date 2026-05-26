@@ -9,12 +9,14 @@ import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.infra.dto.AddressRequest;
 import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.infra.dto.RegisterSARequest;
+import com.biznopay.authservice.infra.dto.RegisterSellerRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.AddressJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
+import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 
 public class UserMapper {
     public static UserJpaEntity toUserJpaEntity(User user) {
@@ -95,6 +97,11 @@ public class UserMapper {
 
     public static RegisterSAInput toRegisterSAInput(RegisterSARequest request) {
         return new RegisterSAInput(request.firstName(), request.lastName(), request.email(), request.password());
+    }
+
+    public static RegisterSellerInput toRegisterSellerInput(RegisterSellerRequest request) {
+        return new RegisterSellerInput(request.firstName(), request.lastName(), request.email(), request.phoneNumber(),
+                request.password(), request.storeName(), request.storeDescription(), request.nuit(), request.storeAddress(), request.biDocument());
     }
 
     public static Address toAddress(AddressRequest request) {

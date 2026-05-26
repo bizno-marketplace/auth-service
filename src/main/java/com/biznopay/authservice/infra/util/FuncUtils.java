@@ -100,6 +100,13 @@ public class FuncUtils {
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
+
+        if (exception instanceof InvalidPhoneNumberException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
         return ResponseEntity.unprocessableContent().body(FuncUtils.buildResponseBody(false, null, error));
     }
 
