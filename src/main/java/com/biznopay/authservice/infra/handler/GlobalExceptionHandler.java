@@ -42,6 +42,7 @@ public class GlobalExceptionHandler {
             case ConflictException ex -> FuncUtils.handleConflict(ex, request, log);
             case EmailAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
             case AccountAlreadyConfirmedException ex -> FuncUtils.handleConflict(ex, request, log);
+            case NuitAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
             case ExpiredConfirmationTokenException ex -> FuncUtils.handleGone(ex, request, log);
             case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case NonBiznoInstitutionalEmailException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);

@@ -1,7 +1,9 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
+import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
@@ -29,6 +31,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.biznopay.authservice.testcases.SellerTestCases.*;
 
 public class RegisterSellerSteps {
     @Autowired
@@ -124,5 +128,14 @@ public class RegisterSellerSteps {
         scenarioContext.setResponse(scenarioContext.getRestTemplate().postForEntity(scenarioContext.url(path),
                 new HttpEntity<>(body, headers), ApiResponse.class)
         );
+    }
+
+    @Given("a seller already exists with nuit {string}")
+    public void aUserWithEmailExistsInTheSystem(String nuit) {
+        User user = registerSeller(
+                VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
+                VALID_STORE_NAME, VALID_STORE_DESC, nuit, VALID_ADDRESS, VALID_BI);
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
     }
 }

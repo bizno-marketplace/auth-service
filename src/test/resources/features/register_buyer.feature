@@ -25,7 +25,7 @@ Feature: Register Buyer
     And the response body should contain message "We've sent an activation link to provided email: ana.machava@gmail.com"
 
   Scenario: Attempt to register with an already registered email
-    Given a buyer already exists with email "ana.machava@gmail.com"
+    Given a user with email "ana.machava@gmail.com" exists in the system
     When i send a POST request to "/buyers" with:
       | firstName     | Ana                   |
       | lastName      | Machava               |

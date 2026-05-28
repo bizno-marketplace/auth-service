@@ -4,7 +4,6 @@ import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -69,18 +68,6 @@ public class RegisterBuyerSteps {
     @And("the account expires in 2 days")
     public void theAccountExpiresIn2Days() {
         Optional<UserJpaEntity> user = userJpaRepository.findByEmail(this.email);
-        Assertions.assertTrue(user.isPresent());
-    }
-
-    // SCENARIO: Attempt to register with an already registered email
-    @Given("a buyer already exists with email {string}")
-    public void aBuyerExistsWithEmail(String email) {
-        UserJpaEntity entity = Mocks.buyerJpaEntityMock();
-        entity.setEmail(email);
-        userJpaRepository.save(entity);
-
-        this.email = email;
-        Optional<UserJpaEntity> user = userJpaRepository.findByEmail(email);
         Assertions.assertTrue(user.isPresent());
     }
 }

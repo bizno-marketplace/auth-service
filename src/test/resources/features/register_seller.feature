@@ -29,7 +29,7 @@ Feature: Register Seller
     And the response body should contain message "We've sent an activation link to provided email: joao.tembe@gmail.com"
 
   Scenario: Attempt to register with an already registered email
-    Given a seller already exists with email "joao.tembe@gmail.com"
+    Given a user with email "joao.tembe@gmail.com" exists in the system
     When i send a multipart POST request to "/sellers" with data:
       | firstName        | João                              |
       | lastName         | Tembe                             |
@@ -48,10 +48,10 @@ Feature: Register Seller
       | nuit             | 400123456                         |
     And with files:
       | field        | filename      | contentType |
-      | biFrontPhoto | bi_frente.jpg | image/jpeg  |
-      | biBackPhoto  | bi_verso.jpg  | image/jpeg  |
+      | biFrontPhoto | bi_frente.png | image/png   |
+      | biBackPhoto  | bi_verso.png  | image/png   |
     Then the response status should be 409
-    And the response body should contain error "Email already in use"
+    And the response body should contain error "E-mail already in use"
 
   Scenario: Attempt to register with an already registered NUIT
     Given a seller already exists with nuit "400123456"
@@ -73,10 +73,10 @@ Feature: Register Seller
       | nuit             | 400123456                |
     And with files:
       | field        | filename      | contentType |
-      | biFrontPhoto | bi_frente.jpg | image/jpeg  |
-      | biBackPhoto  | bi_verso.jpg  | image/jpeg  |
+      | biFrontPhoto | bi_frente.png | image/png   |
+      | biBackPhoto  | bi_verso.png  | image/png   |
     Then the response status should be 409
-    And the response body should contain error "NUIT already in use"
+    And the response body should contain error "Nuit already in use"
 
   Scenario: Reject registration if BI front photo is missing
     When i send a multipart POST request to "/sellers" with data:
@@ -97,7 +97,7 @@ Feature: Register Seller
       | nuit             | 400123456                         |
     And with files:
       | field       | filename     | contentType |
-      | biBackPhoto | bi_verso.jpg | image/jpeg  |
+      | biBackPhoto | bi_verso.png | image/png   |
     Then the response status should be 400
     And the response body should contain error "BI front photo is required"
 

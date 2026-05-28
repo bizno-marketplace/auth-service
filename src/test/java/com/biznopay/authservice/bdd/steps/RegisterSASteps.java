@@ -1,14 +1,11 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -73,15 +70,6 @@ public class RegisterSASteps {
     @Given("a super admin already exists in the system")
     public void aSuperAdminAlreadyExistsInTheSystem() {
         User user = SuperAdmin.register("John", "Smith", "admin@bizno.co.mz", "Password@123");
-        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
-        userJpaRepository.save(entity);
-    }
-
-    // SCENARIO: Reject registration if email is already in use
-    @Given("a user with email {string} exists in the system")
-    public void aUserWithEmailExistsInTheSystem(String email) {
-        Address address = Mocks.addressMock();
-        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
