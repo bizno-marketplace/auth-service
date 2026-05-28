@@ -1,9 +1,9 @@
-package com.biznopay.authservice.infra.controller;
+package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
+import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerOutput;

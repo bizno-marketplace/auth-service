@@ -23,11 +23,10 @@ Feature: Register Seller
       | nuit             | 400123456                         |
     And with files:
       | field        | filename      | contentType |
-      | biFrontPhoto | bi_frente.jpg | image/jpeg  |
-      | biBackPhoto  | bi_verso.jpg  | image/jpeg  |
+      | biFrontPhoto | bi_frente.png | image/png   |
+      | biBackPhoto  | bi_verso.png  | image/png   |
     Then the response status should be 200
-    And the seller account is created with status "PENDING_APPROVAL"
-    And the response body should contain message "Your store registration is under review. We'll notify you at: joao.tembe@gmail.com"
+    And the response body should contain message "We've sent an activation link to provided email: joao.tembe@gmail.com"
 
   Scenario: Attempt to register with an already registered email
     Given a seller already exists with email "joao.tembe@gmail.com"

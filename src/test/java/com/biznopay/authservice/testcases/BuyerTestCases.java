@@ -5,8 +5,8 @@ import com.biznopay.authservice.domain.exception.InvalidPhoneNumberException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.infra.dto.AddressRequest;
-import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
+import com.biznopay.authservice.presentation.dto.AddressRequest;
+import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.http.HttpStatus;
 
@@ -61,8 +61,8 @@ public class BuyerTestCases {
                 Arguments.of("Longitude is null", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(32.5732, null, "", "", "", "", "")), HttpStatus.BAD_REQUEST, "Longitude is required"),
                 Arguments.of("Longitude is invalid", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, new AddressRequest(32.5732, 190.00, "", "", "", "", "")), HttpStatus.UNPROCESSABLE_CONTENT, "Invalid Longitude on Address"),
                 Arguments.of("Conflict", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS_REQUEST), HttpStatus.CONFLICT, "E-mail already in use"),
-                Arguments.of("Success", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS_REQUEST), HttpStatus.OK, "We've sent an activation link to provided email: "+ VALID_EMAIL)
-                );
+                Arguments.of("Success", new RegisterBuyerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS_REQUEST), HttpStatus.OK, "We've sent an activation link to provided email: " + VALID_EMAIL)
+        );
     }
 
 }

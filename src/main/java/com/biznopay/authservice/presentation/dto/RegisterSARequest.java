@@ -1,8 +1,8 @@
-package com.biznopay.authservice.infra.dto;
+package com.biznopay.authservice.presentation.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public record RegisterBuyerRequest(
+public record RegisterSARequest(
         @NotEmpty(message = "First name is required")
         String firstName,
 
@@ -13,11 +13,6 @@ public record RegisterBuyerRequest(
         String email,
 
         @NotEmpty(message = "Password is required")
-        String password,
-
-        @NotEmpty(message = "Phone number is required")
-        String phoneNumber,
-
-        AddressRequest deliveryAddress
+        String password
 ) {
 }

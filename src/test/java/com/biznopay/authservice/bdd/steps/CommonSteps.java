@@ -2,10 +2,10 @@ package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.AddressRequest;
-import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
-import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
+import com.biznopay.authservice.presentation.dto.AddressRequest;
+import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
+import com.biznopay.authservice.presentation.dto.RegisterSARequest;
+import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;

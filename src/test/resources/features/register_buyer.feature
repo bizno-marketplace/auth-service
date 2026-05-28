@@ -40,7 +40,7 @@ Feature: Register Buyer
       | province      |                       |
       | country       |                       |
     Then the response status should be 409
-    And the response body should contain error "Email already in use"
+    And the response body should contain error "E-mail already in use"
 
   Scenario Outline: Attempt to register with invalid or missing fields
     When i send a POST request to "/buyers" with:

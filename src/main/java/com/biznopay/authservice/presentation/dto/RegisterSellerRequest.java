@@ -1,7 +1,4 @@
-package com.biznopay.authservice.infra.dto;
-
-import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.domain.vo.BiDocumentRequest;
+package com.biznopay.authservice.presentation.dto;
 
 public record RegisterSellerRequest(
         String firstName,
@@ -12,7 +9,6 @@ public record RegisterSellerRequest(
         String storeName,
         String storeDescription,
         String nuit,
-        Address storeAddress,
-        BiDocumentRequest biDocument
+        AddressRequest storeAddress
 ) {
 }

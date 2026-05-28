@@ -41,7 +41,7 @@ Feature: Register Super Admin
       | email     | admin@bizno.co.mz |
       | password  | Password@1234     |
     Then the response status should be 409
-    And the response body should contain error "Email already in use"
+    And the response body should contain error "E-mail already in use"
 
   Scenario Outline: Attempt to register with invalid or missing fields
     Given no super admin exists in the system

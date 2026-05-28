@@ -1,12 +1,11 @@
-package com.biznopay.authservice.infra.controller;
+package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.mocks.Mocks;
+import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerOutput;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -78,7 +77,7 @@ public class BuyerControllerTests extends ContainerBase {
             HttpStatus expectedStatus,
             String expectedError
     ) {
-        if (testName.equals("Conflict")){
+        if (testName.equals("Conflict")) {
             restTemplate.exchange(
                     url("/buyers"),
                     HttpMethod.POST,
@@ -88,19 +87,27 @@ public class BuyerControllerTests extends ContainerBase {
             );
         }
 
-   if(testName.equals("Success")){
-       ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
-               url("/buyers"),
-               HttpMethod.POST,
-               new HttpEntity<>(request),
-               new ParameterizedTypeReference<ApiResponse<Void>>() {
-               }
-       );
-       RegisterBuyerOutput output = response.getBody().data();
-       Assertions.assertEquals(expectedError, response.getBody().error().message());
-   }else {
-       Assertions.assertEquals(expectedError, response.getBody().error().message());
-   }
+        if (testName.equals("Success")) {
+            ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
+                    url("/buyers"),
+                    HttpMethod.POST,
+                    new HttpEntity<>(request),
+                    new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {
+                    }
+            );
 
+            Assertions.assertEquals(expectedStatus, response.getStatusCode());
+            Assertions.assertEquals(expectedError, response.getBody().data().message());
+        } else {
+            ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
+                    url("/buyers"),
+                    HttpMethod.POST,
+                    new HttpEntity<>(request),
+                    new ParameterizedTypeReference<ApiResponse<Void>>() {
+                    }
+            );
+            Assertions.assertEquals(expectedStatus, response.getStatusCode());
+            Assertions.assertEquals(expectedError, response.getBody().error().message());
+        }
     }
 }

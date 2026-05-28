@@ -5,12 +5,12 @@ import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.infra.dto.AddressRequest;
-import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.outbox.OutboxStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.*;
+import com.biznopay.authservice.presentation.dto.AddressRequest;
+import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
+import com.biznopay.authservice.presentation.dto.RegisterSARequest;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 
 import java.time.LocalDateTime;
