@@ -13,4 +13,6 @@ public interface UserGateway {
     Optional<User> findByEmail(String email);
 
     Optional<User> findById(UUID userId);
+
+    Optional<User> findByNuit(String nuit);
 }

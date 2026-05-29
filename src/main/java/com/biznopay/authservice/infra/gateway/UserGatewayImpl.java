@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.SellerJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class UserGatewayImpl implements UserGateway {
     private final UserJpaRepository userJpaRepository;
     private final SuperAdminJpaRepository superAdminJpaRepository;
+    private final SellerJpaRepository sellerJpaRepository;
 
     @Override
     public long countSAs() {
@@ -38,6 +40,12 @@ public class UserGatewayImpl implements UserGateway {
     @Override
     public Optional<User> findById(UUID userId) {
         Optional<UserJpaEntity> entity = userJpaRepository.findById(userId);
+        return entity.map(UserMapper::toUserDomain);
+    }
+
+    @Override
+    public Optional<User> findByNuit(String nuit) {
+        Optional<UserJpaEntity> entity = sellerJpaRepository.findByNuit(nuit);
         return entity.map(UserMapper::toUserDomain);
     }
 }

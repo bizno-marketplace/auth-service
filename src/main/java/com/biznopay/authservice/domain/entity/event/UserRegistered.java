@@ -34,13 +34,13 @@ public class UserRegistered {
 
     private UserId validateUserId(UserId userId) {
         if (userId == null)
-            throw new RequiredFieldException("userId", UserRegistered.class.getName(), "USER_REGISTERED-001");
+            throw new RequiredFieldException("UserId", UserRegistered.class.getName(), "USER_REGISTERED-001");
         return userId;
     }
 
     private String validateEmail(String email) {
         if (email == null || email.isEmpty())
-            throw new RequiredFieldException("email", UserRegistered.class.getName(), "USER_REGISTERED-002");
+            throw new RequiredFieldException("E-mail", UserRegistered.class.getName(), "USER_REGISTERED-002");
         if (!email.matches(EMAIL_REGEX))
             throw new InvalidEmailException("USER_REGISTERED-003");
         return email;
@@ -48,15 +48,15 @@ public class UserRegistered {
 
     private String validateFirstName(String firstName) {
         if (firstName == null || firstName.isEmpty())
-            throw new RequiredFieldException("firstName", UserRegistered.class.getName(), "USER_REGISTERED-004");
+            throw new RequiredFieldException("FirstName", UserRegistered.class.getName(), "USER_REGISTERED-004");
         if (firstName.length() < 3)
-            throw new InvalidStringFieldLengException("firstName", 3, UserRegistered.class.getName(), "USER_REGISTERED-005");
+            throw new InvalidStringFieldLengException("FirstName", 3, UserRegistered.class.getName(), "USER_REGISTERED-005");
         return firstName;
     }
 
     private ActivationTokenId validateActivationTokenId(ActivationTokenId activationTokenId) {
         if (activationTokenId == null)
-            throw new RequiredFieldException("activationTokenId", UserRegistered.class.getName(), "USER_REGISTERED-006");
+            throw new RequiredFieldException("ActivationTokenId", UserRegistered.class.getName(), "USER_REGISTERED-006");
         return activationTokenId;
     }
 

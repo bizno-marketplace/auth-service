@@ -1,9 +1,9 @@
-package com.biznopay.authservice.infra.controller;
+package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.infra.util.FuncUtils;
+import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformationOutput;
@@ -23,7 +23,7 @@ public class AccountController {
     private final ResendConformation resendConformation;
 
     @GetMapping("/confirm-account")
-    public ResponseEntity confirmAccount(@RequestParam("token") String token) {
+    public ResponseEntity confirmAccount(@RequestParam(value = "token", required = false) String token) {
         if (token == null || token.isEmpty())
             throw new RequiredFieldException("Token", "AccountController", "ACCOUNT_CONTROLLER-001");
         confirmAccount.execute(token);

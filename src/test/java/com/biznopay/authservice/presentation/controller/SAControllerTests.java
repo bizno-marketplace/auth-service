@@ -1,14 +1,14 @@
-package com.biznopay.authservice.infra.controller;
+package com.biznopay.authservice.presentation.controller;
 
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.mocks.Mocks;
+import com.biznopay.authservice.presentation.dto.RegisterSARequest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -79,7 +79,7 @@ public class SAControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        Assertions.assertEquals("Email already in use", response.getBody().error().message());
+        Assertions.assertEquals("E-mail already in use", response.getBody().error().message());
     }
 
     @Test

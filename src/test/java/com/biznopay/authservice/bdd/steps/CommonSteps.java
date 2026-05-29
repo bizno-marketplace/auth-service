@@ -1,13 +1,21 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
+import com.biznopay.authservice.domain.entity.user.Buyer;
+import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.AddressRequest;
-import com.biznopay.authservice.infra.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
-import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.authservice.mocks.Mocks;
+import com.biznopay.authservice.presentation.dto.AddressRequest;
+import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
+import com.biznopay.authservice.presentation.dto.RegisterSARequest;
+import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
@@ -20,6 +28,8 @@ public class CommonSteps {
 
     @Autowired
     private ScenarioContext scenarioContext;
+    @Autowired
+    private UserJpaRepository userJpaRepository;
 
     @When("i send a POST request to {string} with:")
     public void iSendAPOSTRequestToWith(String path, DataTable dataTable) {
@@ -57,8 +67,14 @@ public class CommonSteps {
         scenarioContext.setResponse(scenarioContext.getRestTemplate().postForEntity(scenarioContext.url(path), request, ApiResponse.class));
     }
 
+    @When("i send a GET request to {string}")
+    public void iSendAGetRequestTo(String path) {
+        scenarioContext.setResponse(scenarioContext.getRestTemplate().getForEntity(scenarioContext.url(path), ApiResponse.class));
+    }
+
     @Then("the response status should be {int}")
     public void theResponseStatusShouldBe(int statusCode) {
+        System.out.println(scenarioContext.getRequestData());
         Assertions.assertEquals(statusCode, scenarioContext.getResponse().getStatusCode().value());
     }
 
@@ -82,5 +98,13 @@ public class CommonSteps {
         );
         String payload = (String) event.get("payload");
         Assertions.assertTrue(payload.contains("activationTokenId"));
+    }
+
+    @Given("a user with email {string} exists in the system")
+    public void aUserWithEmailExistsInTheSystem(String email) {
+        Address address = Mocks.addressMock();
+        User user = Buyer.register("John", "Smith", email, "848484848", "Password@123", address);
+        UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
+        userJpaRepository.save(entity);
     }
 }

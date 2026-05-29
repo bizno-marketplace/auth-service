@@ -1,15 +1,15 @@
-package com.biznopay.authservice.infra.controller;
+package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
-import com.biznopay.authservice.infra.dto.ResendConfirmationRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.mocks.Mocks;
+import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
@@ -111,6 +111,14 @@ public class AccountControllerTests extends ContainerBase {
     @DisplayName("Should return 400 when token is missing")
     void shouldReturn400WhenTokenIsMissing() {
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token="), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Token is required", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should return 400 when token is null")
+    void shouldReturn400WhenTokenIsMissingIsNull() {
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account"), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Token is required", response.getBody().error().message());
     }

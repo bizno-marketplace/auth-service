@@ -1,4 +1,4 @@
-package com.biznopay.authservice.infra.dto;
+package com.biznopay.authservice.presentation.dto;
 
 import jakarta.validation.constraints.NotNull;
 

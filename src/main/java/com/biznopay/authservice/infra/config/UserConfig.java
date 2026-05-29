@@ -5,6 +5,7 @@ import com.biznopay.authservice.usecase.user.account.confirmAccount.ConfirmAccou
 import com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
+import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ public class UserConfig {
     private final DomainEventGateway domainEventGateway;
     private final ResendCooldownGateway resendCooldownGateway;
     private final ActivationTokenGateway activationTokenGateway;
+    private final StorageGateway storageGateway;
 
     @Bean
     public ConfirmAccount confirmAccount() {
@@ -36,5 +38,10 @@ public class UserConfig {
     @Bean
     public RegisterBuyer registerBuyer() {
         return new RegisterBuyer(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
+    }
+
+    @Bean
+    public RegisterSeller registerSeller() {
+        return new RegisterSeller(userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
     }
 }

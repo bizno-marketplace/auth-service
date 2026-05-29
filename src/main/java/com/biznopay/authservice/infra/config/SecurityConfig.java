@@ -18,11 +18,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/buyers/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/supper-admins/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/accounts/confirm-account/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/accounts/resend-confirmation/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/supper-admins", "/buyers", "/sellers").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

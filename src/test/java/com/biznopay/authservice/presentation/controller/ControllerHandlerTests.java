@@ -1,11 +1,11 @@
-package com.biznopay.authservice.infra.controller;
+package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;
-import com.biznopay.authservice.infra.dto.RegisterSARequest;
 import com.biznopay.authservice.mocks.Mocks;
+import com.biznopay.authservice.presentation.dto.RegisterSARequest;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;

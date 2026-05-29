@@ -25,7 +25,7 @@ Feature: Register Buyer
     And the response body should contain message "We've sent an activation link to provided email: ana.machava@gmail.com"
 
   Scenario: Attempt to register with an already registered email
-    Given a buyer already exists with email "ana.machava@gmail.com"
+    Given a user with email "ana.machava@gmail.com" exists in the system
     When i send a POST request to "/buyers" with:
       | firstName     | Ana                   |
       | lastName      | Machava               |
@@ -40,7 +40,7 @@ Feature: Register Buyer
       | province      |                       |
       | country       |                       |
     Then the response status should be 409
-    And the response body should contain error "Email already in use"
+    And the response body should contain error "E-mail already in use"
 
   Scenario Outline: Attempt to register with invalid or missing fields
     When i send a POST request to "/buyers" with:
@@ -64,7 +64,7 @@ Feature: Register Buyer
       |           | Machava  | ana.machava@gmail.com | +258841234567 | Segura@123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | First name is required                                                                                                                             |
       | Ana       |          | ana.machava@gmail.com | +258841234567 | Segura@123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Last name is required                                                                                                                              |
       | Ana       | Machava  |                       | +258841234567 | Segura@123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | E-mail is required                                                                                                                                 |
-      | Ana       | Machava  | not-an-email          | +258841234567 | Segura@123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Invalid E-mail                                                                                                                                     |
+      | Ana       | Machava  | not-an-email          | +258841234567 | Segura@123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 422        | Invalid E-mail                                                                                                                                     |
       | Ana       | Machava  | ana.machava@gmail.com |               | Segura@123 | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Phone number is required                                                                                                                           |
       | Ana       | Machava  | ana.machava@gmail.com | +258841234567 |            | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 400        | Password is required                                                                                                                               |
       | Ana       | Machava  | ana.machava@gmail.com | +258841234567 | abc123     | -25.9692 | 32.5732   | Av. Eduardo Mondlane | Sommerschield | Maputo | Maputo   | Mozambique | 422        | Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character |

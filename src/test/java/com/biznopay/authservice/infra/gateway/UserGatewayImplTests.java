@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.SellerJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.mocks.Mocks;
@@ -28,12 +29,18 @@ public class UserGatewayImplTests {
     private UserJpaRepository userJpaRepository;
     @Mock
     private SuperAdminJpaRepository superAdminJpaRepository;
+    @Mock
+    private SellerJpaRepository sellerJpaRepository;
+
+    private UserGatewayImpl setUp() {
+        return new UserGatewayImpl(userJpaRepository, superAdminJpaRepository, sellerJpaRepository);
+    }
 
     @Test
     @DisplayName("Should count super admins on countSAs")
     public void shouldCountSuperAdminsOnCountSAs() {
         Mockito.when(superAdminJpaRepository.countBy()).thenReturn(3L);
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = setUp();
         long count = userGatewayImpl.countSAs();
         Assertions.assertEquals(3L, count);
         Mockito.verify(superAdminJpaRepository).countBy();
@@ -45,7 +52,7 @@ public class UserGatewayImplTests {
     public void shouldSaveUserOnSave() {
         RegisterSAInput input = Mocks.registerSAInputMock();
         User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = setUp();
         userGatewayImpl.save(user);
         Mockito.verify(userJpaRepository).save(Mockito.any(UserJpaEntity.class));
         Mockito.verifyNoMoreInteractions(userJpaRepository);
@@ -57,7 +64,7 @@ public class UserGatewayImplTests {
         User user = Mocks.superAdminMock();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Mockito.when(userJpaRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(entity));
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = setUp();
         Optional<User> result = userGatewayImpl.findByEmail(user.getEmail());
 
         Assertions.assertFalse(result.isEmpty());
@@ -81,7 +88,7 @@ public class UserGatewayImplTests {
     public void shouldReturnOptionalEmptyWhenUserDoesNotExistsOnFindById() {
         UUID useId = UUID.randomUUID();
         Mockito.when(userJpaRepository.findById(useId)).thenReturn(Optional.empty());
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = setUp();
         Optional<User> result = userGatewayImpl.findById(useId);
         Assertions.assertTrue(result.isEmpty());
         Mockito.verify(userJpaRepository).findById(useId);
@@ -94,7 +101,7 @@ public class UserGatewayImplTests {
         User user = Mocks.buyerMock();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Mockito.when(userJpaRepository.findById(user.getId().value())).thenReturn(Optional.of(entity));
-        UserGatewayImpl userGatewayImpl = new UserGatewayImpl(userJpaRepository, superAdminJpaRepository);
+        UserGatewayImpl userGatewayImpl = setUp();
         Optional<User> result = userGatewayImpl.findById(user.getId().value());
 
         Assertions.assertFalse(result.isEmpty());
