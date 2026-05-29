@@ -12,9 +12,7 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaReposito
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +58,87 @@ public class RegisterSellerControllerTests extends ContainerBase {
     void setUp() {
         restTemplate = new TestRestTemplate();
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+    }
+
+    @Test
+    @DisplayName("Should return 400 when front bi photo is null")
+    void shouldReturn400WhenFrontBiPhotoIsNull() throws IOException {
+        String backImageName = "bi_verso.png";
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + backImageName)
+                .readAllBytes();
+
+
+        RegisterSellerRequest request = new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, backImageName), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
+                url("/sellers"),
+                HttpMethod.POST,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
+                }
+
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("BI front photo is required", response.getBody().error().message());
+
+    }
+
+    @Test
+    @DisplayName("Should return 400 when back bi photo is null")
+    void shouldReturn400WhenBackBiPhotoIsNull() throws IOException {
+        String frontImageName = "bi_frente.png";
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + frontImageName)
+                .readAllBytes();
+
+
+        RegisterSellerRequest request = new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, frontImageName), frontHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
+                url("/sellers"),
+                HttpMethod.POST,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
+                }
+
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("BI back photo is required", response.getBody().error().message());
     }
 
     @ParameterizedTest(name = "{0}")
