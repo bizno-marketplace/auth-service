@@ -4,10 +4,13 @@ import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -95,6 +98,57 @@ public class RegisterSellerControllerTests extends ContainerBase {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         RegisterSellerOutput output = response.getBody().data();
         Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("com.biznopay.authservice.testcases.SellerTestCases#controllerRegisterSellerCases")
+    void shouldTestAllCases(
+            String testName,
+            RegisterSellerRequest request,
+            String frontImageName,
+            String backImageName,
+            Class<? extends RuntimeException> expectedException,
+            HttpStatus expectedStatus,
+            String expectedMessage
+    ) throws IOException {
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + frontImageName)
+                .readAllBytes();
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + backImageName)
+                .readAllBytes();
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, frontImageName), frontHeaders));
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, backImageName), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+
+        ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
+                url("/sellers"),
+                HttpMethod.POST,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
+                }
+
+        );
+
+        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+        Assertions.assertEquals(expectedMessage, response.getBody().error().message());
     }
 
 }

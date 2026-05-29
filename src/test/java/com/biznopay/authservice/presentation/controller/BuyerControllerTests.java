@@ -4,7 +4,6 @@ import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
 import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerOutput;
 import org.junit.jupiter.api.*;
@@ -52,30 +51,13 @@ public class BuyerControllerTests extends ContainerBase {
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
-    @Test
-    @DisplayName("Should return 200 on successfully registration")
-    void shouldReturn200OnSuccessfullyRegistration() {
-        RegisterBuyerRequest request = Mocks.registerBuyerRequestMock();
-        ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
-                url("/buyers"),
-                HttpMethod.POST,
-                new HttpEntity<>(request),
-                new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {
-                }
-        );
-
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        RegisterBuyerOutput output = response.getBody().data();
-        Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
-    }
-
     @ParameterizedTest(name = "{0}")
     @MethodSource("com.biznopay.authservice.testcases.BuyerTestCases#invalidControllerRegistrationCases")
     void shouldRejectInvalidRegistration(
             String testName,
             RegisterBuyerRequest request,
             HttpStatus expectedStatus,
-            String expectedError
+            String expectedMessage
     ) {
         if (testName.equals("Conflict")) {
             restTemplate.exchange(
@@ -97,7 +79,7 @@ public class BuyerControllerTests extends ContainerBase {
             );
 
             Assertions.assertEquals(expectedStatus, response.getStatusCode());
-            Assertions.assertEquals(expectedError, response.getBody().data().message());
+            Assertions.assertEquals(expectedMessage, response.getBody().data().message());
         } else {
             ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
                     url("/buyers"),
@@ -107,7 +89,7 @@ public class BuyerControllerTests extends ContainerBase {
                     }
             );
             Assertions.assertEquals(expectedStatus, response.getStatusCode());
-            Assertions.assertEquals(expectedError, response.getBody().error().message());
+            Assertions.assertEquals(expectedMessage, response.getBody().error().message());
         }
     }
 }

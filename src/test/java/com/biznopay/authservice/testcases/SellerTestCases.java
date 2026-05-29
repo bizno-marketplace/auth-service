@@ -5,8 +5,11 @@ import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
+import com.biznopay.authservice.presentation.dto.AddressRequest;
+import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import org.junit.jupiter.params.provider.Arguments;
+import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -23,6 +26,8 @@ public class SellerTestCases {
     public static final Address VALID_ADDRESS = new Address(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static final BiDocument VALID_BI = BiDocument.of("sellers/400123456/bi/front-uuid.jpg", "sellers/400123456/bi/back-uuid.jpg");
     public static final BiDocumentRequest VALID_BI_REQUEST = new BiDocumentRequest(VALID_BI.getFrontPath().getBytes(), "sellers/400123456/bi/front-uuid.jpg", VALID_BI.getBackPath().getBytes(), "sellers/400123456/bi/back-uuid.jpg");
+    public static final AddressRequest VALID_ADDRESS_REQUEST = new AddressRequest(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+
 
     public static Seller registerSeller(
             String firstName, String lastName, String email,
@@ -97,6 +102,14 @@ public class SellerTestCases {
                         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
                 )
         );
+    }
+
+
+    public static Stream<Arguments> controllerRegisterSellerCases(){
+        return Stream.of(
+                Arguments.of("First name is null", new RegisterSellerRequest(null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png","bi_verso.png",RequiredFieldException.class , HttpStatus.BAD_REQUEST , "First name is required")
+                );
     }
 
     public static Seller salerMock() {
