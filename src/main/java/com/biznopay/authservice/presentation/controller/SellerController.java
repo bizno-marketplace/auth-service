@@ -1,5 +1,6 @@
 package com.biznopay.authservice.presentation.controller;
 
+import com.biznopay.authservice.domain.validator.BiDocumentValidator;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
@@ -8,6 +9,7 @@ import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,9 +32,10 @@ public class SellerController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Object>> create(
             @RequestPart("data") RegisterSellerRequest request,
-            @RequestPart("biFrontPhoto") MultipartFile biFrontPhoto,
-            @RequestPart("biBackPhoto") MultipartFile biBackPhoto
+            @Valid @RequestPart(value = "biFrontPhoto", required = false) MultipartFile biFrontPhoto,
+            @RequestPart(value = "biBackPhoto", required = false) MultipartFile biBackPhoto
     ) throws IOException {
+        BiDocumentValidator.validate(biFrontPhoto, biBackPhoto);
         RegisterSellerInput input = UserMapper.toRegisterSellerInput(request, biFrontPhoto, biBackPhoto);
         RegisterSellerOutput output = registerSeller.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));

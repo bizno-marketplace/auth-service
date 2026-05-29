@@ -120,7 +120,7 @@ Feature: Register Seller
       | nuit             | 400123456                         |
     And with files:
       | field        | filename      | contentType |
-      | biFrontPhoto | bi_frente.jpg | image/jpeg  |
+      | biFrontPhoto | bi_frente.png | image/png   |
     Then the response status should be 400
     And the response body should contain error "BI back photo is required"
 
