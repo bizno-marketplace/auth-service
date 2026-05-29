@@ -105,13 +105,59 @@ public class SellerTestCases {
     }
 
 
-    public static Stream<Arguments> controllerRegisterSellerCases(){
+    public static Stream<Arguments> controllerRegisterSellerCases() {
         return Stream.of(
                 Arguments.of("Success", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
-                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png","bi_verso.png",RequiredFieldException.class , HttpStatus.OK , "We've sent an activation link to provided email: " + VALID_EMAIL),
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.OK, "We've sent an activation link to provided email: " + VALID_EMAIL),
                 Arguments.of("First name is null", new RegisterSellerRequest(null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
-                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png","bi_verso.png",RequiredFieldException.class , HttpStatus.BAD_REQUEST , "First name is required")
-                );
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "First name is required"),
+                Arguments.of("First name is empty", new RegisterSellerRequest("", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "First name is required"),
+                Arguments.of("First name is too short", new RegisterSellerRequest("Jo", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.UNPROCESSABLE_CONTENT, "First name must be at least 3 characters long"),
+                Arguments.of("Last name is null", new RegisterSellerRequest(VALID_FIRST_NAME, null, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Last name is required"),
+                Arguments.of("Last name is empty", new RegisterSellerRequest(VALID_FIRST_NAME, "", VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Last name is required"),
+                Arguments.of("Last name is too short", new RegisterSellerRequest(VALID_FIRST_NAME, "Jo", VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.UNPROCESSABLE_CONTENT, "Last name must be at least 3 characters long"),
+                Arguments.of("E-mail is null", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, null, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "E-mail is required"),
+                Arguments.of("E-mail is empty", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, "", VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "E-mail is required"),
+                Arguments.of("E-mail is invalid", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, "testemail.com", VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", InvalidEmailException.class, HttpStatus.UNPROCESSABLE_CONTENT, "Invalid E-mail"),
+                Arguments.of("Phone is null", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, null, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Phone number is required"),
+                Arguments.of("Phone is empty", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "", VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Phone number is required"),
+                Arguments.of("Phone is invalid", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "12345", VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", InvalidPhoneNumberException.class, HttpStatus.UNPROCESSABLE_CONTENT, "Invalid phone number"),
+                Arguments.of("Password is null", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, null, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Password is required"),
+                Arguments.of("Password is empty", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, "", VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Password is required"),
+                Arguments.of("Password is invalid", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, "weakPass", VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", InvalidPhoneNumberException.class, HttpStatus.UNPROCESSABLE_CONTENT, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
+                Arguments.of("Store name", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Store name is required"),
+                Arguments.of("Store name", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, "",
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Store name is required"),
+                Arguments.of("Store Desc", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        null, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Store description is required"),
+                Arguments.of("Store Desc", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        "", VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "Store description is required"),
+                Arguments.of("Nuit is null", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, null, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "NUIT is required"),
+                Arguments.of("Nuit is empty", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, "", VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.BAD_REQUEST, "NUIT is required"),
+                Arguments.of("Nuit is invalid", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, "123GAGA", VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", InvalidNuitException.class, HttpStatus.UNPROCESSABLE_CONTENT, "NUIT must contain only digits and must be exactly 9 digits"),
+                Arguments.of("Nuit conflict", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.CONFLICT, "Nuit already in use"),
+                Arguments.of("E-mail conflict", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png", "bi_verso.png", RequiredFieldException.class, HttpStatus.CONFLICT, "E-mail already in use")
+        );
     }
 
     public static Seller salerMock() {

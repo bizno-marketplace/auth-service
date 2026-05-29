@@ -2,13 +2,19 @@ package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice.domain.entity.user.Seller;
+import com.biznopay.authservice.domain.util.DocumentPathGenerator;
+import com.biznopay.authservice.domain.util.DomainFuncUtils;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +73,8 @@ public class RegisterSellerControllerTests extends ContainerBase {
             HttpStatus expectedStatus,
             String expectedMessage
     ) throws IOException {
+        DomainFuncUtils domainFuncUtils = new DomainFuncUtils(); //just to cover
+        DocumentPathGenerator documentPathGenerator = new DocumentPathGenerator(); //just to cover
 
         byte[] biFrontBytes = getClass().getClassLoader()
                 .getResourceAsStream("fixtures/images/" + frontImageName)
@@ -76,10 +84,26 @@ public class RegisterSellerControllerTests extends ContainerBase {
                 .getResourceAsStream("fixtures/images/" + backImageName)
                 .readAllBytes();
 
+        if (testName.equals("Nuit conflict")) {
+            Seller seller = registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, "test@email.com", VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                    VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
+            UserJpaEntity entity = UserMapper.toUserJpaEntity(seller);
+            userJpaRepository.save(entity);
+        }
+
+        if (testName.equals("E-mail conflict")) {
+            Seller seller = registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                    VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
+            UserJpaEntity entity = UserMapper.toUserJpaEntity(seller);
+            userJpaRepository.save(entity);
+        }
+
+
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
         HttpHeaders dataHeaders = new HttpHeaders();
         dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
         body.add("data", new HttpEntity<>(request, dataHeaders));
 
         HttpHeaders frontHeaders = new HttpHeaders();
@@ -103,10 +127,10 @@ public class RegisterSellerControllerTests extends ContainerBase {
         );
 
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        if (testName.equals("Success")){
+        if (testName.equals("Success")) {
             RegisterSellerOutput output = response.getBody().data();
             Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
-        }else {
+        } else {
             Assertions.assertEquals(expectedMessage, response.getBody().error().message());
         }
     }
