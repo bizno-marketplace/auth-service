@@ -74,6 +74,7 @@ public class CommonSteps {
 
     @Then("the response status should be {int}")
     public void theResponseStatusShouldBe(int statusCode) {
+        System.out.println(scenarioContext.getRequestData());
         Assertions.assertEquals(statusCode, scenarioContext.getResponse().getStatusCode().value());
     }
 

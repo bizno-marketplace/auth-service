@@ -143,8 +143,8 @@ Feature: Register Seller
       | nuit             | <nuit>             |
     And with files:
       | field        | filename      | contentType |
-      | biFrontPhoto | bi_frente.jpg | image/jpeg  |
-      | biBackPhoto  | bi_verso.jpg  | image/jpeg  |
+      | biFrontPhoto | bi_frente.png | image/png   |
+      | biBackPhoto  | bi_verso.png  | image/png   |
     Then the response status should be <statusCode>
     And the response body should contain error "<error>"
 
@@ -164,5 +164,5 @@ Feature: Register Seller
       | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -999     | 32.5732   | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique | 400123456 | 422        | Invalid Latitude on Address                                                                                                                        |
       | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -25.9692 | 999       | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique | 400123456 | 422        | Invalid Longitude on Address                                                                                                                       |
       | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -25.9692 | 32.5732   | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique |           | 400        | NUIT is required                                                                                                                                   |
-      | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -25.9692 | 32.5732   | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique | 12345     | 422        | NUIT must be exactly 9 digits                                                                                                                      |
-      | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -25.9692 | 32.5732   | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique | ABCDEFGHI | 422        | NUIT must contain only digits                                                                                                                      |
+      | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -25.9692 | 32.5732   | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique | 12345     | 422        | NUIT must contain only digits and must be exactly 9 digits                                                                                                                      |
+      | João      | Tembe    | joao.tembe@gmail.com | +258841234567 | Segura@123 | Tembe Electronics | Venda de electrónica e acessórios | -25.9692 | 32.5732   | Av. 24 de Julho | Sommerschield | Maputo | Maputo   | Mozambique | ABCDEFGHI | 422        | NUIT must contain only digits and must be exactly 9 digits                                                                                                                     |

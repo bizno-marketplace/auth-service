@@ -49,6 +49,7 @@ public class GlobalExceptionHandler {
             case InvalidPasswordException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case InvalidFieldException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case InvalidPhoneNumberException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
+            case InvalidNuitException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case TokenCooldownException ex -> FuncUtils.handleToManyRequests(ex, request, log);
             default -> FuncUtils.handleUnexpectedException(exception, request, log);
         };

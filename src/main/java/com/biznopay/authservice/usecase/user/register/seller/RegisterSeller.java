@@ -41,7 +41,7 @@ public class RegisterSeller {
         List<StorageFile> files = buildFiles(biDocument, input);
         storageGateway.upload(files);
         User seller = Seller.register(input.firstName(), input.lastName(), input.email(), input.phoneNumber(),
-                encodedPassword, input.storeName(), input.nuit(), input.nuit(), input.storeAddress(), biDocument);
+                encodedPassword, input.storeName(), input.storeDescription(), input.nuit(), input.storeAddress(), biDocument);
         userGateway.save(seller);
         ActivationToken token = ActivationToken.generate(seller.getId());
         activationTokenGateway.save(token);
