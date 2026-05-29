@@ -1,10 +1,10 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.domain.validator.BiDocumentValidator;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
+import com.biznopay.authservice.presentation.validator.BiDocumentValidator;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;

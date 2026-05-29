@@ -116,6 +116,14 @@ public class AccountControllerTests extends ContainerBase {
     }
 
     @Test
+    @DisplayName("Should return 400 when token is null")
+    void shouldReturn400WhenTokenIsMissingIsNull() {
+        ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account"), ApiResponse.class);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Token is required", response.getBody().error().message());
+    }
+
+    @Test
     @DisplayName("Should return 200 on successfully resend confirmation email for a pending account on resend confirmation")
     public void shouldReturn200OnSuccessfullyResendConfirmationEmailForAPendingAccountOnResendConfirmation() {
         UserJpaEntity user = Mocks.buyerJpaEntityMock();

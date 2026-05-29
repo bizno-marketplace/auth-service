@@ -1,4 +1,4 @@
-package com.biznopay.authservice.domain.validator;
+package com.biznopay.authservice.presentation.validator;
 
 import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;

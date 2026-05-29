@@ -1,0 +1,100 @@
+package com.biznopay.authservice.presentation.controller;
+
+import com.biznopay.authservice.config.ContainerBase;
+import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
+import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
+import com.biznopay.authservice.utils.NamedByteArrayResource;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.io.IOException;
+
+import static com.biznopay.authservice.testcases.SellerTestCases.*;
+
+@Tag("integration")
+@ActiveProfiles("test")
+@Import({TestConfig.class})
+@AutoConfigureRestTestClient
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class RegisterSellerControllerTests extends ContainerBase {
+    @LocalServerPort
+    private int port;
+
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
+
+    private String url(String path) {
+        return "http://localhost:" + port + path;
+    }
+
+    @BeforeEach
+    void setUp() {
+        restTemplate = new TestRestTemplate();
+        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+    }
+
+    @Test
+    @DisplayName("Should return 200 on successfully registration")
+    void shouldReturn200OnSuccessfullyRegistration() throws IOException {
+        RegisterSellerInput request = registerSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
+                VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST);
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/bi_frente.png")
+                .readAllBytes();
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/bi_verso.png")
+                .readAllBytes();
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, "bi_frente.png"), frontHeaders));
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, "bi_verso.png"), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
+                url("/sellers"),
+                HttpMethod.POST,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        RegisterSellerOutput output = response.getBody().data();
+        Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
+    }
+
+}

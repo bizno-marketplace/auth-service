@@ -23,7 +23,7 @@ public class AccountController {
     private final ResendConformation resendConformation;
 
     @GetMapping("/confirm-account")
-    public ResponseEntity confirmAccount(@RequestParam("token") String token) {
+    public ResponseEntity confirmAccount(@RequestParam(value = "token", required = false) String token) {
         if (token == null || token.isEmpty())
             throw new RequiredFieldException("Token", "AccountController", "ACCOUNT_CONTROLLER-001");
         confirmAccount.execute(token);
