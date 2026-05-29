@@ -37,7 +37,7 @@ import static com.biznopay.authservice.testcases.SellerTestCases.*;
 @Import({TestConfig.class})
 @AutoConfigureRestTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RegisterSellerControllerTests extends ContainerBase {
+public class SellerControllerTests extends ContainerBase {
     @LocalServerPort
     private int port;
 

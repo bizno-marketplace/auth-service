@@ -1,7 +1,8 @@
 package com.biznopay.authservice.presentation.validator;
 
-import com.biznopay.authservice.domain.exception.InvalidFieldException;
+import com.biznopay.authservice.domain.exception.FileSizeExceedLimitException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
+import com.biznopay.authservice.domain.exception.UnsupportedFileTypeException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -25,10 +26,10 @@ public class BiDocumentValidator {
             throw new RequiredFieldException(fieldName, BiDocumentValidator.class.getName(), "BIDOCUMENTVALIDATOR-001");
         }
         if (!ALLOWED_TYPES.contains(file.getContentType())) {
-            throw new InvalidFieldException(fieldName, BiDocumentValidator.class.getName(), "BIDOCUMENTVALIDATOR-002");
+            throw new UnsupportedFileTypeException(fieldName, BiDocumentValidator.class.getName(), ALLOWED_TYPES.toString(), "BIDOCUMENTVALIDATOR-002");
         }
         if (file.getSize() > MAX_SIZE) {
-            throw new InvalidFieldException(fieldName, BiDocumentValidator.class.getName(), "BIDOCUMENTVALIDATOR-003");
+            throw new FileSizeExceedLimitException(fieldName, BiDocumentValidator.class.getName(), (MAX_SIZE / 1024 / 1024), "BIDOCUMENTVALIDATOR-002");
         }
     }
 }
