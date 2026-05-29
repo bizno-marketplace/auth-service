@@ -107,6 +107,8 @@ public class SellerTestCases {
 
     public static Stream<Arguments> controllerRegisterSellerCases(){
         return Stream.of(
+                Arguments.of("Success", new RegisterSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                        VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png","bi_verso.png",RequiredFieldException.class , HttpStatus.OK , "We've sent an activation link to provided email: " + VALID_EMAIL),
                 Arguments.of("First name is null", new RegisterSellerRequest(null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
                         VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST), "bi_frente.png","bi_verso.png",RequiredFieldException.class , HttpStatus.BAD_REQUEST , "First name is required")
                 );

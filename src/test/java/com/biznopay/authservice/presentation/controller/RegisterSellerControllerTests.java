@@ -56,50 +56,6 @@ public class RegisterSellerControllerTests extends ContainerBase {
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
     }
 
-    @Test
-    @DisplayName("Should return 200 on successfully registration")
-    void shouldReturn200OnSuccessfullyRegistration() throws IOException {
-        RegisterSellerInput request = registerSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
-                VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST);
-
-        byte[] biFrontBytes = getClass().getClassLoader()
-                .getResourceAsStream("fixtures/images/bi_frente.png")
-                .readAllBytes();
-
-        byte[] biBackBytes = getClass().getClassLoader()
-                .getResourceAsStream("fixtures/images/bi_verso.png")
-                .readAllBytes();
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-        HttpHeaders dataHeaders = new HttpHeaders();
-        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-        body.add("data", new HttpEntity<>(request, dataHeaders));
-
-        HttpHeaders frontHeaders = new HttpHeaders();
-        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
-        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, "bi_frente.png"), frontHeaders));
-
-        HttpHeaders backHeaders = new HttpHeaders();
-        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
-        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, "bi_verso.png"), backHeaders));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
-
-        ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
-                url("/sellers"),
-                HttpMethod.POST,
-                new HttpEntity<>(body, headers),
-                new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
-                }
-        );
-
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        RegisterSellerOutput output = response.getBody().data();
-        Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
-    }
-
     @ParameterizedTest(name = "{0}")
     @MethodSource("com.biznopay.authservice.testcases.SellerTestCases#controllerRegisterSellerCases")
     void shouldTestAllCases(
@@ -137,7 +93,6 @@ public class RegisterSellerControllerTests extends ContainerBase {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
 
-
         ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
                 url("/sellers"),
                 HttpMethod.POST,
@@ -148,7 +103,12 @@ public class RegisterSellerControllerTests extends ContainerBase {
         );
 
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertEquals(expectedMessage, response.getBody().error().message());
+        if (testName.equals("Success")){
+            RegisterSellerOutput output = response.getBody().data();
+            Assertions.assertEquals("We've sent an activation link to provided email: " + request.email(), output.message());
+        }else {
+            Assertions.assertEquals(expectedMessage, response.getBody().error().message());
+        }
     }
 
 }
