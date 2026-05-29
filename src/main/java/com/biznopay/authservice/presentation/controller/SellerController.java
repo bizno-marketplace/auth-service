@@ -29,8 +29,8 @@ import java.io.IOException;
 public class SellerController {
     private final RegisterSeller registerSeller;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<Object>> create(
+    @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<Object>> register(
             @RequestPart("data") RegisterSellerRequest request,
             @Valid @RequestPart(value = "biFrontPhoto", required = false) MultipartFile biFrontPhoto,
             @RequestPart(value = "biBackPhoto", required = false) MultipartFile biBackPhoto

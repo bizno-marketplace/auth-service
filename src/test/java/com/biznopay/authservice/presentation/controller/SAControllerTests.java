@@ -56,7 +56,7 @@ public class SAControllerTests extends ContainerBase {
     void shouldReturn200OnSuccessfullyRegistration() {
         FuncUtils funcUtils = new FuncUtils();
         RegisterSARequest request = Mocks.registerSARequestMock();
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -66,7 +66,7 @@ public class SAControllerTests extends ContainerBase {
         RegisterSARequest request = Mocks.registerSARequestMock();
         UserJpaEntity entity = Mocks.supperAdminJpaEntityMockFromSuperAdmin();
         userJpaRepository.save(entity);
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         Assertions.assertEquals("Super admin already exists", response.getBody().error().message());
     }
@@ -77,7 +77,7 @@ public class SAControllerTests extends ContainerBase {
         RegisterSARequest request = Mocks.registerSARequestMock();
         UserJpaEntity entity = Mocks.buyerJpaEntityMockFromBuyer();
         userJpaRepository.save(entity);
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         Assertions.assertEquals("E-mail already in use", response.getBody().error().message());
     }
@@ -86,7 +86,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 400 if first name is empty")
     void shouldReturn400IfFirstNameIsEmpty() {
         RegisterSARequest request = Mocks.registerSARequestEmptyFieldMock("firstname");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("First name is required", response.getBody().error().message());
     }
@@ -95,7 +95,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 422 if first name is invalid")
     void shouldReturn422IfFirstNameIsInvalid() {
         RegisterSARequest request = Mocks.registerSARequestInvalidFieldMock("firstname");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         Assertions.assertEquals("First name must be at least 3 characters long", response.getBody().error().message());
     }
@@ -105,7 +105,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 400 if last name is empty")
     void shouldReturn400IfLastNameIsEmpty(String lastname) {
         RegisterSARequest request = Mocks.registerSARequestEmptyFieldMock("lastname");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Last name is required", response.getBody().error().message());
     }
@@ -114,7 +114,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 422 if last name is invalid")
     void shouldReturn422IfLastNameIsInvalid() {
         RegisterSARequest request = Mocks.registerSARequestInvalidFieldMock("lastname");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         Assertions.assertEquals("Last name must be at least 3 characters long", response.getBody().error().message());
     }
@@ -124,7 +124,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 400 if email is empty")
     void shouldReturn400IfEmailIsEmpty(String email) {
         RegisterSARequest request = Mocks.registerSARequestEmptyFieldMock("email");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("E-mail is required", response.getBody().error().message());
     }
@@ -133,7 +133,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 422 if email is invalid")
     void shouldReturn400IfEmailIsInvalid() {
         RegisterSARequest request = Mocks.registerSARequestInvalidFieldMock("email");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         Assertions.assertEquals("E-mail must be a bizno institutional email", response.getBody().error().message());
     }
@@ -143,7 +143,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 400 if password is empty")
     void shouldReturn400IfPasswordIsEmpty(String password) {
         RegisterSARequest request = Mocks.registerSARequestEmptyFieldMock("password");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Password is required", response.getBody().error().message());
     }
@@ -152,7 +152,7 @@ public class SAControllerTests extends ContainerBase {
     @DisplayName("Should return 422 if password is invalid")
     void shouldReturn400IfPasswordIsInvalid() {
         RegisterSARequest request = Mocks.registerSARequestInvalidFieldMock("password");
-        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins"), request, ApiResponse.class);
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/supper-admins/register"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         Assertions.assertEquals("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character", response.getBody().error().message());
     }

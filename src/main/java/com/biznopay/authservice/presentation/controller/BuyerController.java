@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class BuyerController {
     private final RegisterBuyer registerBuyer;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Object>> create(@RequestBody @Valid RegisterBuyerRequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<Object>> register(@RequestBody @Valid RegisterBuyerRequest request) {
         RegisterBuyerInput input = UserMapper.toRegisterBuyerInput(request);
         RegisterBuyerOutput output = registerBuyer.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));

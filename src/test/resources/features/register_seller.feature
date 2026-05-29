@@ -5,7 +5,7 @@ Feature: Register Seller
 
   Scenario: Successfully register a new seller
     Given no seller exists with email "joao.tembe@gmail.com"
-    When i send a multipart POST request to "/sellers" with data:
+    When i send a multipart POST request to "/sellers/register" with data:
       | firstName        | João                              |
       | lastName         | Tembe                             |
       | email            | joao.tembe@gmail.com              |
@@ -30,7 +30,7 @@ Feature: Register Seller
 
   Scenario: Attempt to register with an already registered email
     Given a user with email "joao.tembe@gmail.com" exists in the system
-    When i send a multipart POST request to "/sellers" with data:
+    When i send a multipart POST request to "/sellers/register" with data:
       | firstName        | João                              |
       | lastName         | Tembe                             |
       | email            | joao.tembe@gmail.com              |
@@ -55,7 +55,7 @@ Feature: Register Seller
 
   Scenario: Attempt to register with an already registered NUIT
     Given a seller already exists with nuit "400123456"
-    When i send a multipart POST request to "/sellers" with data:
+    When i send a multipart POST request to "/sellers/register" with data:
       | firstName        | Carlos                   |
       | lastName         | Sitoe                    |
       | email            | carlos.sitoe@gmail.com   |
@@ -79,7 +79,7 @@ Feature: Register Seller
     And the response body should contain error "Nuit already in use"
 
   Scenario: Reject registration if BI front photo is missing
-    When i send a multipart POST request to "/sellers" with data:
+    When i send a multipart POST request to "/sellers/register" with data:
       | firstName        | João                              |
       | lastName         | Tembe                             |
       | email            | joao.tembe@gmail.com              |
@@ -102,7 +102,7 @@ Feature: Register Seller
     And the response body should contain error "BI front photo is required"
 
   Scenario: Reject registration if BI back photo is missing
-    When i send a multipart POST request to "/sellers" with data:
+    When i send a multipart POST request to "/sellers/register" with data:
       | firstName        | João                              |
       | lastName         | Tembe                             |
       | email            | joao.tembe@gmail.com              |
@@ -125,7 +125,7 @@ Feature: Register Seller
     And the response body should contain error "BI back photo is required"
 
   Scenario Outline: Attempt to register with invalid or missing fields
-    When i send a multipart POST request to "/sellers" with data:
+    When i send a multipart POST request to "/sellers/register" with data:
       | firstName        | <firstName>        |
       | lastName         | <lastName>         |
       | email            | <email>            |

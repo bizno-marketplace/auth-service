@@ -35,14 +35,14 @@ public class CommonSteps {
     public void iSendAPOSTRequestToWith(String path, DataTable dataTable) {
         Map<String, String> data = dataTable.asMap(String.class, String.class);
         Object request = switch (path) {
-            case "/supper-admins" -> new RegisterSARequest(
+            case "/supper-admins/register" -> new RegisterSARequest(
                     data.get("firstName"),
                     data.get("lastName"),
                     data.get("email"),
                     data.get("password")
             );
             case "/accounts/resend-confirmation" -> new ResendConfirmationRequest(data.get("email"));
-            case "/buyers" -> {
+            case "/buyers/register" -> {
                 AddressRequest address = new AddressRequest(
                         data.get("latitude") != null && !data.get("latitude").isBlank() ? Double.parseDouble(data.get("latitude")) : null,
                         data.get("longitude") != null && !data.get("longitude").isBlank() ? Double.parseDouble(data.get("longitude")) : null,

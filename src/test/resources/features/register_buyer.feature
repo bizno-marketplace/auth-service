@@ -5,7 +5,7 @@ Feature: Register Buyer
 
   Scenario: Successfully register a new buyer
     Given no buyer exists with email "ana.machava@gmail.com"
-    When i send a POST request to "/buyers" with:
+    When i send a POST request to "/buyers/register" with:
       | firstName     | Ana                   |
       | lastName      | Machava               |
       | email         | ana.machava@gmail.com |
@@ -26,7 +26,7 @@ Feature: Register Buyer
 
   Scenario: Attempt to register with an already registered email
     Given a user with email "ana.machava@gmail.com" exists in the system
-    When i send a POST request to "/buyers" with:
+    When i send a POST request to "/buyers/register" with:
       | firstName     | Ana                   |
       | lastName      | Machava               |
       | email         | ana.machava@gmail.com |
@@ -43,7 +43,7 @@ Feature: Register Buyer
     And the response body should contain error "E-mail already in use"
 
   Scenario Outline: Attempt to register with invalid or missing fields
-    When i send a POST request to "/buyers" with:
+    When i send a POST request to "/buyers/register" with:
       | firstName     | <firstName>     |
       | lastName      | <lastName>      |
       | email         | <email>         |
