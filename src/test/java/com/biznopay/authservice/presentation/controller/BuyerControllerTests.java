@@ -63,7 +63,7 @@ public class BuyerControllerTests extends ContainerBase {
     ) {
         if (testName.equals("Conflict")) {
             restTemplate.exchange(
-                    url("/buyers"),
+                    url("/buyers/register"),
                     HttpMethod.POST,
                     new HttpEntity<>(request),
                     new ParameterizedTypeReference<ApiResponse<Void>>() {
@@ -73,7 +73,7 @@ public class BuyerControllerTests extends ContainerBase {
 
         if (testName.equals("Success")) {
             ResponseEntity<ApiResponse<RegisterBuyerOutput>> response = restTemplate.exchange(
-                    url("/buyers"),
+                    url("/buyers/register"),
                     HttpMethod.POST,
                     new HttpEntity<>(request),
                     new ParameterizedTypeReference<ApiResponse<RegisterBuyerOutput>>() {
@@ -84,7 +84,7 @@ public class BuyerControllerTests extends ContainerBase {
             Assertions.assertEquals(expectedMessage, response.getBody().data().message());
         } else {
             ResponseEntity<ApiResponse<Void>> response = restTemplate.exchange(
-                    url("/buyers"),
+                    url("/buyers/register"),
                     HttpMethod.POST,
                     new HttpEntity<>(request),
                     new ParameterizedTypeReference<ApiResponse<Void>>() {

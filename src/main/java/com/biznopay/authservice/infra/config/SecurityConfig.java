@@ -21,7 +21,11 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/accounts/confirm-account/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/accounts/resend-confirmation/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/supper-admins", "/buyers", "/sellers").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/supper-admins/register",
+                                "/buyers/register",
+                                "/sellers/register")
+                        .permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

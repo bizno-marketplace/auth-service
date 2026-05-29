@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class SAController {
     private final RegisterSA registerSA;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<Object>> create(@RequestBody @Valid RegisterSARequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<Object>> register(@RequestBody @Valid RegisterSARequest request) {
         RegisterSAInput input = UserMapper.toRegisterSAInput(request);
         RegisterSAOutput output = registerSA.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));

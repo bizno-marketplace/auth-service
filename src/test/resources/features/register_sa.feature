@@ -13,7 +13,7 @@ Feature: Register Super Admin
 
   Scenario: Successfully register super admin when none exists
     Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
+    When i send a POST request to "/supper-admins/register" with:
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
@@ -25,7 +25,7 @@ Feature: Register Super Admin
 
   Scenario: Reject registration when super admin already exists
     Given a super admin already exists in the system
-    When i send a POST request to "/supper-admins" with:
+    When i send a POST request to "/supper-admins/register" with:
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
@@ -35,7 +35,7 @@ Feature: Register Super Admin
 
   Scenario: Reject registration if email is already in use
     Given a user with email "admin@bizno.co.mz" exists in the system
-    When i send a POST request to "/supper-admins" with:
+    When i send a POST request to "/supper-admins/register" with:
       | firstName | Super             |
       | lastName  | Admin             |
       | email     | admin@bizno.co.mz |
@@ -45,7 +45,7 @@ Feature: Register Super Admin
 
   Scenario Outline: Attempt to register with invalid or missing fields
     Given no super admin exists in the system
-    When i send a POST request to "/supper-admins" with:
+    When i send a POST request to "/supper-admins/register" with:
       | firstName | <firstName> |
       | lastName  | <lastName>  |
       | email     | <email>     |

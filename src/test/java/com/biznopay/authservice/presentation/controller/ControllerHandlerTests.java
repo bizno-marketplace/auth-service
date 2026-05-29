@@ -49,7 +49,7 @@ public class ControllerHandlerTests extends ContainerBase {
         RegisterSARequest registerSARequest = Mocks.registerSARequestMock();
         String request = new ObjectMapper().writeValueAsString(registerSARequest);
         mvc.perform(MockMvcRequestBuilders
-                        .post("/supper-admins")
+                        .post("/supper-admins/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -65,7 +65,7 @@ public class ControllerHandlerTests extends ContainerBase {
         RegisterSARequest registerSARequest = Mocks.registerSARequestMock();
         String request = new ObjectMapper().writeValueAsString(registerSARequest);
         mvc.perform(MockMvcRequestBuilders
-                        .post("/supper-admins")
+                        .post("/supper-admins/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError())

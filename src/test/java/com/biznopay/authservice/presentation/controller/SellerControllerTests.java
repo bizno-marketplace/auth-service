@@ -88,7 +88,7 @@ public class SellerControllerTests extends ContainerBase {
         headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
 
         ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
-                url("/sellers"),
+                url("/sellers/register"),
                 HttpMethod.POST,
                 new HttpEntity<>(body, headers),
                 new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
@@ -129,7 +129,7 @@ public class SellerControllerTests extends ContainerBase {
         headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
 
         ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
-                url("/sellers"),
+                url("/sellers/register"),
                 HttpMethod.POST,
                 new HttpEntity<>(body, headers),
                 new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
@@ -197,7 +197,7 @@ public class SellerControllerTests extends ContainerBase {
         headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
 
         ResponseEntity<ApiResponse<RegisterSellerOutput>> response = restTemplate.exchange(
-                url("/sellers"),
+                url("/sellers/register"),
                 HttpMethod.POST,
                 new HttpEntity<>(body, headers),
                 new ParameterizedTypeReference<ApiResponse<RegisterSellerOutput>>() {
