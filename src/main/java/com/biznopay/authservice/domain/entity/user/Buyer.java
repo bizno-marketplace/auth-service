@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Buyer extends User {
     private static final String MOZ_PHONE_REGEX = "^(\\+258)?(82|83|84|85|86|87)\\d{7}$";
@@ -33,11 +34,12 @@ public class Buyer extends User {
         return new Buyer(UserId.generate(), firstName, lastname, email, phone, password, UserStatus.PENDING, deliveryAddress, expiresAt, createdAt, createdAt);
     }
 
-    public static Buyer reconstitute(UserId id, String firstName, String lastName, String email, String phone,
-                                     String password, UserStatus status, List<Address> deliveryAddress, LocalDateTime expiresAt,
-                                     LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static Buyer reconstruct(UUID id, String firstName, String lastName, String email, String phone,
+                                    String password, UserStatus status, List<Address> deliveryAddress, LocalDateTime expiresAt,
+                                    LocalDateTime createdAt, LocalDateTime updatedAt) {
+        UserId userId =  UserId.of(id);
         phone = validatePhone(phone);
-        return new Buyer(id, firstName, lastName, email, phone, password, status, deliveryAddress, expiresAt, createdAt, updatedAt);
+        return new Buyer(userId, firstName, lastName, email, phone, password, status, deliveryAddress, expiresAt, createdAt, updatedAt);
     }
 
     private static String validatePhone(String phone) {
@@ -55,7 +57,7 @@ public class Buyer extends User {
     }
 
     private void validateAddressList(List<Address> deliveryAddresses) {
-        if (deliveryAddresses.stream().allMatch(Objects::isNull))
+        if (deliveryAddresses == null || deliveryAddresses.stream().allMatch(Objects::isNull))
             throw new RequiredFieldException("Delivery address", Buyer.class.getName(), "BUYER-004");
         this.deliveryAddresses = deliveryAddresses;
     }
