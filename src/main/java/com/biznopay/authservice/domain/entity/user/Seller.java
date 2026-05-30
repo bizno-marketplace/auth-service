@@ -39,9 +39,9 @@ public class Seller extends User {
                 now, storeName, storeDescription, nuit, storeAddress, biDocument);
     }
 
-    public static Seller reconstitute(UserId id, String firstName, String lastname, String email, String phone, String password,
-                                      UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
-                                      String storeName, String storeDescription, String nuit, Address storeAddress, BiDocument biDocument) {
+    public static Seller reconstruct(UserId id, String firstName, String lastname, String email, String phone, String password,
+                                     UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
+                                     String storeName, String storeDescription, String nuit, Address storeAddress, BiDocument biDocument) {
         phone = validatePhone(phone);
         return new Seller(id, firstName, lastname, email, phone, password, status, expiresAt, createdAt, updatedAt,
                 storeName, storeDescription, nuit, storeAddress, biDocument);
