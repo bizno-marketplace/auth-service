@@ -1,5 +1,6 @@
 package com.biznopay.authservice.domain.entity.user;
 
+import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
 import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
@@ -29,6 +30,7 @@ public class Address {
     }
 
     public static Address reconstruct(Long id, Double latitude, Double longitude, String street, String neighbourhood, String city, String province, String country) {
+        id = validateId(id);
         return new Address(id, latitude, longitude, street, neighbourhood, city, province, country);
     }
 
@@ -44,10 +46,18 @@ public class Address {
 
     private Double validateLongitude(Double longitude) {
         if (longitude == null)
-            throw new RequiredFieldException("Longitude", "Address", "ADDRESS-002");
+            throw new RequiredFieldException("Longitude", "Address", "ADDRESS-003");
         if (longitude < -180 || longitude > 180)
             throw new InvalidFieldException("Longitude", "Address", "ADDRESS-004");
         return longitude;
+    }
+
+    private static Long validateId(Long id){
+        if (id == null)
+            throw new RequiredFieldException("Id", "Address", "ADDRESS-005");
+        if (id <= 0)
+            throw new InvalidEntityIdException(Address.class.getName(), "ADDRESS-006");
+        return id;
     }
 
     public Long getId() {
