@@ -3,7 +3,6 @@ package com.biznopay.authservice.usecase.user.register.buyer;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.event.UserRegistered;
 import com.biznopay.authservice.domain.entity.user.Buyer;
-import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
@@ -11,8 +10,6 @@ import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.DomainEventGateway;
 import com.biznopay.authservice.domain.gateway.EncoderGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
-import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -26,6 +23,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+
+import static com.biznopay.authservice.testcases.BuyerTestCases.*;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -46,10 +45,8 @@ public class RegisterBuyerTests {
     @Test
     @DisplayName("Should throw email EmailAlreadyInUseException when email is already in use")
     public void shouldThrowEmailAlreadyInUseExceptionWhenEmailIsAlreadyInUse() {
-        User user = Mocks.buyerMock();
-        Address address = Mocks.addressMock();
-        RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
-                user.getEmail(), user.getPassword(), user.getPhone(), address);
+        Buyer user = VALID_BUYER;
+        RegisterBuyerInput input = VALID_REGISTER_BUYER_INPUT;
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.of(user));
         RegisterBuyer registerBuyer = setUp();
         Assertions.assertThrows(EmailAlreadyInUseException.class, () -> registerBuyer.execute(input));
@@ -60,10 +57,8 @@ public class RegisterBuyerTests {
     @NullAndEmptySource
     @DisplayName("Should throw RequiredFieldException when password is null or empty")
     public void shouldThrowRequiredFieldExceptionWhenPasswordIsNulOrEmpty(String password) {
-        User user = Mocks.buyerMock();
-        Address address = Mocks.addressMock();
-        RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
-                user.getEmail(), password, user.getPhone(), address);
+        RegisterBuyerInput input = registerBuyerInputWithInvalidPassword(password);
+        ;
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         RegisterBuyer registerBuyer = setUp();
         Assertions.assertThrows(RequiredFieldException.class, () -> registerBuyer.execute(input));
@@ -74,10 +69,7 @@ public class RegisterBuyerTests {
     @ValueSource(strings = {"Senha@Senha", "senha@1234", "Senha123"})
     @DisplayName("Should throw InvalidPasswordException when password does not match with established rules")
     public void shouldThrowInvalidPasswordExceptionWhenPasswordDoesNotMatchWithEstablishedRules(String password) {
-        User user = Mocks.buyerMock();
-        Address address = Mocks.addressMock();
-        RegisterBuyerInput input = new RegisterBuyerInput(user.getFirstName(), user.getLastName(),
-                user.getEmail(), password, user.getPhone(), address);
+        RegisterBuyerInput input = registerBuyerInputWithInvalidPassword(password);
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         RegisterBuyer registerBuyer = setUp();
         Assertions.assertThrows(InvalidPasswordException.class, () -> registerBuyer.execute(input));
@@ -87,8 +79,7 @@ public class RegisterBuyerTests {
     @Test
     @DisplayName("Should registry buyer, send activation link with 15 min of expiration to provided email and return message to notify user")
     public void shouldRegistryBuyerSedActivationLinkWith15MinOfExpirationToProvidedEmailAndReturnMessageToNotifyUser() {
-        Address address = Mocks.addressMock();
-        RegisterBuyerInput input = new RegisterBuyerInput("John", "Doe", "john.doe@example.com", "Senha@1234", "848484848", address);
+        RegisterBuyerInput input = VALID_REGISTER_BUYER_INPUT;
         String encodedPassword = "Any@EncodePassword019";
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
         Mockito.when(encoderGateway.encode(input.password())).thenReturn(encodedPassword);

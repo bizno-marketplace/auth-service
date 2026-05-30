@@ -9,7 +9,6 @@ import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.DomainEventGateway;
 import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
-import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -20,6 +19,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+
+import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
 
 
 @Tag("unit")
@@ -52,8 +53,8 @@ public class ResendConfirmationTests {
     @Test
     @DisplayName("Should throw AccountAlreadyConfirmedException when account has confirmed ")
     public void shouldThrowAccountAlreadyConfirmedExceptionWhenAccountHasConfirmed() {
-        String email = "user@example.com";
-        User user = Mocks.buyerMock();
+        User user = validBuyer();
+        String email = user.getEmail();
         user.activate();
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         ResendConformation resendConformation = setUp();
@@ -63,8 +64,8 @@ public class ResendConfirmationTests {
     @Test
     @DisplayName("Should throw TokenCooldownException when account is on cooldown")
     public void shouldThrowTokenCooldownExceptionWhenAccountIsOnCoolDown() {
-        String email = "user@example.com";
-        User user = Mocks.buyerMock();
+        User user = validBuyer();
+        String email = user.getEmail();
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(true);
         ResendConformation resendConformation = setUp();
@@ -74,8 +75,8 @@ public class ResendConfirmationTests {
     @Test
     @DisplayName("Should publish email event, delete older token if exists, start cooldown and return successfully message")
     public void shouldPublishEmailEventDeleteOlderTokenIfExistsStartCooldownAndReturnSuccessfullyMessage() {
-        String email = "user@example.com";
-        User user = Mocks.buyerMock();
+        User user = validBuyer();
+        String email = user.getEmail();
         ActivationToken token = ActivationToken.generate(user.getId());
 
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
@@ -97,8 +98,8 @@ public class ResendConfirmationTests {
     @Test
     @DisplayName("Should publish email event, not delete older token when not exists, start cooldown and return successfully message")
     public void shouldPublishEmailEventNotDeleteOlderTokenWhenNotExistsStartCooldownAndReturnSuccessfullyMessage() {
-        String email = "user@example.com";
-        User user = Mocks.buyerMock();
+        User user = validBuyer();
+        String email = user.getEmail();
 
         Mockito.when(userGateway.findByEmail(email)).thenReturn(Optional.of(user));
         Mockito.when(resendCooldownGateway.isInCooldown(email)).thenReturn(false);

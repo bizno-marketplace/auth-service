@@ -4,8 +4,6 @@ import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;
-import com.biznopay.authservice.mocks.Mocks;
-import com.biznopay.authservice.presentation.dto.RegisterSARequest;
 import com.biznopay.authservice.usecase.user.register.sa.RegisterSA;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
@@ -21,6 +19,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_REGISTER_SA_REQUEST;
 
 @Tag("integration")
 @ActiveProfiles("test")
@@ -46,8 +46,7 @@ public class ControllerHandlerTests extends ContainerBase {
     @DisplayName("Should return 400 and return RequiredFieldException when first name is empty on RegisterSA")
     public void shouldReturn400AndReturnRequiredFieldExceptionWhenFirstNameIsEmptyOnRegisterSA() throws Exception {
         Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(new RequiredFieldException("First name", User.class.getName(), "USER-002"));
-        RegisterSARequest registerSARequest = Mocks.registerSARequestMock();
-        String request = new ObjectMapper().writeValueAsString(registerSARequest);
+        String request = new ObjectMapper().writeValueAsString(VALID_REGISTER_SA_REQUEST);
         mvc.perform(MockMvcRequestBuilders
                         .post("/supper-admins/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,8 +61,7 @@ public class ControllerHandlerTests extends ContainerBase {
     public void shouldReturn500AndUnexpectedExceptionWhenAnyUnexpectedErrorOccurs() throws Exception {
         UnexpectedException exception = new UnexpectedException("UNEXPECTED_ERROR-001");
         Mockito.when(registerSA.execute(ArgumentMatchers.any())).thenThrow(exception);
-        RegisterSARequest registerSARequest = Mocks.registerSARequestMock();
-        String request = new ObjectMapper().writeValueAsString(registerSARequest);
+        String request = new ObjectMapper().writeValueAsString(VALID_REGISTER_SA_REQUEST);
         mvc.perform(MockMvcRequestBuilders
                         .post("/supper-admins/register")
                         .contentType(MediaType.APPLICATION_JSON)

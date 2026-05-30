@@ -1,6 +1,6 @@
 package com.biznopay.authservice.usecase.user.register.buyer;
 
-import com.biznopay.authservice.domain.vo.Address;
+import com.biznopay.authservice.domain.entity.user.Address;
 
 public record RegisterBuyerInput(
         String firstName,

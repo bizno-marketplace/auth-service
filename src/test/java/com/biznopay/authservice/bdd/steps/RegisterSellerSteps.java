@@ -134,7 +134,7 @@ public class RegisterSellerSteps {
     public void aUserWithEmailExistsInTheSystem(String nuit) {
         User user = registerSeller(
                 VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
-                VALID_STORE_NAME, VALID_STORE_DESC, nuit, VALID_ADDRESS, VALID_BI);
+                VALID_STORE_NAME, VALID_STORE_DESC, nuit, VALID_ADDRESS_NEW, VALID_BI);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }

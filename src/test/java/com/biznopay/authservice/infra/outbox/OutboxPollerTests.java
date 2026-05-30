@@ -2,7 +2,6 @@ package com.biznopay.authservice.infra.outbox;
 
 import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.OutboxEventJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
 import io.nats.client.Connection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -14,6 +13,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+
+import static com.biznopay.authservice.testcases.OutboxEventTestCases.failedOutboxJpaEntity;
+import static com.biznopay.authservice.testcases.OutboxEventTestCases.validOutboxJpaEntity;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +33,7 @@ class OutboxPollerTests {
     @Test
     @DisplayName("Should publish event successfully")
     void shouldPublishEventSuccessfully() throws Exception {
-        OutboxEventJpaEntity entity = Mocks.pendingOutboxEventJpaEntityMock();
+        OutboxEventJpaEntity entity = validOutboxJpaEntity();
         Mockito.when(repository.findByStatus(OutboxStatus.PENDING)).thenReturn(Collections.singletonList(entity));
         outboxPoller.poll();
         Mockito.verify(natsConnection).publish(Mockito.anyString(), Mockito.any());
@@ -41,7 +43,7 @@ class OutboxPollerTests {
     @Test
     @DisplayName("Should register failure when nats publish fails")
     void shouldRegisterFailureWhenNatsPublishFails() throws Exception {
-        OutboxEventJpaEntity entity = Mocks.pendingOutboxEventJpaEntityMock();
+        OutboxEventJpaEntity entity = validOutboxJpaEntity();
         Mockito.when(repository.findByStatus(OutboxStatus.PENDING)).thenReturn(Collections.singletonList(entity));
         Mockito.doThrow(new RuntimeException("Connection refused")).when(natsConnection).publish(Mockito.anyString(), Mockito.any());
         outboxPoller.poll();
@@ -55,7 +57,8 @@ class OutboxPollerTests {
     @Test
     @DisplayName("Should mark event as failed after exhausting retries")
     void shouldMarkEventAsFailedAfterExhaustingRetries() throws Exception {
-        OutboxEventJpaEntity entity = Mocks.exhaustedOutboxEventJpaEntityMock();
+        OutboxEventJpaEntity entity = failedOutboxJpaEntity();
+        ;
         Mockito.when(repository.findByStatus(OutboxStatus.PENDING)).thenReturn(Collections.singletonList(entity));
         Mockito.doThrow(new RuntimeException("Connection refused")).when(natsConnection).publish(Mockito.anyString(), Mockito.any());
         outboxPoller.poll();

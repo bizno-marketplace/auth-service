@@ -1,14 +1,11 @@
 package com.biznopay.authservice.infra.gateway;
 
-import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SellerJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -20,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -50,8 +49,7 @@ public class UserGatewayImplTests {
     @Test
     @DisplayName("Should save user on save")
     public void shouldSaveUserOnSave() {
-        RegisterSAInput input = Mocks.registerSAInputMock();
-        User user = SuperAdmin.register(input.firstName(), input.lastName(), input.email(), input.password());
+        User user = validBuyer();
         UserGatewayImpl userGatewayImpl = setUp();
         userGatewayImpl.save(user);
         Mockito.verify(userJpaRepository).save(Mockito.any(UserJpaEntity.class));
@@ -61,7 +59,7 @@ public class UserGatewayImplTests {
     @Test
     @DisplayName("Should return correct result on find by email")
     public void shouldReturnCorrectResultOnFindByEmail() {
-        User user = Mocks.superAdminMock();
+        User user = validBuyer();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Mockito.when(userJpaRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(entity));
         UserGatewayImpl userGatewayImpl = setUp();
@@ -72,7 +70,7 @@ public class UserGatewayImplTests {
         Assertions.assertEquals(entity.getFirstName(), result.get().getFirstName());
         Assertions.assertEquals(entity.getLastName(), result.get().getLastName());
         Assertions.assertEquals(entity.getEmail(), result.get().getEmail());
-        Assertions.assertEquals("", result.get().getPhone());
+        Assertions.assertEquals(user.getPhone(), result.get().getPhone());
         Assertions.assertEquals(entity.getPassword(), result.get().getPassword());
         Assertions.assertEquals(entity.getStatus(), result.get().getStatus());
         Assertions.assertEquals(entity.getExpiresAt(), result.get().getExpiresAt());
@@ -98,7 +96,7 @@ public class UserGatewayImplTests {
     @Test
     @DisplayName("Should return user when exists on find by id")
     public void shouldReturnUserWhenExistsOnFindById() {
-        User user = Mocks.buyerMock();
+        User user = validBuyer();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Mockito.when(userJpaRepository.findById(user.getId().value())).thenReturn(Optional.of(entity));
         UserGatewayImpl userGatewayImpl = setUp();
@@ -109,7 +107,7 @@ public class UserGatewayImplTests {
         Assertions.assertEquals(entity.getFirstName(), result.get().getFirstName());
         Assertions.assertEquals(entity.getLastName(), result.get().getLastName());
         Assertions.assertEquals(entity.getEmail(), result.get().getEmail());
-        Assertions.assertEquals("848484848", result.get().getPhone());
+        Assertions.assertEquals(user.getPhone(), result.get().getPhone());
         Assertions.assertEquals(entity.getPassword(), result.get().getPassword());
         Assertions.assertEquals(entity.getStatus(), result.get().getStatus());
         Assertions.assertEquals(entity.getExpiresAt(), result.get().getExpiresAt());

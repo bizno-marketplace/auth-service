@@ -2,12 +2,13 @@ package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
-import com.biznopay.authservice.domain.entity.user.Seller;
+import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.util.DocumentPathGenerator;
 import com.biznopay.authservice.domain.util.DomainFuncUtils;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.AddressJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
@@ -48,6 +49,8 @@ public class SellerControllerTests extends ContainerBase {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
+    @Autowired
+    private AddressJpaRepository addressJpaRepository;
 
 
     private String url(String path) {
@@ -58,6 +61,8 @@ public class SellerControllerTests extends ContainerBase {
     void setUp() {
         restTemplate = new TestRestTemplate();
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE t_addresses RESTART IDENTITY CASCADE");
+
     }
 
     @Test
@@ -164,19 +169,16 @@ public class SellerControllerTests extends ContainerBase {
                 .readAllBytes();
 
         if (testName.equals("Nuit conflict")) {
-            Seller seller = registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, "test@email.com", VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
-                    VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
-            UserJpaEntity entity = UserMapper.toUserJpaEntity(seller);
+            User user = validSellerWithNotSavedAddress("test@email.com");
+            UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
             userJpaRepository.save(entity);
         }
 
         if (testName.equals("E-mail conflict")) {
-            Seller seller = registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
-                    VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
-            UserJpaEntity entity = UserMapper.toUserJpaEntity(seller);
+            User user = validSellerWithNotSavedAddress();
+            UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
             userJpaRepository.save(entity);
         }
-
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 

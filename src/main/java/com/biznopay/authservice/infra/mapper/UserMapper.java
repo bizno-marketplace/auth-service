@@ -2,7 +2,6 @@ package com.biznopay.authservice.infra.mapper;
 
 import com.biznopay.authservice.domain.entity.user.*;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.*;
@@ -16,6 +15,8 @@ import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserMapper {
     public static UserJpaEntity toUserJpaEntity(User user) {
@@ -45,7 +46,7 @@ public class UserMapper {
 
     private static BuyerJpaEntity toBuyerEntity(User user) {
         Buyer domain = (Buyer) user;
-        AddressJpaEntity address = toAddressJpaEntity(domain.getDeliveryAddress());
+        List<AddressJpaEntity> addresses = toAddressJpaEntityList(domain.getDeliveryAddresses());
         BuyerJpaEntity entity = new BuyerJpaEntity();
         entity.setId(domain.getId().value());
         entity.setFirstName(domain.getFirstName());
@@ -58,7 +59,7 @@ public class UserMapper {
         entity.setUpdatedAt(domain.getUpdatedAt());
 
         entity.setPhone(domain.getPhone());
-        entity.setDeliveryAddress(address);
+        entity.setDeliveryAddresses(addresses);
         return entity;
     }
 
@@ -99,22 +100,22 @@ public class UserMapper {
     }
 
     private static SuperAdmin toSuperAdminDomainEntity(SuperAdminJpaEntity entity) {
-        return SuperAdmin.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
+        return SuperAdmin.reconstruct(entity.getId(), entity.getFirstName(), entity.getLastName(),
                 entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt());
     }
 
     private static Buyer toBuyerDomainEntity(BuyerJpaEntity entity) {
-        Address address = toAddress(entity.getDeliveryAddress());
-        return Buyer.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
-                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), address, entity.getExpiresAt(),
+        List<Address> addresses = toAddressList(entity.getDeliveryAddresses());
+        return Buyer.reconstruct(entity.getId(), entity.getFirstName(), entity.getLastName(),
+                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), addresses, entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt());
     }
 
     private static Seller toSellerDomainEntity(SellerJpaEntity entity) {
         Address address = toAddress(entity.getStoreAddress());
         BiDocument biDocument = toDomainBiDoc(entity.getBiDocument());
-        return Seller.reconstitute(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
+        return Seller.reconstruct(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
                 entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt(), entity.getStoreName(), entity.getStoreDescription(), entity.getNuit(), address, biDocument);
     }
@@ -140,17 +141,25 @@ public class UserMapper {
     }
 
     public static AddressJpaEntity toAddressJpaEntity(Address address) {
-        return new AddressJpaEntity(address.latitude(), address.longitude(), address.street(), address.neighbourhood(),
-                address.city(), address.province(), address.country());
-    }
-
-    public static Address toAddress(AddressJpaEntity address) {
-        return new Address(address.getLatitude(), address.getLatitude(), address.getStreet(), address.getNeighbourhood(),
+        return new AddressJpaEntity(address.getId(), address.getLatitude(), address.getLongitude(), address.getStreet(), address.getNeighbourhood(),
                 address.getCity(), address.getProvince(), address.getCountry());
     }
 
+    public static List<AddressJpaEntity> toAddressJpaEntityList(List<Address> addresses) {
+        return addresses.stream().map(UserMapper::toAddressJpaEntity).collect(Collectors.toList());
+    }
+
+    public static Address toAddress(AddressJpaEntity address) {
+        return Address.reconstruct(address.getId(), address.getLatitude(), address.getLatitude(), address.getStreet(), address.getNeighbourhood(),
+                address.getCity(), address.getProvince(), address.getCountry());
+    }
+
+    public static List<Address> toAddressList(List<AddressJpaEntity> address) {
+        return address.stream().map(UserMapper::toAddress).collect(Collectors.toList());
+    }
+
     public static Address toAddress(AddressRequest request) {
-        return new Address(request.latitude(), request.longitude(), request.street(), request.neighbourhood(),
+        return Address.of(request.latitude(), request.longitude(), request.street(), request.neighbourhood(),
                 request.city(), request.province(), request.country());
     }
 

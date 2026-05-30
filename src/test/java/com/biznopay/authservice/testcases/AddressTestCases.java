@@ -1,5 +1,6 @@
 package com.biznopay.authservice.testcases;
 
+import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.exception.InvalidEntityIdException;
 import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
@@ -16,6 +17,8 @@ public class AddressTestCases {
     public static final String VALID_CITY = "Maputo";
     public static final String VALID_PROVINCE = "Maputo";
     public static final String VALID_COUNTRY = "Mozambique";
+    public  static  final Address VALID_ADDRESS =  Address.of(VALID_LATITUDE, VALID_LONGITUDE, VALID_STREET, VALID_NEIGHBOURHOOD, VALID_CITY, VALID_PROVINCE, VALID_COUNTRY);
+
 
     public static Stream<Arguments> buildAddressDomainTestCases() {
         return Stream.of(

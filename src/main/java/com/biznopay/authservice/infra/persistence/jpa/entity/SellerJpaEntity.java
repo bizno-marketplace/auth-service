@@ -1,9 +1,7 @@
 package com.biznopay.authservice.infra.persistence.jpa.entity;
 
 import com.biznopay.authservice.domain.enums.UserStatus;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,13 +11,17 @@ import java.util.UUID;
 @Setter
 @Getter
 @Entity
+@Table(name = "T_SELLERS")
 @DiscriminatorValue("SELLER")
 public class SellerJpaEntity extends UserJpaEntity {
     private String storeName;
     private String storeDescription;
     private String nuit;
-    @Embedded
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_address_id", nullable = false)
     private AddressJpaEntity storeAddress;
+
     @Embedded
     private BiDocumentJpaEntity biDocument;
 
