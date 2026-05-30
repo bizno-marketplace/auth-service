@@ -23,29 +23,26 @@ public class ActivationTokenTests {
 
     @ParameterizedTest(name = "{0}")
     @DisplayName("Should throw exception when data is invalid on generate")
-    @MethodSource("com.biznopay.authservice.testcases.ActivationTokenTestCases#invalidDomainGenerateCases")
-    public void shouldThrowRequiredFieldExceptionIfUserIdIsNullOnGenerate(String message, UserId userId, Class<? extends RuntimeException> expectedException, String expectedMessage) {
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> ActivationToken.generate(userId))
-                .isInstanceOf(expectedException)
-                .hasMessage(expectedMessage);
+    @MethodSource("com.biznopay.authservice.testcases.ActivationTokenTestCases#generateTokenDomainCases")
+    public void generateTokenDomainCases(String testName, UserId userId, Class<? extends RuntimeException> expectedException, String expectedMessage) {
+        if (testName.equals("Success")) {
+            ActivationToken activationToken = ActivationToken.generate(userId);
+
+            Assertions.assertNotNull(activationToken.getId());
+            Assertions.assertEquals(userId, activationToken.getUserId());
+            long minutes = ChronoUnit.MINUTES.between(activationToken.getCreatedAt(), activationToken.getExpiresAt());
+            Assertions.assertEquals(ActivationToken.EXPIRATION_MINUTES, minutes);
+            Assertions.assertFalse(activationToken.isExpired());
+            Assertions.assertFalse(activationToken.isUsed());
+            Assertions.assertTrue(activationToken.isValid());
+            Assertions.assertNotNull(activationToken.getCreatedAt());
+            Assertions.assertNotNull(activationToken.getExpiresAt());
+        } else {
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> ActivationToken.generate(userId))
+                    .isInstanceOf(expectedException)
+                    .hasMessage(expectedMessage);
+        }
     }
-
-    @Test
-    @DisplayName("Should generate ActivationToken with correct values ")
-    public void shouldGenerateActivationTokenWithCorrectValues() {
-        ActivationToken activationToken = ActivationToken.generate(VALID_USER_ID);
-
-        Assertions.assertNotNull(activationToken.getId());
-        Assertions.assertEquals(VALID_USER_ID, activationToken.getUserId());
-        long minutes = ChronoUnit.MINUTES.between(activationToken.getCreatedAt(), activationToken.getExpiresAt());
-        Assertions.assertEquals(ActivationToken.EXPIRATION_MINUTES, minutes);
-        Assertions.assertFalse(activationToken.isExpired());
-        Assertions.assertFalse(activationToken.isUsed());
-        Assertions.assertTrue(activationToken.isValid());
-        Assertions.assertNotNull(activationToken.getCreatedAt());
-        Assertions.assertNotNull(activationToken.getExpiresAt());
-    }
-
 
     @Test
     @DisplayName("Should mark token as used on markAsUsed")

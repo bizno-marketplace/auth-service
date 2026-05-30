@@ -10,9 +10,10 @@ import java.util.stream.Stream;
 public class ActivationTokenTestCases {
     public static final UserId VALID_USER_ID = UserId.of(UUID.randomUUID());
 
-    public static Stream<Arguments> invalidDomainGenerateCases() {
+    public static Stream<Arguments> generateTokenDomainCases() {
         return Stream.of(
-                Arguments.of("User id is null", null, RequiredFieldException.class, "UserId is required")
+                Arguments.of("User id is null", null, RequiredFieldException.class, "UserId is required"),
+                Arguments.of("Success", VALID_USER_ID, null, null)
         );
     }
 }
