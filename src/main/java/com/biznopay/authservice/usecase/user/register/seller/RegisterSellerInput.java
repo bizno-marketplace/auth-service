@@ -1,6 +1,6 @@
 package com.biznopay.authservice.usecase.user.register.seller;
 
-import com.biznopay.authservice.domain.vo.Address;
+import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
 
 public record RegisterSellerInput(

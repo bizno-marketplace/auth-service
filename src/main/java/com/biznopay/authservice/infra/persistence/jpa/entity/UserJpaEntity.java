@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "T_USERS")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public abstract class UserJpaEntity {
     @Id
@@ -48,4 +48,8 @@ public abstract class UserJpaEntity {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    public String getRole() {
+        return getClass().getSimpleName().replace("JpaEntity", "").toUpperCase();
+    }
 }

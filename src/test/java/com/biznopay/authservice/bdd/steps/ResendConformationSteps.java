@@ -1,13 +1,14 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
+import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;
+import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -26,6 +27,11 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN_JPA;
+import static com.biznopay.authservice.testcases.ActivationTokenTestCases.activationTokenJpa;
+import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
+import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER_ADMIN_JPA;
 
 public class ResendConformationSteps {
 
@@ -70,7 +76,8 @@ public class ResendConformationSteps {
     // SCENARIO: Successfully resend confirmation email for a pending account
     @Given("a user registered with email {string} with status {string}")
     public void aUserRegisteredWithStatus(String email, String status) {
-        entity = Mocks.buyerJpaEntityMock();
+        User user = validBuyer(email);
+        entity = UserMapper.toUserJpaEntity(user);
         entity.setEmail(email);
         entity.setStatus(UserStatus.valueOf(status));
         userJpaRepository.save(entity);
@@ -78,7 +85,7 @@ public class ResendConformationSteps {
 
     @And("the previous confirmation token has expired")
     public void thePreviousConfirmationTokenHasExpired() {
-        previousActivationToken = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(entity);
+        previousActivationToken = activationTokenJpa(entity.getId());
         previousActivationToken.setExpiresAt(LocalDateTime.now().minusMinutes(15));
         activationTokenJpaRepository.save(previousActivationToken);
     }
@@ -111,7 +118,8 @@ public class ResendConformationSteps {
     // SCENARIO: Reject resend when account is already active
     @Given("a user with email {string} has status {string}")
     public void aUserEmailHasStatus(String email, String status) {
-        entity = Mocks.buyerJpaEntityMock();
+        User user = validBuyer(email);
+        entity = UserMapper.toUserJpaEntity(user);
         entity.setEmail(email);
         entity.setStatus(UserStatus.valueOf(status));
         userJpaRepository.save(entity);
@@ -126,7 +134,7 @@ public class ResendConformationSteps {
     // SCENARIO: Reject resend during cooldown period
     @And("a confirmation email was already sent less than {int} minutes ago")
     public void aConfirmationEmailWasAlreadySentLessThanMinutesAgo(int minutes) {
-        previousActivationToken = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(entity);
+        previousActivationToken = activationTokenJpa(entity.getId());
         activationTokenJpaRepository.save(previousActivationToken);
         resendCooldownGateway.startCooldown(entity.getEmail(), Duration.ofMinutes(minutes));
     }

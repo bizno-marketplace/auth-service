@@ -1,5 +1,6 @@
 package com.biznopay.authservice.domain.entity.user;
 
+import com.biznopay.authservice.domain.enums.Role;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.InvalidEmailException;
@@ -19,10 +20,11 @@ public abstract class User {
     private final String password;
     private final LocalDateTime expiresAt;
     private final LocalDateTime createdAt;
+    private final Role role;
     private UserStatus status;
     private LocalDateTime updatedAt;
 
-    protected User(UserId id, String firstName, String lastname, String email, String phone, String password, UserStatus status,
+    protected User(UserId id, String firstName, String lastname, String email, String phone, String password, Role role, UserStatus status,
                    LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = this.validateFirstName(firstName);
@@ -30,6 +32,7 @@ public abstract class User {
         this.email = this.validateEmail(email);
         this.phone = phone;
         this.password = password;
+        this.role = role;
         this.status = status;
         this.expiresAt = expiresAt;
         this.createdAt = createdAt;
@@ -69,6 +72,11 @@ public abstract class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void setToAwaitingForApproval() {
+        this.status = UserStatus.AWAITING_APPROVAL;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public UserId getId() {
         return id;
     }
@@ -91,6 +99,10 @@ public abstract class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public UserStatus getStatus() {

@@ -2,13 +2,17 @@ package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice.domain.entity.activation.ActivationToken;
+import com.biznopay.authservice.domain.entity.user.SuperAdmin;
+import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.mapper.ActivationTokenMapper;
+import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import com.biznopay.authservice.mocks.Mocks;
 import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
+
+import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN;
+import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN_JPA;
+import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_JPA;
+import static com.biznopay.authservice.testcases.SuperAdminTestCases.*;
 
 @Tag("integration")
 @ActiveProfiles("test")
@@ -60,9 +69,12 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 204 on successful account confirmation")
     void shouldReturn204OnSuccessfulAccountConfirmation() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);;
+        UserJpaEntity user = UserMapper.toUserJpaEntity(userD);
         userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        ActivationToken activationToken = ActivationToken.generate(userD.getId());
+        ActivationTokenJpaEntity entity = ActivationTokenMapper.toJpaEntity(activationToken);
+        entity.setUserId(user.getId());
         activationTokenJpaRepository.save(entity);
         ResponseEntity response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + entity.getId().toString()), Void.class);
         Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -71,9 +83,10 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 410 on expired token")
     public void shouldReturn410OnExpiredToken() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        UserJpaEntity user = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        ActivationTokenJpaEntity entity = VALID_ACTIVATION_TOKEN_JPA;
+        entity.setUserId(user.getId());
         entity.setExpiresAt(LocalDateTime.now().minusMinutes(15));
         activationTokenJpaRepository.save(entity);
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + entity.getId()), ApiResponse.class);
@@ -84,10 +97,7 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 400 on invalid token")
     void shouldReturn400OnInvalidToken() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
-        userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
-        activationTokenJpaRepository.save(entity);
+        UserJpaEntity user = VALID_SUPER_ADMIN_JPA;
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + user.getId()), ApiResponse.class);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         Assertions.assertEquals("Invalid confirmation link", response.getBody().error().message());
@@ -96,10 +106,11 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 409 on account already active")
     public void shouldReturn409OnAccountAlreadyActive() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        UserJpaEntity user = VALID_SUPER_ADMIN_JPA;
         user.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        ActivationTokenJpaEntity entity = VALID_ACTIVATION_TOKEN_JPA;
+        entity.setUserId(user.getId());
         entity.setUsed(true);
         activationTokenJpaRepository.save(entity);
         ResponseEntity<ApiResponse> response = restTemplate.getForEntity(url("/accounts/confirm-account?token=" + entity.getId()), ApiResponse.class);
@@ -126,10 +137,13 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 200 on successfully resend confirmation email for a pending account on resend confirmation")
     public void shouldReturn200OnSuccessfullyResendConfirmationEmailForAPendingAccountOnResendConfirmation() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
+        UserJpaEntity user = UserMapper.toUserJpaEntity(userD);
         userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        ActivationTokenJpaEntity entity = VALID_ACTIVATION_TOKEN_JPA;
+        entity.setUserId(user.getId());
         activationTokenJpaRepository.save(entity);
+
         ResendConfirmationRequest request = new ResendConfirmationRequest(user.getEmail());
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -138,10 +152,11 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 409 when account is already active on resend confirmation")
     public void shouldReturn409WhenAccountIsAlreadyActiveOnResendConfirmation() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        UserJpaEntity user = VALID_SUPER_ADMIN_JPA;
         user.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        ActivationTokenJpaEntity entity = VALID_ACTIVATION_TOKEN_JPA;
+        entity.setUserId(user.getId());
         activationTokenJpaRepository.save(entity);
         ResendConfirmationRequest request = new ResendConfirmationRequest(user.getEmail());
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
@@ -160,10 +175,13 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 429 during resend cooldown on resend confirmation")
     public void shouldReturn429DuringResendCooldownOnResendConfirmation() {
-        UserJpaEntity user = Mocks.buyerJpaEntityMock();
+        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);;
+        UserJpaEntity user = UserMapper.toUserJpaEntity(userD);
         userJpaRepository.save(user);
-        ActivationTokenJpaEntity entity = Mocks.unusedActivationTokenJpaEntityFromBuyerMock(user);
+        ActivationTokenJpaEntity entity = VALID_ACTIVATION_TOKEN_JPA;
+        entity.setUserId(user.getId());
         activationTokenJpaRepository.save(entity);
+
         ResendConfirmationRequest request = new ResendConfirmationRequest(user.getEmail());
         ResponseEntity<ApiResponse> response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);
         response = restTemplate.postForEntity(url("/accounts/resend-confirmation"), request, ApiResponse.class);

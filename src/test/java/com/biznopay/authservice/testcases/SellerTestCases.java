@@ -1,33 +1,50 @@
 package com.biznopay.authservice.testcases;
 
+import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.entity.user.Seller;
+import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.*;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.AddressJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.BiDocumentJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public class SellerTestCases {
+    public static final UserId VALID_USER_ID = UserId.generate();
     public static final String VALID_FIRST_NAME = "João";
     public static final String VALID_LAST_NAME = "Tembe";
     public static final String VALID_EMAIL = "joao.tembe@gmail.com";
     public static final String VALID_PHONE = "+258841234567";
     public static final String VALID_PASSWORD = "Segura@123";
+    public static final UserStatus VALID_STATUS = UserStatus.PENDING;
     public static final String VALID_STORE_NAME = "Tembe Electronics";
     public static final String VALID_STORE_DESC = "Venda de electrónica e acessórios";
     public static final String VALID_NUIT = "400123456";
-    public static final Address VALID_ADDRESS = new Address(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    public static final Address VALID_ADDRESS = Address.reconstruct(1L, -25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    public static final Address VALID_ADDRESS_NEW = Address.of(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static final BiDocument VALID_BI = BiDocument.of("sellers/400123456/bi/front-uuid.jpg", "sellers/400123456/bi/back-uuid.jpg");
+    public static final BiDocumentJpaEntity VALID_BI_JPA = UserMapper.toBiDocJapEntity(VALID_BI);
+    public static final LocalDateTime VALID_EXPIRES_AT = LocalDateTime.now().plusMonths(1);
+    public static final LocalDateTime VALID_CREATED_AT = LocalDateTime.now();
+    public static final LocalDateTime VALID_UPDATED_AT = LocalDateTime.now();
     public static final BiDocumentRequest VALID_BI_REQUEST = new BiDocumentRequest(VALID_BI.getFrontPath().getBytes(), "sellers/400123456/bi/front-uuid.jpg", VALID_BI.getBackPath().getBytes(), "sellers/400123456/bi/back-uuid.jpg");
     public static final AddressRequest VALID_ADDRESS_REQUEST = new AddressRequest(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
-
+    public static final AddressJpaEntity VALID_ADDRESS_JPA = UserMapper.toAddressJpaEntity(VALID_ADDRESS);
+    public static final UserJpaEntity VALID_SELLER_JPA = new SellerJpaEntity(VALID_USER_ID.value(), VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_JPA, VALID_BI_JPA);
+    public static final Seller VALID_SELLER = Seller.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
 
     public static Seller registerSeller(
             String firstName, String lastName, String email,
@@ -50,7 +67,11 @@ public class SellerTestCases {
     }
 
 
-    public static Stream<Arguments> invalidDomainRegisterSellerCases() {
+    public static UserJpaEntity validUserJpa() {
+        return UserMapper.toUserJpaEntity(validSeller());
+    }
+
+    public static Stream<Arguments> registerDomainCases() {
 
         return Stream.of(
                 Arguments.of("First name is null", null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI, RequiredFieldException.class, "First name is required"),
@@ -72,7 +93,8 @@ public class SellerTestCases {
                 Arguments.of("NUIT is null", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, null, VALID_ADDRESS, VALID_BI, RequiredFieldException.class, "NUIT is required"),
                 Arguments.of("NUIT is empty", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "", VALID_ADDRESS, VALID_BI, RequiredFieldException.class, "NUIT is required"),
                 Arguments.of("NUIT non-numeric", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "ABCDEFGHI", VALID_ADDRESS, VALID_BI, InvalidNuitException.class, "NUIT must contain only digits and must be exactly 9 digits"),
-                Arguments.of("NUIT wrong length", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "12345", VALID_ADDRESS, VALID_BI, InvalidNuitException.class, "NUIT must contain only digits and must be exactly 9 digits")
+                Arguments.of("NUIT wrong length", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "12345", VALID_ADDRESS, VALID_BI, InvalidNuitException.class, "NUIT must contain only digits and must be exactly 9 digits"),
+                Arguments.of("Success", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI, null, null)
         );
     }
 
@@ -81,7 +103,7 @@ public class SellerTestCases {
                 Arguments.of("E-mail already in use",
                         registerSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
                                 VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST),
-                        Optional.of(salerMock()),
+                        Optional.of(validSeller()),
                         Optional.empty(),
                         EmailAlreadyInUseException.class,
                         "E-mail already in use"),
@@ -89,7 +111,7 @@ public class SellerTestCases {
                         registerSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
                                 VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST),
                         Optional.empty(),
-                        Optional.of(salerMock()),
+                        Optional.of(validSeller()),
                         NuitAlreadyInUseException.class,
                         "Nuit already in use"
                 ),
@@ -160,8 +182,18 @@ public class SellerTestCases {
         );
     }
 
-    public static Seller salerMock() {
+    public static Seller validSeller() {
         return registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
                 VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
+    }
+
+    public static Seller validSellerWithNotSavedAddress(String email) {
+        return registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, email, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_NEW, VALID_BI);
+    }
+
+    public static Seller validSellerWithNotSavedAddress() {
+        return registerSeller(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_NEW, VALID_BI);
     }
 }

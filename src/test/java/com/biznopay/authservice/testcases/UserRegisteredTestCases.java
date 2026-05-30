@@ -25,7 +25,9 @@ public class UserRegisteredTestCases {
                 Arguments.of("FirstName is null", VALID_USER_ID, VALID_USER_EMAIL, null, VALID_ACTIVATION_TOKEN_ID, RequiredFieldException.class, "FirstName is required"),
                 Arguments.of("FirstName is empty", VALID_USER_ID, VALID_USER_EMAIL, "", VALID_ACTIVATION_TOKEN_ID, RequiredFieldException.class, "FirstName is required"),
                 Arguments.of("FirstName is too short", VALID_USER_ID, VALID_USER_EMAIL, "Jo", VALID_ACTIVATION_TOKEN_ID, InvalidStringFieldLengException.class, "FirstName must be at least 3 characters long"),
-                Arguments.of("ActivationTokenId is null", VALID_USER_ID, VALID_USER_EMAIL, VALID_USER_FIRST_NAME, null, RequiredFieldException.class, "ActivationTokenId is required")
+                Arguments.of("ActivationTokenId is null", VALID_USER_ID, VALID_USER_EMAIL, VALID_USER_FIRST_NAME, null, RequiredFieldException.class, "ActivationTokenId is required"),
+                Arguments.of("Success", VALID_USER_ID, VALID_USER_EMAIL, VALID_USER_FIRST_NAME, VALID_ACTIVATION_TOKEN_ID, null, null)
+
         );
     }
 }

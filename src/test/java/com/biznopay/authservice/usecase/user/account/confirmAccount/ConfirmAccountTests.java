@@ -2,18 +2,14 @@ package com.biznopay.authservice.usecase.user.account.confirmAccount;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
-import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
-import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.ExpiredConfirmationTokenException;
 import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
-import com.biznopay.authservice.domain.vo.Address;
-import com.biznopay.authservice.mocks.Mocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -27,6 +23,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER;
+import static com.biznopay.authservice.testcases.SellerTestCases.VALID_SELLER;
+import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER_ADMIN;
+
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class ConfirmAccountTests {
@@ -34,7 +34,6 @@ public class ConfirmAccountTests {
     private ActivationTokenGateway tokenGateway;
     @Mock
     private UserGateway userGateway;
-
 
     @Test
     @DisplayName("Should throw InvalidConfirmationTokenException when token is not found")
@@ -83,12 +82,9 @@ public class ConfirmAccountTests {
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, true, expiredAt, expiredAt);
-
-        Address address = Mocks.addressMock();
-        User user = Buyer.reconstitute(userId, "any_first_name", "any_last_name", "test@test.com",
-                "848484848", "Password@0199", UserStatus.ACTIVE, address, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now());
-
+        User user = VALID_BUYER;
+        user.activate();
+        ;
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
         ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
@@ -99,7 +95,28 @@ public class ConfirmAccountTests {
     @Test
     @DisplayName("Should active user and mark activation token as used")
     public void shouldActiveUserAndMarkActivationTokenAsUsed() {
-        User user = Mocks.buyerMock();
+        User user = VALID_SUPER_ADMIN;
+        ActivationToken activationToken = ActivationToken.generate(user.getId());
+        UUID rawTokenId = activationToken.getId().value();
+
+        Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
+        Mockito.when(userGateway.findById(user.getId().value())).thenReturn(Optional.of(user));
+        Mockito.doNothing().when(userGateway).save(user);
+        Mockito.doNothing().when(tokenGateway).delete(activationToken);
+
+        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        confirmAccount.execute(rawTokenId.toString());
+
+        Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
+        Mockito.verify(userGateway, Mockito.times(1)).findById(user.getId().value());
+        Mockito.verify(userGateway, Mockito.times(1)).save(user);
+        Mockito.verify(tokenGateway, Mockito.times(1)).delete(Mockito.any(ActivationToken.class));
+    }
+
+    @Test
+    @DisplayName("Should set status as waiting for approval if role is seller")
+    public void shouldSetStatusAsWaitingForApprovalIfRoleIsSeller() {
+        User user = VALID_SELLER;
         ActivationToken activationToken = ActivationToken.generate(user.getId());
         UUID rawTokenId = activationToken.getId().value();
 

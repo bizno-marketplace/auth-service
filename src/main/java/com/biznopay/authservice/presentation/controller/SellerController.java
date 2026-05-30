@@ -9,7 +9,6 @@ import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +31,7 @@ public class SellerController {
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Object>> register(
             @RequestPart("data") RegisterSellerRequest request,
-            @Valid @RequestPart(value = "biFrontPhoto", required = false) MultipartFile biFrontPhoto,
+            @RequestPart(value = "biFrontPhoto", required = false) MultipartFile biFrontPhoto,
             @RequestPart(value = "biBackPhoto", required = false) MultipartFile biBackPhoto
     ) throws IOException {
         BiDocumentValidator.validate(biFrontPhoto, biBackPhoto);

@@ -1,9 +1,9 @@
 package com.biznopay.authservice.domain.entity.user;
 
+import com.biznopay.authservice.domain.enums.Role;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.InvalidPhoneNumberException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.Nuit;
 
@@ -21,7 +21,7 @@ public class Seller extends User {
     private Seller(UserId id, String firstName, String lastname, String email, String phone, String password, UserStatus status,
                    LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt, String storeName,
                    String storeDescription, String nuit, Address storeAddress, BiDocument biDocument) {
-        super(id, firstName, lastname, email, phone, password, status, expiresAt, createdAt, updatedAt);
+        super(id, firstName, lastname, email, phone, password, Role.SELLER, status, expiresAt, createdAt, updatedAt);
         this.storeName = storeName;
         this.storeDescription = storeDescription;
         this.nuit = new Nuit(nuit);
@@ -35,13 +35,13 @@ public class Seller extends User {
         phone = validatePhone(phone);
         storeName = validateStoreName(storeName);
         storeDescription = validateStoreDescription(storeDescription);
-        return new Seller(UserId.generate(), firstName, lastname, email, phone, password, UserStatus.ACTIVE, null, now,
+        return new Seller(UserId.generate(), firstName, lastname, email, phone, password, UserStatus.PENDING, null, now,
                 now, storeName, storeDescription, nuit, storeAddress, biDocument);
     }
 
-    public static Seller reconstitute(UserId id, String firstName, String lastname, String email, String phone, String password,
-                                      UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
-                                      String storeName, String storeDescription, String nuit, Address storeAddress, BiDocument biDocument) {
+    public static Seller reconstruct(UserId id, String firstName, String lastname, String email, String phone, String password,
+                                     UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
+                                     String storeName, String storeDescription, String nuit, Address storeAddress, BiDocument biDocument) {
         phone = validatePhone(phone);
         return new Seller(id, firstName, lastname, email, phone, password, status, expiresAt, createdAt, updatedAt,
                 storeName, storeDescription, nuit, storeAddress, biDocument);
@@ -49,21 +49,21 @@ public class Seller extends User {
 
     private static String validatePhone(String phone) {
         if (phone == null || phone.isEmpty())
-            throw new RequiredFieldException("Phone number", Buyer.class.getName(), "BUYER-001");
+            throw new RequiredFieldException("Phone number", Buyer.class.getName(), "SELLER-001");
         if (!phone.matches(MZ_PHONE_REGEX))
-            throw new InvalidPhoneNumberException("BUYER-002");
+            throw new InvalidPhoneNumberException("SELLER-002");
         return phone;
     }
 
     private static String validateStoreName(String storeName) {
         if (storeName == null || storeName.isEmpty())
-            throw new RequiredFieldException("Store name", Seller.class.getName(), "SELLER-001");
+            throw new RequiredFieldException("Store name", Seller.class.getName(), "SELLER-003");
         return storeName;
     }
 
     private static String validateStoreDescription(String storeDescription) {
         if (storeDescription == null || storeDescription.isEmpty())
-            throw new RequiredFieldException("Store description", Seller.class.getName(), "SELLER-002");
+            throw new RequiredFieldException("Store description", Seller.class.getName(), "SELLER-004");
         return storeDescription;
     }
 
