@@ -1,8 +1,8 @@
 package com.biznopay.authservice.testcases;
 
+import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.entity.user.Seller;
 import com.biznopay.authservice.domain.exception.*;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
@@ -23,7 +23,7 @@ public class SellerTestCases {
     public static final String VALID_STORE_NAME = "Tembe Electronics";
     public static final String VALID_STORE_DESC = "Venda de electrónica e acessórios";
     public static final String VALID_NUIT = "400123456";
-    public static final Address VALID_ADDRESS = new Address(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    public static final Address VALID_ADDRESS = Address.of(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static final BiDocument VALID_BI = BiDocument.of("sellers/400123456/bi/front-uuid.jpg", "sellers/400123456/bi/back-uuid.jpg");
     public static final BiDocumentRequest VALID_BI_REQUEST = new BiDocumentRequest(VALID_BI.getFrontPath().getBytes(), "sellers/400123456/bi/front-uuid.jpg", VALID_BI.getBackPath().getBytes(), "sellers/400123456/bi/back-uuid.jpg");
     public static final AddressRequest VALID_ADDRESS_REQUEST = new AddressRequest(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
@@ -50,7 +50,7 @@ public class SellerTestCases {
     }
 
 
-    public static Stream<Arguments> invalidDomainRegisterSellerCases() {
+    public static Stream<Arguments> registerDomainCases() {
 
         return Stream.of(
                 Arguments.of("First name is null", null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI, RequiredFieldException.class, "First name is required"),
@@ -72,7 +72,8 @@ public class SellerTestCases {
                 Arguments.of("NUIT is null", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, null, VALID_ADDRESS, VALID_BI, RequiredFieldException.class, "NUIT is required"),
                 Arguments.of("NUIT is empty", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "", VALID_ADDRESS, VALID_BI, RequiredFieldException.class, "NUIT is required"),
                 Arguments.of("NUIT non-numeric", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "ABCDEFGHI", VALID_ADDRESS, VALID_BI, InvalidNuitException.class, "NUIT must contain only digits and must be exactly 9 digits"),
-                Arguments.of("NUIT wrong length", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "12345", VALID_ADDRESS, VALID_BI, InvalidNuitException.class, "NUIT must contain only digits and must be exactly 9 digits")
+                Arguments.of("NUIT wrong length", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, "12345", VALID_ADDRESS, VALID_BI, InvalidNuitException.class, "NUIT must contain only digits and must be exactly 9 digits"),
+                Arguments.of("Success", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI, null, null)
         );
     }
 
