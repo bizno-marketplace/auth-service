@@ -1,10 +1,10 @@
 package com.biznopay.authservice.testcases;
 
+import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.exception.InvalidEmailException;
 import com.biznopay.authservice.domain.exception.InvalidPhoneNumberException;
 import com.biznopay.authservice.domain.exception.InvalidStringFieldLengException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
-import com.biznopay.authservice.domain.vo.Address;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
 import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,11 +18,11 @@ public class BuyerTestCases {
     public static final String VALID_EMAIL = "joao.tembe@gmail.com";
     public static final String VALID_PHONE = "+258841234567";
     public static final String VALID_PASSWORD = "Segura@123";
-    public static final Address VALID_ADDRESS = new Address(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
+    public static final Address VALID_ADDRESS = Address.of(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static final AddressRequest VALID_ADDRESS_REQUEST = new AddressRequest(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
 
 
-    public static Stream<Arguments> invalidDomainRegisterCases() {
+    public static Stream<Arguments> registerDomainCases() {
         return Stream.of(
                 Arguments.of("First name is null", null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_ADDRESS, RequiredFieldException.class, "First name is required"),
                 Arguments.of("First name is empty", "", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_ADDRESS, RequiredFieldException.class, "First name is required"),
@@ -36,7 +36,10 @@ public class BuyerTestCases {
                 Arguments.of("Phone is null", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, null, VALID_PASSWORD, VALID_ADDRESS, RequiredFieldException.class, "Phone number is required"),
                 Arguments.of("Phone is empty", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "", VALID_PASSWORD, VALID_ADDRESS, RequiredFieldException.class, "Phone number is required"),
                 Arguments.of("Phone is invalid", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "123", VALID_PASSWORD, VALID_ADDRESS, InvalidPhoneNumberException.class, "Invalid phone number"),
-                Arguments.of("Address is null", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null, RequiredFieldException.class, "Delivery address is required"));
+                Arguments.of("Address is null", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null, RequiredFieldException.class, "Delivery address is required"),
+                Arguments.of("Address is null", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, null, RequiredFieldException.class, "Delivery address is required"),
+                Arguments.of("Success", VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_ADDRESS, null, null)
+        );
     }
 
     public static Stream<Arguments> invalidControllerRegistrationCases() {

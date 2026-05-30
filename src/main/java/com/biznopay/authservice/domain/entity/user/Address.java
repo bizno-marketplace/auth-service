@@ -34,6 +34,14 @@ public class Address {
         return new Address(id, latitude, longitude, street, neighbourhood, city, province, country);
     }
 
+    private static Long validateId(Long id) {
+        if (id == null)
+            throw new RequiredFieldException("Id", "Address", "ADDRESS-005");
+        if (id <= 0)
+            throw new InvalidEntityIdException(Address.class.getName(), "ADDRESS-006");
+        return id;
+    }
+
     //Validations
     private Double validateLatitude(Double latitude) {
         if (latitude == null)
@@ -50,14 +58,6 @@ public class Address {
         if (longitude < -180 || longitude > 180)
             throw new InvalidFieldException("Longitude", "Address", "ADDRESS-004");
         return longitude;
-    }
-
-    private static Long validateId(Long id){
-        if (id == null)
-            throw new RequiredFieldException("Id", "Address", "ADDRESS-005");
-        if (id <= 0)
-            throw new InvalidEntityIdException(Address.class.getName(), "ADDRESS-006");
-        return id;
     }
 
     public Long getId() {

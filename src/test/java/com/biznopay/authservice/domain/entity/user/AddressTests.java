@@ -22,8 +22,8 @@ public class AddressTests {
             Class<? extends Exception> expectedException,
             String expectedExceptionMessage
     ) {
-        if (testName.equals("Success")){
-            Address address = Address.of(latitude,longitude,street,neighbourhood,city,province,country);
+        if (testName.equals("Success")) {
+            Address address = Address.of(latitude, longitude, street, neighbourhood, city, province, country);
 
             Assertions.assertThat(address).isNotNull();
             Assertions.assertThat(address.getId()).isNull();
@@ -34,8 +34,8 @@ public class AddressTests {
             Assertions.assertThat(address.getCity()).isEqualTo(city);
             Assertions.assertThat(address.getProvince()).isEqualTo(province);
             Assertions.assertThat(address.getCountry()).isEqualTo(country);
-        }else {
-            Assertions.assertThatThrownBy(() -> Address.of(latitude,longitude,street,neighbourhood,city,province,country))
+        } else {
+            Assertions.assertThatThrownBy(() -> Address.of(latitude, longitude, street, neighbourhood, city, province, country))
                     .isInstanceOf(expectedException)
                     .hasMessage(expectedExceptionMessage);
         }
@@ -57,8 +57,8 @@ public class AddressTests {
             Class<? extends Exception> expectedException,
             String expectedExceptionMessage
     ) {
-        if (testName.equals("Success")){
-            Address address = Address.reconstruct(id,latitude,longitude,street,neighbourhood,city,province,country);
+        if (testName.equals("Success")) {
+            Address address = Address.reconstruct(id, latitude, longitude, street, neighbourhood, city, province, country);
 
             Assertions.assertThat(address).isNotNull();
             Assertions.assertThat(address.getId()).isNotNull();
@@ -69,8 +69,8 @@ public class AddressTests {
             Assertions.assertThat(address.getCity()).isEqualTo(city);
             Assertions.assertThat(address.getProvince()).isEqualTo(province);
             Assertions.assertThat(address.getCountry()).isEqualTo(country);
-        }else {
-            Assertions.assertThatThrownBy(() -> Address.reconstruct(id,latitude,longitude,street,neighbourhood,city,province,country))
+        } else {
+            Assertions.assertThatThrownBy(() -> Address.reconstruct(id, latitude, longitude, street, neighbourhood, city, province, country))
                     .isInstanceOf(expectedException)
                     .hasMessage(expectedExceptionMessage);
         }
