@@ -37,7 +37,7 @@ public class Buyer extends User {
     public static Buyer reconstruct(UUID id, String firstName, String lastName, String email, String phone,
                                     String password, UserStatus status, List<Address> deliveryAddress, LocalDateTime expiresAt,
                                     LocalDateTime createdAt, LocalDateTime updatedAt) {
-        UserId userId =  UserId.of(id);
+        UserId userId = UserId.of(id);
         phone = validatePhone(phone);
         return new Buyer(userId, firstName, lastName, email, phone, password, status, deliveryAddress, expiresAt, createdAt, updatedAt);
     }

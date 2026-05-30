@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static com.biznopay.authservice.testcases.SuperAdminTestCases.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Tag("unit")
 public class SuperAdminTests {
@@ -25,36 +26,69 @@ public class SuperAdminTests {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource("com.biznopay.authservice.testcases.SuperAdminTestCases#invalidDomainRegisterSuperAdminCases")
-    public void shouldThrowExceptionWhenRegisterWithInvalidData(String message, String firstName, String lastName, String email, String password,
-                                                                Class<? extends Exception> expectedException, String expectedMessage) {
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> SuperAdmin.register(firstName, lastName, email, password))
-                .isInstanceOf(expectedException)
-                .hasMessage(expectedMessage);
+    @MethodSource("com.biznopay.authservice.testcases.SuperAdminTestCases#registerSuperAdminDomainCases")
+    public void registerSuperAdminCases(String testName, String firstName, String lastName, String email, String password,
+                                        Class<? extends Exception> expectedException, String expectedMessage) {
+
+
+        if (testName.equals("Success")) {
+            SuperAdmin superAdmin = SuperAdmin.register(firstName, lastName, email, password);
+            Assertions.assertNotNull(superAdmin);
+            Assertions.assertNotNull(superAdmin.getId());
+            Assertions.assertEquals(firstName, superAdmin.getFirstName());
+            Assertions.assertEquals(lastName, superAdmin.getLastName());
+            Assertions.assertEquals(email, superAdmin.getEmail());
+            Assertions.assertEquals("", superAdmin.getPhone());
+            Assertions.assertEquals(password, superAdmin.getPassword());
+            Assertions.assertEquals(UserStatus.PENDING, superAdmin.getStatus());
+            Assertions.assertNotNull(superAdmin.getExpiresAt());
+            Assertions.assertNotNull(superAdmin.getCreatedAt());
+            Assertions.assertNotNull(superAdmin.getUpdatedAt());
+        } else {
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> SuperAdmin.register(firstName, lastName, email, password))
+                    .isInstanceOf(expectedException)
+                    .hasMessage(expectedMessage);
+        }
     }
 
-    @Test
-    @DisplayName("Should register SuperAdmin with correct param on register ande set status  PENDING")
-    public void shouldRegisterSuperAdminWithCorrectParamOnRegisterAndSetStatusOnPENDING() {
-        SuperAdmin superAdmin = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
-        Assertions.assertNotNull(superAdmin);
-        Assertions.assertNotNull(superAdmin.getId());
-        Assertions.assertEquals(VALID_FIRST_NAME, superAdmin.getFirstName());
-        Assertions.assertEquals(VALID_LAST_NAME, superAdmin.getLastName());
-        Assertions.assertEquals(VALID_EMAIL, superAdmin.getEmail());
-        Assertions.assertEquals("", superAdmin.getPhone());
-        Assertions.assertEquals(VALID_PASSWORD, superAdmin.getPassword());
-        Assertions.assertEquals(UserStatus.PENDING, superAdmin.getStatus());
-        Assertions.assertNotNull(superAdmin.getExpiresAt());
-        Assertions.assertNotNull(superAdmin.getCreatedAt());
-        Assertions.assertNotNull(superAdmin.getUpdatedAt());
-    }
 
-    @Test
-    @DisplayName("Should active SuperAdmin on active")
-    public void shouldActiveSuperAdminOnActive() {
-        SuperAdmin superAdmin = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
-        superAdmin.activate();
-        Assertions.assertEquals(UserStatus.ACTIVE, superAdmin.getStatus());
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("com.biznopay.authservice.testcases.SuperAdminTestCases#reconstructDomainCases")
+    public void reconstructDomainCases(String testName, UUID useId, String firstName, String lastName, String email,
+                                       String phone, String password, UserStatus status, LocalDateTime expiresAt,
+                                       LocalDateTime createdAt, LocalDateTime updatedAt,
+                                       Class<? extends Exception> expectedException, String expectedMessage) {
+
+        if (testName.equals("Success")) {
+            SuperAdmin superAdmin = SuperAdmin.reconstruct(useId, firstName, lastName,
+                    email, phone, password, status, expiresAt, createdAt, updatedAt);
+
+            Assertions.assertNotNull(superAdmin);
+            Assertions.assertNotNull(superAdmin.getId());
+            Assertions.assertEquals(firstName, superAdmin.getFirstName());
+            Assertions.assertEquals(lastName, superAdmin.getLastName());
+            Assertions.assertEquals(email, superAdmin.getEmail());
+            Assertions.assertEquals(phone, superAdmin.getPhone());
+            Assertions.assertEquals(password, superAdmin.getPassword());
+            Assertions.assertEquals(UserStatus.PENDING, superAdmin.getStatus());
+            Assertions.assertNotNull(superAdmin.getExpiresAt());
+            Assertions.assertNotNull(superAdmin.getCreatedAt());
+            Assertions.assertNotNull(superAdmin.getUpdatedAt());
+        } else if (testName.equals("Active")) {
+            SuperAdmin superAdmin = SuperAdmin.reconstruct(useId, firstName, lastName,
+                    email, phone, password, status, expiresAt, createdAt, updatedAt);
+            superAdmin.activate();
+            Assertions.assertEquals(UserStatus.ACTIVE, superAdmin.getStatus());
+        } else if (testName.equals("Set to Awaiting for approval")) {
+            SuperAdmin superAdmin = SuperAdmin.reconstruct(useId, firstName, lastName,
+                    email, phone, password, status, expiresAt, createdAt, updatedAt);
+            superAdmin.setToAwaitingForApproval();
+            Assertions.assertEquals(UserStatus.AWAITING_APPROVAL, superAdmin.getStatus());
+        } else {
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> SuperAdmin.reconstruct(useId, firstName, lastName,
+                            email, phone, password, status, expiresAt, createdAt, updatedAt))
+                    .isInstanceOf(expectedException)
+                    .hasMessage(expectedMessage);
+        }
     }
 }

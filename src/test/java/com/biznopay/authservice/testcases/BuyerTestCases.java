@@ -1,7 +1,6 @@
 package com.biznopay.authservice.testcases;
 
 import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.UserId;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
@@ -53,21 +52,21 @@ public class BuyerTestCases {
 
     public static Stream<Arguments> reconstructDomainCases() {
         return Stream.of(
-                Arguments.of("User id is null", null, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidEntityIdException.class, "Invalid id for entity: com.biznopay.authservice.domain.entity.user.User"),
-                Arguments.of("First name is null",VALID_USER_ID,null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "First name is required"),
-                Arguments.of("First name is empty", VALID_USER_ID, "", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "First name is required"),
-                Arguments.of("First name is too short", VALID_USER_ID, "Jo", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidStringFieldLengException.class, "First name must be at least 3 characters long"),
-                Arguments.of("Last name is null", VALID_USER_ID, VALID_FIRST_NAME, null, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Last name is required"),
-                Arguments.of("Last name is empty", VALID_USER_ID, VALID_FIRST_NAME, "", VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Last name is required"),
-                Arguments.of("Last name is too short", VALID_USER_ID, VALID_FIRST_NAME, "Jo", VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidStringFieldLengException.class, "Last name must be at least 3 characters long"),
-                Arguments.of("Email is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, null, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "E-mail is required"),
-                Arguments.of("Email is empty", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, "", VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "E-mail is required"),
-                Arguments.of("Email is invalid", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, "invalid-email", VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidEmailException.class, "Invalid E-mail"),
-                Arguments.of("Phone is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, null, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Phone number is required"),
-                Arguments.of("Phone is empty", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "", VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Phone number is required"),
-                Arguments.of("Phone is invalid", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "123", VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidPhoneNumberException.class, "Invalid phone number"),
-                Arguments.of("Address is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, null, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Delivery address is required"),
-                Arguments.of("Success", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, null, null)
+                Arguments.of("User id is null", null, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidEntityIdException.class, "Invalid id for entity: com.biznopay.authservice.domain.entity.user.User"),
+                Arguments.of("First name is null", VALID_USER_ID, null, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "First name is required"),
+                Arguments.of("First name is empty", VALID_USER_ID, "", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "First name is required"),
+                Arguments.of("First name is too short", VALID_USER_ID, "Jo", VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidStringFieldLengException.class, "First name must be at least 3 characters long"),
+                Arguments.of("Last name is null", VALID_USER_ID, VALID_FIRST_NAME, null, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Last name is required"),
+                Arguments.of("Last name is empty", VALID_USER_ID, VALID_FIRST_NAME, "", VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Last name is required"),
+                Arguments.of("Last name is too short", VALID_USER_ID, VALID_FIRST_NAME, "Jo", VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidStringFieldLengException.class, "Last name must be at least 3 characters long"),
+                Arguments.of("Email is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, null, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "E-mail is required"),
+                Arguments.of("Email is empty", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, "", VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "E-mail is required"),
+                Arguments.of("Email is invalid", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, "invalid-email", VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidEmailException.class, "Invalid E-mail"),
+                Arguments.of("Phone is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, null, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Phone number is required"),
+                Arguments.of("Phone is empty", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "", VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Phone number is required"),
+                Arguments.of("Phone is invalid", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, "123", VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, InvalidPhoneNumberException.class, "Invalid phone number"),
+                Arguments.of("Address is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, null, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Delivery address is required"),
+                Arguments.of("Success", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, null, null)
         );
     }
 

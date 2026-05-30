@@ -5,12 +5,10 @@ import com.biznopay.authservice.domain.vo.BiDocument;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static com.biznopay.authservice.testcases.SellerTestCases.*;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static com.biznopay.authservice.testcases.SellerTestCases.registerSeller;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Tag("unit")
@@ -27,10 +25,10 @@ public class SellerTests {
             Class<? extends Exception> expectedException,
             String expectedMessage
     ) {
-        if (testName.equals("Success")){
-                Seller buyer = registerSeller(
-                        firstName, lastName, email, phone, password,
-                        storeName, storeDescription, nuit, address, biDocument);
+        if (testName.equals("Success")) {
+            Seller buyer = registerSeller(
+                    firstName, lastName, email, phone, password,
+                    storeName, storeDescription, nuit, address, biDocument);
 
             Assertions.assertNotNull(buyer);
             Assertions.assertNotNull(buyer.getId());
@@ -43,7 +41,7 @@ public class SellerTests {
             Assertions.assertEquals(storeName, buyer.getStoreName());
             Assertions.assertEquals(storeDescription, buyer.getStoreDescription());
             Assertions.assertEquals(nuit, buyer.getNuit());
-            Assertions.assertEquals(address.getLatitude(),buyer.getStoreAddress().getLatitude());
+            Assertions.assertEquals(address.getLatitude(), buyer.getStoreAddress().getLatitude());
             Assertions.assertEquals(address.getLongitude(), buyer.getStoreAddress().getLongitude());
             Assertions.assertEquals(address.getNeighbourhood(), buyer.getStoreAddress().getNeighbourhood());
             Assertions.assertEquals(address.getStreet(), buyer.getStoreAddress().getStreet());
@@ -55,7 +53,7 @@ public class SellerTests {
             Assertions.assertNull(buyer.getExpiresAt());
             Assertions.assertNotNull(buyer.getCreatedAt());
             Assertions.assertNotNull(buyer.getUpdatedAt());
-        }else {
+        } else {
             assertThatThrownBy(() -> registerSeller(
                     firstName, lastName, email, phone, password,
                     storeName, storeDescription, nuit, address, biDocument))

@@ -53,7 +53,7 @@ public class BuyerTests {
                                        String phone, String password, UserStatus status, List<Address> addresses, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
                                        Class<? extends Exception> expectedException, String expectedMessage) {
         if (testName.equals("Success")) {
-            Buyer buyer = Buyer.reconstruct(userId,firstName, lastName, email, phone, password, status,addresses,expiresAt,createdAt,updatedAt);
+            Buyer buyer = Buyer.reconstruct(userId, firstName, lastName, email, phone, password, status, addresses, expiresAt, createdAt, updatedAt);
             Assertions.assertNotNull(buyer);
             Assertions.assertNotNull(buyer.getId());
             Assertions.assertEquals(firstName, buyer.getFirstName());
@@ -76,7 +76,7 @@ public class BuyerTests {
             Assertions.assertNotNull(buyer.getUpdatedAt());
         } else {
             org.assertj.core.api.Assertions.assertThatThrownBy(
-                            () -> Buyer.reconstruct(userId,firstName, lastName, email, phone, password, status,addresses,expiresAt,createdAt,updatedAt))
+                            () -> Buyer.reconstruct(userId, firstName, lastName, email, phone, password, status, addresses, expiresAt, createdAt, updatedAt))
                     .isInstanceOf(expectedException)
                     .hasMessage(expectedMessage);
         }
