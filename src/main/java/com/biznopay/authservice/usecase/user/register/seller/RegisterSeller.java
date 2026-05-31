@@ -18,14 +18,16 @@ import java.util.Optional;
 import static com.biznopay.authservice.domain.util.DomainFuncUtils.validatePassword;
 
 public class RegisterSeller {
+    private final TransactionGateway transactionGateway;
     private final UserGateway userGateway;
     private final EncoderGateway encoderGateway;
     private final StorageGateway storageGateway;
     private final DomainEventGateway domainEventGateway;
     private final ActivationTokenGateway activationTokenGateway;
 
-    public RegisterSeller(UserGateway userGateway, EncoderGateway encoderGateway, StorageGateway storageGateway,
-                          DomainEventGateway domainEventGateway, ActivationTokenGateway activationTokenGateway) {
+    public RegisterSeller(TransactionGateway transactionGateway, UserGateway userGateway, EncoderGateway encoderGateway,
+                          StorageGateway storageGateway, DomainEventGateway domainEventGateway, ActivationTokenGateway activationTokenGateway) {
+        this.transactionGateway = transactionGateway;
         this.userGateway = userGateway;
         this.encoderGateway = encoderGateway;
         this.storageGateway = storageGateway;
@@ -34,20 +36,22 @@ public class RegisterSeller {
     }
 
     public RegisterSellerOutput execute(RegisterSellerInput input) {
-        validateSeller(input);
-        String rawPassword = validatePassword(input.password(), "Seller", "REGISTER_SELLER-003");
-        String encodedPassword = encoderGateway.encode(rawPassword);
-        BiDocument biDocument = getBiDocument(input.nuit(), input.biDocument());
-        List<StorageFile> files = buildFiles(biDocument, input);
-        storageGateway.upload(files);
-        User seller = Seller.register(input.firstName(), input.lastName(), input.email(), input.phoneNumber(),
-                encodedPassword, input.storeName(), input.storeDescription(), input.nuit(), input.storeAddress(), biDocument);
-        userGateway.save(seller);
-        ActivationToken token = ActivationToken.generate(seller.getId());
-        activationTokenGateway.save(token);
-        UserRegistered event = UserRegistered.of(seller.getId(), seller.getEmail(), seller.getFirstName(), token.getId());
-        domainEventGateway.publish(event);
-        return new RegisterSellerOutput("We've sent an activation link to provided email: " + input.email());
+      return transactionGateway.execute(() -> {
+          validateSeller(input);
+          String rawPassword = validatePassword(input.password(), "Seller", "REGISTER_SELLER-003");
+          String encodedPassword = encoderGateway.encode(rawPassword);
+          BiDocument biDocument = getBiDocument(input.nuit(), input.biDocument());
+          List<StorageFile> files = buildFiles(biDocument, input);
+          storageGateway.upload(files);
+          User seller = Seller.register(input.firstName(), input.lastName(), input.email(), input.phoneNumber(),
+                  encodedPassword, input.storeName(), input.storeDescription(), input.nuit(), input.storeAddress(), biDocument);
+          userGateway.save(seller);
+          ActivationToken token = ActivationToken.generate(seller.getId());
+          activationTokenGateway.save(token);
+          UserRegistered event = UserRegistered.of(seller.getId(), seller.getEmail(), seller.getFirstName(), token.getId());
+          domainEventGateway.publish(event);
+          return new RegisterSellerOutput("We've sent an activation link to provided email: " + input.email());
+      });
     }
 
     private void validateSeller(RegisterSellerInput input) {

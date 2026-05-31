@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.event.UserRegistered;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.gateway.*;
+import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
 import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
@@ -38,7 +39,8 @@ public class RegisterSellerTests {
     private ActivationTokenGateway activationTokenGateway;
 
     private RegisterSeller setUp() {
-        return new RegisterSeller(userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
+        TransactionGateway transactionGateway = new TransactionGatewayImpl();
+        return new RegisterSeller(transactionGateway,userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
     }
 
     @ParameterizedTest(name = "{0}")

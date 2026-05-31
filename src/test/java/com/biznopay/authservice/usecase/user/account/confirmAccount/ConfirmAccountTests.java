@@ -9,7 +9,9 @@ import com.biznopay.authservice.domain.exception.ExpiredConfirmationTokenExcepti
 import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
+import com.biznopay.authservice.domain.gateway.TransactionGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -35,10 +37,15 @@ public class ConfirmAccountTests {
     @Mock
     private UserGateway userGateway;
 
+    public ConfirmAccount setUp(){
+        TransactionGateway transactionGateway = new TransactionGatewayImpl();
+        return new ConfirmAccount(transactionGateway,tokenGateway, userGateway);
+    }
+
     @Test
     @DisplayName("Should throw InvalidConfirmationTokenException when token is not found")
     public void shouldThrowInvalidConfirmationTokenExceptionWhenTokenIsNotFound() {
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = setUp();
         Assertions.assertThrows(InvalidConfirmationTokenException.class, () -> confirmAccount.execute("any_token_id"));
     }
 
@@ -51,7 +58,7 @@ public class ConfirmAccountTests {
         LocalDateTime expiredAt = LocalDateTime.now().minusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, false, expiredAt, expiredAt);
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = setUp();
         Assertions.assertThrows(ExpiredConfirmationTokenException.class, () -> confirmAccount.execute(rawTokenId.toString()));
         Assertions.assertFalse(activationToken.isValid());
     }
@@ -67,7 +74,7 @@ public class ConfirmAccountTests {
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.empty());
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
 
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = setUp();
         Assertions.assertThrows(ResourceNotFoundException.class, () -> confirmAccount.execute(rawTokenId.toString()));
         Assertions.assertTrue(activationToken.isValid());
         Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
@@ -87,7 +94,7 @@ public class ConfirmAccountTests {
         ;
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));
         Mockito.when(tokenGateway.findById(rawTokenId)).thenReturn(Optional.of(activationToken));
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = setUp();
         Assertions.assertThrows(AccountAlreadyConfirmedException.class, () -> confirmAccount.execute(rawTokenId.toString()));
         Assertions.assertFalse(activationToken.isValid());
     }
@@ -104,7 +111,7 @@ public class ConfirmAccountTests {
         Mockito.doNothing().when(userGateway).save(user);
         Mockito.doNothing().when(tokenGateway).delete(activationToken);
 
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = setUp();
         confirmAccount.execute(rawTokenId.toString());
 
         Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);
@@ -125,7 +132,7 @@ public class ConfirmAccountTests {
         Mockito.doNothing().when(userGateway).save(user);
         Mockito.doNothing().when(tokenGateway).delete(activationToken);
 
-        ConfirmAccount confirmAccount = new ConfirmAccount(tokenGateway, userGateway);
+        ConfirmAccount confirmAccount = setUp();
         confirmAccount.execute(rawTokenId.toString());
 
         Mockito.verify(tokenGateway, Mockito.times(1)).findById(rawTokenId);

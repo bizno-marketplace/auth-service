@@ -7,10 +7,8 @@ import com.biznopay.authservice.domain.exception.ConflictException;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
-import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
-import com.biznopay.authservice.domain.gateway.DomainEventGateway;
-import com.biznopay.authservice.domain.gateway.EncoderGateway;
-import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.domain.gateway.*;
+import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -38,7 +36,8 @@ public class RegisterSATests {
     private ActivationTokenGateway activationTokenGateway;
 
     private RegisterSA setupRegisterSA() {
-        return new RegisterSA(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
+        TransactionGateway transactionGateway = new TransactionGatewayImpl();
+        return new RegisterSA(transactionGateway,userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 
     @Test
