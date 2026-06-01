@@ -5,10 +5,8 @@ import com.biznopay.authservice.domain.entity.event.UserRegistered;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.TokenCooldownException;
-import com.biznopay.authservice.domain.gateway.ActivationTokenGateway;
-import com.biznopay.authservice.domain.gateway.DomainEventGateway;
-import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;
-import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.domain.gateway.*;
+import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -17,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
@@ -26,6 +25,7 @@ import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class ResendConfirmationTests {
+
     @Mock
     private UserGateway userGateway;
     @Mock
@@ -35,8 +35,9 @@ public class ResendConfirmationTests {
     @Mock
     private ActivationTokenGateway activationTokenGateway;
 
-    private com.biznopay.authservice.usecase.user.account.resendConfirmation.ResendConformation setUp() {
-        return new ResendConformation(userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
+    private ResendConformation setUp() {
+        TransactionGateway transactionGateway = new TransactionGatewayImpl();
+        return new ResendConformation(transactionGateway,userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
     }
 
     @Test

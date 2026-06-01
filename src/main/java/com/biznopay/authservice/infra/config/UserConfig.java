@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class UserConfig {
+    private final TransactionGateway transactionGateway;
     private final UserGateway userGateway;
     private final EncoderGateway encoderGateway;
     private final DomainEventGateway domainEventGateway;
@@ -22,26 +23,26 @@ public class UserConfig {
 
     @Bean
     public ConfirmAccount confirmAccount() {
-        return new ConfirmAccount(activationTokenGateway, userGateway);
+        return new ConfirmAccount(transactionGateway,activationTokenGateway, userGateway);
     }
 
     @Bean
     public ResendConformation resendConformation() {
-        return new ResendConformation(userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
+        return new ResendConformation(transactionGateway,userGateway, domainEventGateway, resendCooldownGateway, activationTokenGateway);
     }
 
     @Bean
     public RegisterSA registerSA() {
-        return new RegisterSA(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
+        return new RegisterSA(transactionGateway,userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 
     @Bean
     public RegisterBuyer registerBuyer() {
-        return new RegisterBuyer(userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
+        return new RegisterBuyer(transactionGateway,userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
     }
 
     @Bean
     public RegisterSeller registerSeller() {
-        return new RegisterSeller(userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
+        return new RegisterSeller(transactionGateway,userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
     }
 }
