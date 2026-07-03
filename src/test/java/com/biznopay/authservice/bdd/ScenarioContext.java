@@ -31,6 +31,8 @@ public class ScenarioContext {
     private JdbcTemplate jdbcTemplate;
     private Object requestData;
 
+    private Map<String, String> stringsMaps = new HashMap<>();
+
     public ResponseEntity<ApiResponse> getResponse() {
         return response;
     }
@@ -85,6 +87,10 @@ public class ScenarioContext {
 
     public Map<String, FilePart> getFileParts() {
         return fileParts;
+    }
+
+    public Map<String, String> getHeadersMap() {
+        return stringsMaps;
     }
 
     public void addFilePart(String field, String filename, String contentType, byte[] bytes) {

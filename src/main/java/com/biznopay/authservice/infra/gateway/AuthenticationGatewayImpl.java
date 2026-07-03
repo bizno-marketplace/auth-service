@@ -5,7 +5,6 @@ import com.biznopay.authservice.domain.gateway.AuthenticationGateway;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +19,8 @@ public class AuthenticationGatewayImpl implements AuthenticationGateway {
     public User loggedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         assert authentication != null;
-        UserJpaEntity userJpaEntity = this.userJpaRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        UserJpaEntity userJpaEntity = this.userJpaRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new SecurityException("Authenticated user not found in database: AUTHENTICATION-GATEWAY-011"));
         return UserMapper.toUserDomain(userJpaEntity);
     }
 }

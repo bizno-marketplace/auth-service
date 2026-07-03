@@ -44,14 +44,14 @@ public class SellerController {
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
     }
 
-    @PatchMapping("/sellers/{id}/approve")
+    @PatchMapping("/{id}/approve")
     public ResponseEntity<ApiResponse<Object>> approve(@PathVariable("id") String sellerId) {
         ApproveSellerInput input = new ApproveSellerInput(sellerId);
         approveSeller.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));
     }
 
-    @PatchMapping("/sellers/{id}/reject")
+    @PatchMapping("/{id}/reject")
     public ResponseEntity<ApiResponse<Object>> reject(@PathVariable("id") String sellerId, @RequestBody RejectSellerRequest request) {
         RejectSellerInput input = UserMapper.toRejectSellerInput(sellerId, request);
         rejectSeller.execute(input);

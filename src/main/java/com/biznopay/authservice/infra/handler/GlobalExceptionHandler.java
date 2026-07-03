@@ -38,10 +38,13 @@ public class GlobalExceptionHandler {
         return switch (exception) {
             case RequiredFieldException ex -> FuncUtils.handleBadRequest(ex, request, log);
             case InvalidConfirmationTokenException ex -> FuncUtils.handleBadRequest(ex, request, log);
+            case AccessDeniedException ex -> FuncUtils.handleForbidden(ex, request, log);
+            case ResourceNotFoundException ex -> FuncUtils.handleNotFound(ex, request, log);
             case ConflictException ex -> FuncUtils.handleConflict(ex, request, log);
             case EmailAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
             case AccountAlreadyConfirmedException ex -> FuncUtils.handleConflict(ex, request, log);
             case NuitAlreadyInUseException ex -> FuncUtils.handleConflict(ex, request, log);
+            case InvalidSellerAccountStatus ex -> FuncUtils.handleConflict(ex, request, log);
             case ExpiredConfirmationTokenException ex -> FuncUtils.handleGone(ex, request, log);
             case InvalidEmailException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);
             case InvalidStringFieldLengException ex -> FuncUtils.handleUnprocessableContent(ex, request, log);

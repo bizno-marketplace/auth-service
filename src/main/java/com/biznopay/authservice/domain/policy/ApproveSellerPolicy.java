@@ -7,7 +7,7 @@ import com.biznopay.authservice.domain.exception.AccessDeniedException;
 public class ApproveSellerPolicy {
 
     public void enforce(User requestingUser, String code) {
-        if (requestingUser.getRole() != Role.SUPER_ADMIN) {
+        if (requestingUser == null || requestingUser.getRole() != Role.SUPER_ADMIN) {
             throw new AccessDeniedException(code);
         }
     }

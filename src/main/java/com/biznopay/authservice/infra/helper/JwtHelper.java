@@ -3,26 +3,31 @@ package com.biznopay.authservice.infra.helper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Component
 public class JwtHelper {
 
-    @Value("app.secret-key")
+    @Value("${app.secret-key}")
     private String secretKey;
 
     private Key getSignKey() {
-        byte[] keyByes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyByes);
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generate(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return create(claims, username);
     }
 
     public String create(Map<String, Object> claims, String username) {

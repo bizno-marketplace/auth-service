@@ -33,6 +33,18 @@ public class FuncUtils {
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
     }
 
+    public static ResponseEntity<ApiResponse<Object>> handleNotFound(RuntimeException exception, HttpServletRequest request, Logger log) {
+        ApiError error = null;
+        if (exception instanceof ResourceNotFoundException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.NOT_FOUND);
+    }
+
     public static ResponseEntity<ApiResponse<Object>> handleConflict(RuntimeException exception, HttpServletRequest request, Logger log) {
         ApiError error = null;
         if (exception instanceof ConflictException ex) {
@@ -57,6 +69,13 @@ public class FuncUtils {
         }
 
         if (exception instanceof NuitAlreadyInUseException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof InvalidSellerAccountStatus ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
@@ -141,5 +160,13 @@ public class FuncUtils {
                 ex.getErrorCode(), exception.getMessage(), ex.getMetadata());
         ApiError error = new ApiError(ex.getErrorCode(), exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleForbidden(AccessDeniedException ex, HttpServletRequest request, Logger log) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+        ApiError error = new ApiError(ex.getErrorCode(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(FuncUtils.buildResponseBody(false, null, error));
     }
 }

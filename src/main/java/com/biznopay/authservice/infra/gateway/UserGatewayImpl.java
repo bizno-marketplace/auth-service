@@ -58,7 +58,7 @@ public class UserGatewayImpl implements UserGateway {
         return userOpt.map(UserMapper::toUserDomain);
     }
 
-    public UserDetails findByUsername(String username){
-        return this.userJpaRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found!"));
+    public UserDetails findByEmailUserDetails(String email) {
+        return this.userJpaRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
     }
 }

@@ -28,11 +28,11 @@ public class BuyerTestCases {
     public static final Address VALID_ADDRESS = Address.reconstruct(1L, -25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static final Address VALID_ADDRESS_NEW = Address.of(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static final List<Address> VALID_ADDRESS_LIST = List.of(VALID_ADDRESS, VALID_ADDRESS);
-    public static Buyer VALID_BUYER = Buyer.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT);
-    public static UserJpaEntity VALID_BUYER_JPA = UserMapper.toUserJpaEntity(VALID_BUYER);
     public static final LocalDateTime VALID_EXPIRES_AT = LocalDateTime.now().plusDays(2);
     public static final LocalDateTime VALID_CREATED_AT = LocalDateTime.now();
     public static final LocalDateTime VALID_UPDATED_AT = LocalDateTime.now();
+    public static Buyer VALID_BUYER = Buyer.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_ADDRESS_LIST, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT);
+    public static UserJpaEntity VALID_BUYER_JPA = UserMapper.toUserJpaEntity(VALID_BUYER);
     public static final AddressRequest VALID_ADDRESS_REQUEST = new AddressRequest(-25.9692, 32.5732, "Av. 24 de Julho", "Sommerschield", "Maputo", "Maputo", "Mozambique");
     public static RegisterBuyerInput VALID_REGISTER_BUYER_INPUT = new RegisterBuyerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD, VALID_PHONE, VALID_ADDRESS);
 

@@ -4,6 +4,8 @@ import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.activation.ActivationTokenId;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.entity.user.seller.Seller;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.ExpiredConfirmationTokenException;
 import com.biznopay.authservice.domain.exception.InvalidConfirmationTokenException;
@@ -26,7 +28,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_SELLER;
+import static com.biznopay.authservice.testcases.SellerTestCases.*;
+import static com.biznopay.authservice.testcases.SellerTestCases.VALID_BI;
 import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER_ADMIN;
 
 @Tag("unit")
@@ -102,7 +105,9 @@ public class ConfirmAccountTests {
     @Test
     @DisplayName("Should active user and mark activation token as used")
     public void shouldActiveUserAndMarkActivationTokenAsUsed() {
-        User user = VALID_SUPER_ADMIN;
+        UserId VALID_USER_ID = UserId.of(UUID.randomUUID());
+        User user = Seller.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, UserStatus.AWAITING_APPROVAL, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_NEW, VALID_BI);;
+
         ActivationToken activationToken = ActivationToken.generate(user.getId());
         UUID rawTokenId = activationToken.getId().value();
 

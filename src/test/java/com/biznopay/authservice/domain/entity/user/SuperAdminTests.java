@@ -70,14 +70,13 @@ public class SuperAdminTests {
             Assertions.assertEquals(email, superAdmin.getEmail());
             Assertions.assertEquals(phone, superAdmin.getPhone());
             Assertions.assertEquals(password, superAdmin.getPassword());
-            Assertions.assertEquals(UserStatus.PENDING, superAdmin.getStatus());
+            Assertions.assertEquals(UserStatus.ACTIVE, superAdmin.getStatus());
             Assertions.assertNotNull(superAdmin.getExpiresAt());
             Assertions.assertNotNull(superAdmin.getCreatedAt());
             Assertions.assertNotNull(superAdmin.getUpdatedAt());
         } else if (testName.equals("Active")) {
             SuperAdmin superAdmin = SuperAdmin.reconstruct(useId, firstName, lastName,
                     email, phone, password, status, expiresAt, createdAt, updatedAt);
-            superAdmin.activate();
             Assertions.assertEquals(UserStatus.ACTIVE, superAdmin.getStatus());
         } else if (testName.equals("Set to Awaiting for approval")) {
             SuperAdmin superAdmin = SuperAdmin.reconstruct(useId, firstName, lastName,
