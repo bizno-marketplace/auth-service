@@ -2,8 +2,6 @@ package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
@@ -30,8 +28,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 
-import static com.biznopay.authservice.testcases.AddressTestCases.VALID_ADDRESS;
-import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER;
 import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
 
 public class ConfirmAccountSteps {
@@ -76,7 +72,8 @@ public class ConfirmAccountSteps {
     // SCENARIO: Successfully confirm account with valid token
     @Given("a user registered with email {string} has a valid confirmation token")
     public void aUserRegisteredWithEmailHasAValidConfirmationToken(String email) {
-        User user = validBuyer(email);;
+        User user = validBuyer(email);
+        ;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
 
@@ -105,7 +102,8 @@ public class ConfirmAccountSteps {
     // SCENARIO: Reject confirmation with expired token
     @Given("a user registered with email {string} has an expired confirmation token")
     public void aUserRegisteredWithEmailHasAnExpiredConfirmationToken(String email) {
-        User user = validBuyer(email);;
+        User user = validBuyer(email);
+        ;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
 
@@ -118,7 +116,8 @@ public class ConfirmAccountSteps {
     // SCENARIO: Reject confirmation with invalid or tampered token
     @Given("a user registered with email {string}")
     public void aUserRegisteredWithEmail(String email) {
-        User user = validBuyer(email);;
+        User user = validBuyer(email);
+        ;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }
@@ -136,7 +135,8 @@ public class ConfirmAccountSteps {
     // SCENARIO: Reject confirmation when account is already active
     @Given("a user with email {string} has already confirmed the account")
     public void aUserWithEmailHasAlreadyConfirmedTheAccount(String email) {
-        User user = validBuyer(email);;
+        User user = validBuyer(email);
+        ;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         entity.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(entity);

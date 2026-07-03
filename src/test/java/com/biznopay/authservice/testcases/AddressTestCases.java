@@ -17,7 +17,7 @@ public class AddressTestCases {
     public static final String VALID_CITY = "Maputo";
     public static final String VALID_PROVINCE = "Maputo";
     public static final String VALID_COUNTRY = "Mozambique";
-    public  static  final Address VALID_ADDRESS =  Address.of(VALID_LATITUDE, VALID_LONGITUDE, VALID_STREET, VALID_NEIGHBOURHOOD, VALID_CITY, VALID_PROVINCE, VALID_COUNTRY);
+    public static final Address VALID_ADDRESS = Address.of(VALID_LATITUDE, VALID_LONGITUDE, VALID_STREET, VALID_NEIGHBOURHOOD, VALID_CITY, VALID_PROVINCE, VALID_COUNTRY);
 
 
     public static Stream<Arguments> buildAddressDomainTestCases() {

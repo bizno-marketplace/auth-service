@@ -1,3 +1,5 @@
+app:
+  secret-key: hshgdjsafdjgfgsasfljsaf;asfa
 server:
   port: 8081
 spring:

@@ -28,10 +28,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN_JPA;
 import static com.biznopay.authservice.testcases.ActivationTokenTestCases.activationTokenJpa;
 import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
-import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER_ADMIN_JPA;
 
 public class ResendConformationSteps {
 

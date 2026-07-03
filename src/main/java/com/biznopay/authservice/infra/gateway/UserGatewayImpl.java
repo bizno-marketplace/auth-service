@@ -3,11 +3,14 @@ package com.biznopay.authservice.infra.gateway;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SellerJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -47,5 +50,15 @@ public class UserGatewayImpl implements UserGateway {
     public Optional<User> findByNuit(String nuit) {
         Optional<UserJpaEntity> entity = sellerJpaRepository.findByNuit(nuit);
         return entity.map(UserMapper::toUserDomain);
+    }
+
+    @Override
+    public Optional<User> findSellerById(UUID id) {
+        Optional<SellerJpaEntity> userOpt = sellerJpaRepository.findById(id);
+        return userOpt.map(UserMapper::toUserDomain);
+    }
+
+    public UserDetails findByUsername(String username){
+        return this.userJpaRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found!"));
     }
 }

@@ -10,7 +10,7 @@ import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.presentation.dto.RegisterSARequest;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
+import com.biznopay.authservice.usecase.sa.RegisterSAInput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;

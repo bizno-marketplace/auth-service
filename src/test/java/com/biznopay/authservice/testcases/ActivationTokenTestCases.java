@@ -15,7 +15,8 @@ public class ActivationTokenTestCases {
 
     public static final ActivationToken VALID_ACTIVATION_TOKEN = ActivationToken.generate(VALID_USER_ID);
     public static final ActivationTokenJpaEntity VALID_ACTIVATION_TOKEN_JPA = ActivationTokenMapper.toJpaEntity(VALID_ACTIVATION_TOKEN);
-    public static final ActivationTokenJpaEntity activationTokenJpa(UUID userId){
+
+    public static final ActivationTokenJpaEntity activationTokenJpa(UUID userId) {
         return ActivationTokenMapper.toJpaEntity(ActivationToken.generate(UserId.of(userId)));
     }
 

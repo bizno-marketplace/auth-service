@@ -1,8 +1,6 @@
 package com.biznopay.authservice.bdd.steps;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
@@ -103,7 +101,8 @@ public class CommonSteps {
 
     @Given("a user with email {string} exists in the system")
     public void aUserWithEmailExistsInTheSystem(String email) {
-        User user = validBuyer(email);;
+        User user = validBuyer(email);
+        ;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }

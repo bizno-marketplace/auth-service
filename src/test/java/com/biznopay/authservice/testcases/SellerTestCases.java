@@ -1,8 +1,8 @@
 package com.biznopay.authservice.testcases;
 
 import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.Seller;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.BiDocument;
@@ -14,7 +14,7 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
+import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.http.HttpStatus;
 
