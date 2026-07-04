@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd.steps;
+package com.biznopay.authservice.bdd.steps.Sellers;
 
 import com.biznopay.authservice.bdd.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.User;
@@ -34,7 +34,6 @@ import java.util.UUID;
 
 import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
 import static com.biznopay.authservice.testcases.SellerTestCases.*;
-import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER_ADMIN;
 
 public class ApproveSellerSteps {
     @Autowired

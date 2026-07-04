@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd;
+package com.biznopay.authservice.bdd._config;
 
 import com.biznopay.authservice.config.ContainerBase;
 import com.biznopay.authservice.config.TestConfig;

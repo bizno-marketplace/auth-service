@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd;
+package com.biznopay.authservice.bdd._config;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
