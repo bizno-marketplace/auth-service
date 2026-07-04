@@ -1,6 +1,6 @@
 package com.biznopay.authservice.bdd.steps.account;
 
-import com.biznopay.authservice.bdd.ScenarioContext;
+import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.gateway.ResendCooldownGateway;

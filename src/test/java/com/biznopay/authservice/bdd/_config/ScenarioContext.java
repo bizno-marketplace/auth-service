@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd;
+package com.biznopay.authservice.bdd._config;
 
 
 import com.biznopay.authservice.domain.vo.ApiResponse;
