@@ -1,8 +1,8 @@
 package com.biznopay.authservice.testcases;
 
 import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.Seller;
 import com.biznopay.authservice.domain.entity.user.UserId;
+import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.BiDocument;
@@ -14,7 +14,7 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
+import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.http.HttpStatus;
 
@@ -45,6 +45,8 @@ public class SellerTestCases {
     public static final AddressJpaEntity VALID_ADDRESS_JPA = UserMapper.toAddressJpaEntity(VALID_ADDRESS);
     public static final UserJpaEntity VALID_SELLER_JPA = new SellerJpaEntity(VALID_USER_ID.value(), VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_JPA, VALID_BI_JPA);
     public static final Seller VALID_SELLER = Seller.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI);
+    public static final Seller VALID_SELLER_WITH_NEW_ADDRESS = Seller.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STATUS, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_NEW, VALID_BI);
+
 
     public static Seller registerSeller(
             String firstName, String lastName, String email,

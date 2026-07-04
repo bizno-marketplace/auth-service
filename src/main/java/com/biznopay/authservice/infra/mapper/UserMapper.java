@@ -1,17 +1,16 @@
 package com.biznopay.authservice.infra.mapper;
 
 import com.biznopay.authservice.domain.entity.user.*;
+import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
 import com.biznopay.authservice.infra.persistence.jpa.entity.*;
-import com.biznopay.authservice.presentation.dto.AddressRequest;
-import com.biznopay.authservice.presentation.dto.RegisterBuyerRequest;
-import com.biznopay.authservice.presentation.dto.RegisterSARequest;
-import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
-import com.biznopay.authservice.usecase.user.register.buyer.RegisterBuyerInput;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAInput;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
+import com.biznopay.authservice.presentation.dto.*;
+import com.biznopay.authservice.usecase.buyer.RegisterBuyerInput;
+import com.biznopay.authservice.usecase.sa.RegisterSAInput;
+import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
+import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -169,5 +168,9 @@ public class UserMapper {
 
     public static BiDocument toDomainBiDoc(BiDocumentJpaEntity biDocument) {
         return BiDocument.of(biDocument.getFrontPath(), biDocument.getBackPath());
+    }
+
+    public static RejectSellerInput toRejectSellerInput(String sellerId, RejectSellerRequest request) {
+        return new RejectSellerInput(sellerId, request.reasonForRejection());
     }
 }

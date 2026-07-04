@@ -6,5 +6,6 @@ public enum UserStatus {
     AWAITING_APPROVAL,
     SUSPENDED,
     EXPIRED,
-    BLOCKED
+    BLOCKED,
+    REJECTED
 }

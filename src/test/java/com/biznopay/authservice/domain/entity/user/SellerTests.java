@@ -1,5 +1,6 @@
 package com.biznopay.authservice.domain.entity.user;
 
+import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import org.junit.jupiter.api.Assertions;

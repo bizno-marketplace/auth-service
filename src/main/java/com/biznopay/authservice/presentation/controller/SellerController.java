@@ -4,19 +4,21 @@ import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
+import com.biznopay.authservice.presentation.dto.RejectSellerRequest;
 import com.biznopay.authservice.presentation.validator.BiDocumentValidator;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSeller;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerInput;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
+import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
+import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSellerInput;
+import com.biznopay.authservice.usecase.seller.register.RegisterSeller;
+import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
+import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
+import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSeller;
+import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,6 +29,8 @@ import java.io.IOException;
 @RequestMapping("/sellers")
 public class SellerController {
     private final RegisterSeller registerSeller;
+    private final ApproveSeller approveSeller;
+    private final RejectSeller rejectSeller;
 
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Object>> register(
@@ -38,5 +42,19 @@ public class SellerController {
         RegisterSellerInput input = UserMapper.toRegisterSellerInput(request, biFrontPhoto, biBackPhoto);
         RegisterSellerOutput output = registerSeller.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
+    }
+
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<ApiResponse<Object>> approve(@PathVariable("id") String sellerId) {
+        ApproveSellerInput input = new ApproveSellerInput(sellerId);
+        approveSeller.execute(input);
+        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));
+    }
+
+    @PatchMapping("/{id}/reject")
+    public ResponseEntity<ApiResponse<Object>> reject(@PathVariable("id") String sellerId, @RequestBody RejectSellerRequest request) {
+        RejectSellerInput input = UserMapper.toRejectSellerInput(sellerId, request);
+        rejectSeller.execute(input);
+        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));
     }
 }

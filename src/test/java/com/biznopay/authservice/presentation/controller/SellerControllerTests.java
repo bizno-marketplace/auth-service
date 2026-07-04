@@ -1,7 +1,7 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.config.ContainerBase;
-import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice._config.ContainerBase;
+import com.biznopay.authservice._config.TestConfig;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.util.DocumentPathGenerator;
 import com.biznopay.authservice.domain.util.DomainFuncUtils;
@@ -11,7 +11,7 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.AddressJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
-import com.biznopay.authservice.usecase.user.register.seller.RegisterSellerOutput;
+import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,3 +1,5 @@
+app:
+  secret-key: aHNoZ2Rqc2FmZGpnZmdzYXNmbGpzYWZhc2ZhYml6bm8yMDI2bWFya2V0cGxhY2U=
 server:
   port: 8081
 spring:

@@ -21,7 +21,7 @@ public class SuperAdminTestCases {
     public static final String VALID_LAST_NAME = "Admin";
     public static final String VALID_EMAIL = "superadmin@bizno.co.mz";
     public static final String VALID_PHONE = "+258841234567";
-    public static final UserStatus VALID_STATUS = UserStatus.PENDING;
+    public static final UserStatus VALID_STATUS = UserStatus.ACTIVE;
     public static final String VALID_PASSWORD = "Segura@123";
     public static final LocalDateTime VALID_EXPIRES_AT = LocalDateTime.now();
     public static final LocalDateTime VALID_CREATED_AT = LocalDateTime.now();

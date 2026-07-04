@@ -1,8 +1,6 @@
 package com.biznopay.authservice.bdd.steps;
 
-import com.biznopay.authservice.bdd.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.Buyer;
+import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
@@ -17,6 +15,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import tools.jackson.core.type.TypeReference;
@@ -25,6 +24,7 @@ import java.util.Map;
 
 import static com.biznopay.authservice.testcases.BuyerTestCases.validBuyer;
 
+@Slf4j
 public class CommonSteps {
 
     @Autowired
@@ -75,7 +75,6 @@ public class CommonSteps {
 
     @Then("the response status should be {int}")
     public void theResponseStatusShouldBe(int statusCode) {
-        System.out.println(scenarioContext.getRequestData());
         Assertions.assertEquals(statusCode, scenarioContext.getResponse().getStatusCode().value());
     }
 
@@ -103,7 +102,7 @@ public class CommonSteps {
 
     @Given("a user with email {string} exists in the system")
     public void aUserWithEmailExistsInTheSystem(String email) {
-        User user = validBuyer(email);;
+        User user = validBuyer(email);
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         userJpaRepository.save(entity);
     }

@@ -64,8 +64,8 @@ public abstract class User {
             throw new InvalidEmailException("USER-007");
         return email;
     }
-    //END VALIDATIONS
 
+    //END VALIDATIONS
     public void activate() {
         if (this.status == UserStatus.ACTIVE) throw new AccountAlreadyConfirmedException("USER-008");
         this.status = UserStatus.ACTIVE;
@@ -75,6 +75,14 @@ public abstract class User {
     public void setToAwaitingForApproval() {
         this.status = UserStatus.AWAITING_APPROVAL;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void reject() {
+        this.status = UserStatus.REJECTED;
+    }
+
+    public void block() {
+        this.status = UserStatus.BLOCKED;
     }
 
     public UserId getId() {

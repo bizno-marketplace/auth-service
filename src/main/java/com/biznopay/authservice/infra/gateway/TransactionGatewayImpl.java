@@ -8,14 +8,14 @@ import java.util.function.Supplier;
 
 @Component
 public class TransactionGatewayImpl implements TransactionGateway {
-    @Transactional
     @Override
+    @Transactional
     public <T> T execute(Supplier<T> operation) {
         return operation.get();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void execute(Runnable operation) {
         operation.run();
     }

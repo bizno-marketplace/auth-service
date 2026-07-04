@@ -1,11 +1,11 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.config.ContainerBase;
-import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice._config.ContainerBase;
+import com.biznopay.authservice._config.TestConfig;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.RegisterSARequest;
-import com.biznopay.authservice.usecase.user.register.sa.RegisterSAOutput;
+import com.biznopay.authservice.usecase.sa.RegisterSAOutput;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

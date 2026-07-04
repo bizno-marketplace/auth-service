@@ -1,7 +1,7 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.config.ContainerBase;
-import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice._config.ContainerBase;
+import com.biznopay.authservice._config.TestConfig;
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
@@ -29,9 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 
-import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN;
 import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN_JPA;
-import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_JPA;
 import static com.biznopay.authservice.testcases.SuperAdminTestCases.*;
 
 @Tag("integration")
@@ -69,7 +67,8 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 204 on successful account confirmation")
     void shouldReturn204OnSuccessfulAccountConfirmation() {
-        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);;
+        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
+        ;
         UserJpaEntity user = UserMapper.toUserJpaEntity(userD);
         userJpaRepository.save(user);
         ActivationToken activationToken = ActivationToken.generate(userD.getId());
@@ -175,7 +174,8 @@ public class AccountControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should return 429 during resend cooldown on resend confirmation")
     public void shouldReturn429DuringResendCooldownOnResendConfirmation() {
-        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);;
+        User userD = SuperAdmin.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PASSWORD);
+        ;
         UserJpaEntity user = UserMapper.toUserJpaEntity(userD);
         userJpaRepository.save(user);
         ActivationTokenJpaEntity entity = VALID_ACTIVATION_TOKEN_JPA;
