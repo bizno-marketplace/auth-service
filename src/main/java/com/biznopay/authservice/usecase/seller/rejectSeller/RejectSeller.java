@@ -45,10 +45,7 @@ public class RejectSeller {
             if (!user.getStatus().equals(UserStatus.AWAITING_APPROVAL))
                 throw new InvalidSellerAccountStatus(UserStatus.AWAITING_APPROVAL.name(), "REJECT_SELLER-005");
             SellerRejection sellerRejection = buildSellerRejection(user.getId(), reason);
-            sellerRejectionGateway.save(sellerRejection);
-            if (sellerRejection.isBlocked()) user.block();
-            else user.reject();
-            userGateway.save(user);
+            saveSellerRejectionAndUser(sellerRejection, reason, user);
         });
     }
 
@@ -69,5 +66,17 @@ public class RejectSeller {
     private SellerRejection buildSellerRejection(UserId userId, String reasonsForRejections) {
         Optional<SellerRejection> sellerRejectionOpt = sellerRejectionGateway.findByUserId(userId.value());
         return sellerRejectionOpt.orElseGet(() -> SellerRejection.of(userId.value(), reasonsForRejections));
+    }
+
+    private void saveSellerRejectionAndUser(SellerRejection sellerRejection,String reason, User user) {
+        if (sellerRejection.isBlocked()) {
+             user.block();
+        }
+        else {
+            user.reject();
+            sellerRejection.increaseNumberOfAttempts(reason);
+        }
+        sellerRejectionGateway.save(sellerRejection);
+        userGateway.save(user);
     }
 }
