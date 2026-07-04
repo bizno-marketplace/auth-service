@@ -1,7 +1,7 @@
 package com.biznopay.authservice.bdd._config;
 
-import com.biznopay.authservice.config.ContainerBase;
-import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice._config.ContainerBase;
+import com.biznopay.authservice._config.TestConfig;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;

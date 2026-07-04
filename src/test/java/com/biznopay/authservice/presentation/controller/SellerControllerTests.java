@@ -1,7 +1,7 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.config.ContainerBase;
-import com.biznopay.authservice.config.TestConfig;
+import com.biznopay.authservice._config.ContainerBase;
+import com.biznopay.authservice._config.TestConfig;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.util.DocumentPathGenerator;
 import com.biznopay.authservice.domain.util.DomainFuncUtils;

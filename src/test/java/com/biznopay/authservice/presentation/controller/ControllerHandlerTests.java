@@ -1,6 +1,6 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.config.ContainerBase;
+import com.biznopay.authservice._config.ContainerBase;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;

@@ -1,4 +1,4 @@
-package com.biznopay.authservice.config;
+package com.biznopay.authservice._config;
 
 import io.nats.client.Connection;
 import org.mockito.Mockito;

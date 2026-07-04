@@ -1,4 +1,4 @@
-package com.biznopay.authservice.config;
+package com.biznopay.authservice._config;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
