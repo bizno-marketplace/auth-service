@@ -53,13 +53,11 @@ public class RejectSeller {
     }
 
     private UUID validateSellerId(String rawSellerId) {
-        UUID sellerId;
         try {
-            sellerId = UUID.fromString(rawSellerId);
+            return UUID.fromString(rawSellerId);
         } catch (Exception exception) {
             throw new InvalidFieldException("User Id", "REJECT_SELLER", "APPROVE_SELLER-002");
         }
-        return sellerId;
     }
 
     private String validateReason(String reason) {
