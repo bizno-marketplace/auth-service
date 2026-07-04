@@ -69,9 +69,7 @@ public class RejectSeller {
     }
 
     private SellerRejection buildSellerRejection(UserId userId, String reasonsForRejections) {
-        SellerRejection sellerRejection;
         Optional<SellerRejection> sellerRejectionOpt = sellerRejectionGateway.findByUserId(userId.value());
-        sellerRejection = sellerRejectionOpt.orElseGet(() -> SellerRejection.of(userId.value(), reasonsForRejections));
-        return sellerRejection;
+         return sellerRejectionOpt.orElseGet(() -> SellerRejection.of(userId.value(), reasonsForRejections));
     }
 }
