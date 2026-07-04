@@ -5,6 +5,7 @@ import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.entity.user.seller.SellerRejection;
 import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.InvalidSellerAccountStatus;
+import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.AuthenticationGateway;
 import com.biznopay.authservice.domain.gateway.SellerRejectionGateway;
@@ -19,6 +20,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -60,6 +64,23 @@ public class RejectSellerTests {
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(InvalidFieldException.class)
                 .hasMessage("Invalid User Id on REJECT_SELLER");
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("Should throw RequiredFieldException if reason is null or empty")
+    public void shouldThrowRequiredFieldExceptionIfReasonIsNullOrEmpty(String reason){
+        RejectSellerInput input =  new RejectSellerInput(UUID.randomUUID().toString(),reason);
+
+        User sa =  VALID_SUPER_ADMIN_NEW;
+
+        Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+
+        RejectSeller rejectSeller =  setUp();
+        Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
+                .isInstanceOf(RequiredFieldException.class)
+                .hasMessage("Reason for Rejection is required");
     }
 
     @Test
