@@ -3,6 +3,7 @@ app:
 server:
   port: 8081
 spring:
+
   application:
     name: auth-service
   config:
@@ -10,3 +11,8 @@ spring:
   cloud:
     config:
       fail-fast: false
+  grpc:
+    server:
+      port: 9091
+      reflection:
+        enabled: true

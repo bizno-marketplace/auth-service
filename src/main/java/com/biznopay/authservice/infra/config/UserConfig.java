@@ -6,6 +6,8 @@ import com.biznopay.authservice.domain.policy.RejectSellerPolicy;
 import com.biznopay.authservice.domain.policy.ResubmitSellerPolicy;
 import com.biznopay.authservice.usecase.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.account.resendConfirmation.ResendConformation;
+import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfile;
+import com.biznopay.authservice.usecase.auth.validateToken.ValidateToken;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.sa.RegisterSA;
 import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
@@ -82,6 +84,16 @@ public class UserConfig {
     @Bean
     public ResubmitSellerPolicy resubmitSellerPolicy (){
         return new ResubmitSellerPolicy();
+    }
+
+    @Bean
+    public ValidateToken validateToken() {
+        return new ValidateToken(authenticationGateway);
+    }
+
+    @Bean
+    public GetUserProfile getUserProfile() {
+        return new GetUserProfile(userGateway);
     }
 }
 
