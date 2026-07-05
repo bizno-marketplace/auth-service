@@ -141,15 +141,20 @@ public class UserMapper {
     }
 
     public static ResubmitSellerInput toResubmitSellerInput(ResubmitSellerRequest request, MultipartFile biFrontPhoto, MultipartFile biBackPhoto) throws IOException {
-        byte[] frontPhotoBytes = biFrontPhoto.getBytes();
-        String frontPhotoExt = biFrontPhoto.getOriginalFilename().split("\\.")[1];
-        byte[] backPhotoBytes = biBackPhoto.getBytes();
-        String backPhotoExt = biBackPhoto.getOriginalFilename().split("\\.")[1];
-        BiDocumentRequest biDocument = new BiDocumentRequest(frontPhotoBytes, frontPhotoExt, backPhotoBytes, backPhotoExt);
-        Address address = toAddress(request.storeAddress());
+        BiDocumentRequest biDocument = null;
+        if (biFrontPhoto != null && !biFrontPhoto.isEmpty() && biBackPhoto != null && !biBackPhoto.isEmpty()) {
+            byte[] frontPhotoBytes = biFrontPhoto.getBytes();
+            String frontPhotoExt = biFrontPhoto.getOriginalFilename().split("\\.")[1];
+            byte[] backPhotoBytes = biBackPhoto.getBytes();
+            String backPhotoExt = biBackPhoto.getOriginalFilename().split("\\.")[1];
+            biDocument = new BiDocumentRequest(frontPhotoBytes, frontPhotoExt, backPhotoBytes, backPhotoExt);
+        }
+
+        Address address = request.storeAddress() != null ? toAddress(request.storeAddress()) : null;
         return new ResubmitSellerInput(request.firstName(), request.lastName(), request.email(), request.phoneNumber(),
                 request.storeName(), request.storeDescription(), request.nuit(), address, biDocument);
     }
+
     public static AddressJpaEntity toAddressJpaEntity(Address address) {
         return new AddressJpaEntity(address.getId(), address.getLatitude(), address.getLongitude(), address.getStreet(), address.getNeighbourhood(),
                 address.getCity(), address.getProvince(), address.getCountry());

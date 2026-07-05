@@ -13,33 +13,84 @@ Feature: Resubmit Seller
   * If the seller reaches 3 rejections the account becomes BLOCKED
   * The admin receives a notification after resubmission
 
-  Scenario: Successfully resubmit without changing email
+  Scenario: Successfully resubmit updating first name
     Given a existing seller with status "REJECTED" and rejection count 1
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit"
-      | storeName | Loja Nova |
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | firstName | NovoNome |
     Then the response status should be 200
     And the seller status should be "AWAITING_APPROVAL"
+    And the seller first name should be "NovoNome"
+
+  Scenario: Successfully resubmit updating last name
+    Given a existing seller with status "REJECTED" and rejection count 1
+    And i am authenticated as the seller
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | lastName | NovoApelido |
+    Then the response status should be 200
+    And the seller status should be "AWAITING_APPROVAL"
+    And the seller last name should be "NovoApelido"
+
+  Scenario: Successfully resubmit updating phone
+    Given a existing seller with status "REJECTED" and rejection count 1
+    And i am authenticated as the seller
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | phoneNumber | +258841234567 |
+    Then the response status should be 200
+    And the seller status should be "AWAITING_APPROVAL"
+    And the seller phone should be "+258841234567"
+
+  Scenario: Successfully resubmit updating store name
+    Given a existing seller with status "REJECTED" and rejection count 1
+    And i am authenticated as the seller
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | storeName | Nova Loja XYZ |
+    Then the response status should be 200
+    And the seller status should be "AWAITING_APPROVAL"
+    And the seller store name should be "Nova Loja XYZ"
+
+  Scenario: Successfully resubmit updating store description
+    Given a existing seller with status "REJECTED" and rejection count 1
+    And i am authenticated as the seller
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | storeDescription | Nova descricao da loja |
+    Then the response status should be 200
+    And the seller status should be "AWAITING_APPROVAL"
+    And the seller store description should be "Nova descricao da loja"
+
+  Scenario: Successfully resubmit updating nuit
+    Given a existing seller with status "REJECTED" and rejection count 1
+    And i am authenticated as the seller
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | nuit | 987654321 |
+    Then the response status should be 200
+    And the seller status should be "AWAITING_APPROVAL"
+    And the seller nuit should be "987654321"
 
   Scenario: Successfully resubmit with new BI document
     Given a existing seller with status "REJECTED" and rejection count 1
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit" with new BI document
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
+      | storeName | Loja Nova |
+    And with files for resubmit:
+      | field        | filename      | contentType |
+      | biFrontPhoto | bi_frente.png | image/png   |
+      | biBackPhoto  | bi_verso.png  | image/png   |
     Then the response status should be 200
     And the seller status should be "AWAITING_APPROVAL"
 
   Scenario: Successfully resubmit changing email
     Given a existing seller with status "REJECTED" and rejection count 1
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit"
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
       | email | newseller@email.com |
     Then the response status should be 200
-    And the seller status should be "PENDING_CONFIRMATION"
+    And the seller status should be "PENDING"
 
   Scenario: Successfully resubmit on last attempt
     Given a existing seller with status "REJECTED" and rejection count 2
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit"
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
       | storeName | Loja Nova |
     Then the response status should be 200
     And the seller status should be "AWAITING_APPROVAL"
@@ -47,31 +98,23 @@ Feature: Resubmit Seller
   Scenario: Resubmit blocked after 3 rejections
     Given a existing seller with status "BLOCKED" and rejection count 3
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit"
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
       | storeName | Loja Nova |
     Then the response status should be 403
-    And the response body should contain error "Account is blocked. Please contact the administrator"
+    And the response body should contain error "Access denied"
 
   Scenario: Active seller tries to resubmit
     Given a existing seller with status "ACTIVE" and rejection count 0
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit"
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
       | storeName | Loja Nova |
-    Then the response status should be 409
-    And the response body should contain error "Can only perform this action to Sellers with status REJECTED"
+    Then the response status should be 403
+    And the response body should contain error "Access denied"
 
   Scenario: Awaiting approval seller tries to resubmit
     Given a existing seller with status "AWAITING_APPROVAL" and rejection count 0
     And i am authenticated as the seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/sellerId/resubmit"
-      | storeName | Loja Nova |
-    Then the response status should be 409
-    And the response body should contain error "Can only perform this action to Sellers with status REJECTED"
-
-  Scenario: Seller tries to resubmit another seller account
-    Given a existing seller with status "REJECTED" and rejection count 1
-    And i am authenticated as a different seller
-    When i send a PATCH request to resubmit seller using endpoint "/sellers/otherSellerId/resubmit"
+    When i send a PATCH multipart request to resubmit seller using endpoint "/sellers/resubmit"
       | storeName | Loja Nova |
     Then the response status should be 403
     And the response body should contain error "Access denied"

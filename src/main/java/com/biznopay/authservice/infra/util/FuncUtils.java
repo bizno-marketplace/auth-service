@@ -153,6 +153,14 @@ public class FuncUtils {
     }
 
 
+    public static ResponseEntity<ApiResponse<Object>> handleForbidden(AccessDeniedException ex, HttpServletRequest request, Logger log) {
+        log.warn("[{}] {} {} | code={} | field={} | message={}",
+                ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+        ApiError error = new ApiError(ex.getErrorCode(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
     public static ResponseEntity<ApiResponse<Object>> handleUnexpectedException(RuntimeException exception, HttpServletRequest request, Logger log) {
         TechnicalException ex = new UnexpectedException("UNEXPECTED_ERROR-001");
         log.error("[{}] {} {} | code={} | message={} | metadata={}",
@@ -160,13 +168,5 @@ public class FuncUtils {
                 ex.getErrorCode(), exception.getMessage(), ex.getMetadata());
         ApiError error = new ApiError(ex.getErrorCode(), exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(FuncUtils.buildResponseBody(false, null, error));
-    }
-
-    public static ResponseEntity<ApiResponse<Object>> handleForbidden(AccessDeniedException ex, HttpServletRequest request, Logger log) {
-        log.warn("[{}] {} {} | code={} | field={} | message={}",
-                ex.getSeverity(), request.getMethod(), request.getRequestURI(),
-                ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
-        ApiError error = new ApiError(ex.getErrorCode(), ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(FuncUtils.buildResponseBody(false, null, error));
     }
 }
