@@ -71,7 +71,6 @@ public class Seller extends User {
         return storeDescription;
     }
 
-
     public String getStoreName() {
         return storeName;
     }

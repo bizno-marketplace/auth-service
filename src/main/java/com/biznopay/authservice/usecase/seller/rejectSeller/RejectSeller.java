@@ -53,7 +53,7 @@ public class RejectSeller {
         try {
             return UUID.fromString(rawSellerId);
         } catch (Exception exception) {
-            throw new InvalidFieldException("User Id", "REJECT_SELLER", "APPROVE_SELLER-002");
+            throw new InvalidFieldException("User Id", "REJECT_SELLER", "REJECT_SELLER-002");
         }
     }
 
@@ -68,11 +68,10 @@ public class RejectSeller {
         return sellerRejectionOpt.orElseGet(() -> SellerRejection.of(userId.value(), reasonsForRejections));
     }
 
-    private void saveSellerRejectionAndUser(SellerRejection sellerRejection,String reason, User user) {
+    private void saveSellerRejectionAndUser(SellerRejection sellerRejection, String reason, User user) {
         if (sellerRejection.isBlocked()) {
-             user.block();
-        }
-        else {
+            user.block();
+        } else {
             user.reject();
             sellerRejection.increaseNumberOfAttempts(reason);
         }

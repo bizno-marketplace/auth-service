@@ -21,6 +21,12 @@ public class BiDocumentValidator {
         validateFile(back, "BI back photo");
     }
 
+    public static void validateForResubmit(MultipartFile front, MultipartFile back) {
+        validateFileForResubmit(front, "BI front photo");
+        validateFileForResubmit(back, "BI back photo");
+    }
+
+
     private static void validateFile(MultipartFile file, String fieldName) {
         if (file == null || file.isEmpty()) {
             throw new RequiredFieldException(fieldName, BiDocumentValidator.class.getName(), "BIDOCUMENTVALIDATOR-001");
@@ -30,6 +36,17 @@ public class BiDocumentValidator {
         }
         if (file.getSize() > MAX_SIZE) {
             throw new FileSizeExceedLimitException(fieldName, BiDocumentValidator.class.getName(), (MAX_SIZE / 1024 / 1024), "BIDOCUMENTVALIDATOR-002");
+        }
+    }
+
+    private static void validateFileForResubmit(MultipartFile file, String fieldName) {
+        if(file != null && !file.isEmpty()){
+            if (!ALLOWED_TYPES.contains(file.getContentType())) {
+                throw new UnsupportedFileTypeException(fieldName, BiDocumentValidator.class.getName(), ALLOWED_TYPES.toString(), "BIDOCUMENTVALIDATOR-002");
+            }
+            if (file.getSize() > MAX_SIZE) {
+                throw new FileSizeExceedLimitException(fieldName, BiDocumentValidator.class.getName(), (MAX_SIZE / 1024 / 1024), "BIDOCUMENTVALIDATOR-002");
+            }
         }
     }
 }

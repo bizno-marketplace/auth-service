@@ -17,4 +17,6 @@ public interface UserGateway {
     Optional<User> findByNuit(String nuit);
 
     Optional<User> findSellerById(UUID id);
+
+    void update(User user);
 }

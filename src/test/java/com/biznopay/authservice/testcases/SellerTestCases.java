@@ -15,6 +15,7 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.http.HttpStatus;
 

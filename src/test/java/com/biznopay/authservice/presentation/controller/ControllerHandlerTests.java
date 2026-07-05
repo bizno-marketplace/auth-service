@@ -4,7 +4,6 @@ import com.biznopay.authservice._config.ContainerBase;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.UnexpectedException;
-import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.infra.gateway.UserGatewayImpl;
 import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.usecase.sa.RegisterSA;
