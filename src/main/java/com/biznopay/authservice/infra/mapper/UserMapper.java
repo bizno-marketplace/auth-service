@@ -11,6 +11,7 @@ import com.biznopay.authservice.usecase.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.sa.RegisterSAInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -139,6 +140,16 @@ public class UserMapper {
                 request.password(), request.storeName(), request.storeDescription(), request.nuit(), address, biDocument);
     }
 
+    public static ResubmitSellerInput toResubmitSellerInput(ResubmitSellerRequest request, MultipartFile biFrontPhoto, MultipartFile biBackPhoto) throws IOException {
+        byte[] frontPhotoBytes = biFrontPhoto.getBytes();
+        String frontPhotoExt = biFrontPhoto.getOriginalFilename().split("\\.")[1];
+        byte[] backPhotoBytes = biBackPhoto.getBytes();
+        String backPhotoExt = biBackPhoto.getOriginalFilename().split("\\.")[1];
+        BiDocumentRequest biDocument = new BiDocumentRequest(frontPhotoBytes, frontPhotoExt, backPhotoBytes, backPhotoExt);
+        Address address = toAddress(request.storeAddress());
+        return new ResubmitSellerInput(request.firstName(), request.lastName(), request.email(), request.phoneNumber(),
+                request.storeName(), request.storeDescription(), request.nuit(), address, biDocument);
+    }
     public static AddressJpaEntity toAddressJpaEntity(Address address) {
         return new AddressJpaEntity(address.getId(), address.getLatitude(), address.getLongitude(), address.getStreet(), address.getNeighbourhood(),
                 address.getCity(), address.getProvince(), address.getCountry());

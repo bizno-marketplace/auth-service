@@ -3,6 +3,7 @@ package com.biznopay.authservice.infra.config;
 import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.ApproveSellerPolicy;
 import com.biznopay.authservice.domain.policy.RejectSellerPolicy;
+import com.biznopay.authservice.domain.policy.ResubmitSellerPolicy;
 import com.biznopay.authservice.usecase.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.account.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyer;
@@ -10,6 +11,7 @@ import com.biznopay.authservice.usecase.sa.RegisterSA;
 import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
 import com.biznopay.authservice.usecase.seller.register.RegisterSeller;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSeller;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSeller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,13 +55,18 @@ public class UserConfig {
     }
 
     @Bean
+    public ApproveSeller approveSeller(ApproveSellerPolicy approveSellerPolicy) {
+        return new ApproveSeller(approveSellerPolicy, authenticationGateway, userGateway);
+    }
+
+    @Bean
     public RejectSeller rejectSeller(RejectSellerPolicy rejectSellerPolicy) {
         return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway);
     }
 
     @Bean
-    public ApproveSeller approveSeller(ApproveSellerPolicy approveSellerPolicy) {
-        return new ApproveSeller(approveSellerPolicy, authenticationGateway, userGateway);
+    public ResubmitSeller resubmitSeller(ResubmitSellerPolicy resubmitSellerPolicy){
+        return new ResubmitSeller(transactionGateway,resubmitSellerPolicy,authenticationGateway,userGateway,storageGateway,activationTokenGateway,domainEventGateway);
     }
 
     @Bean
@@ -71,4 +78,10 @@ public class UserConfig {
     public RejectSellerPolicy rejectSellerPolicy() {
         return new RejectSellerPolicy();
     }
+
+    @Bean
+    public ResubmitSellerPolicy resubmitSellerPolicy (){
+        return new ResubmitSellerPolicy();
+    }
 }
+

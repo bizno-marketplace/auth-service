@@ -61,4 +61,9 @@ public class UserGatewayImpl implements UserGateway {
     public UserDetails findByEmailUserDetails(String email) {
         return this.userJpaRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
     }
+
+    @Override
+    public void update(User user) {
+        save(user);
+    }
 }

@@ -72,6 +72,11 @@ public abstract class User {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void setToPending() {
+        this.status = UserStatus.PENDING;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void setToAwaitingForApproval() {
         this.status = UserStatus.AWAITING_APPROVAL;
         this.updatedAt = LocalDateTime.now();

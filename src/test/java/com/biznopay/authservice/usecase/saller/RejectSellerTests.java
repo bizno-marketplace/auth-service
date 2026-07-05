@@ -45,21 +45,21 @@ public class RejectSellerTests {
     @Mock
     SellerRejectionGateway sellerRejectionGateway;
 
-    public RejectSeller setUp(){
-        return new RejectSeller(transactionGateway,authenticationGateway,rejectSellerPolicy,userGateway,sellerRejectionGateway);
+    public RejectSeller setUp() {
+        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway);
     }
 
     @Test
     @DisplayName("Should throw InvalidFieldException when seller id is invalid")
-    public void shouldThrowInvalidFieldExceptionWhenSellerIdIsInvalid(){
-        RejectSellerInput input =  new RejectSellerInput("any_seller_id","any_reason");
+    public void shouldThrowInvalidFieldExceptionWhenSellerIdIsInvalid() {
+        RejectSellerInput input = new RejectSellerInput("any_seller_id", "any_reason");
 
-        User sa =  VALID_SUPER_ADMIN_NEW;
+        User sa = VALID_SUPER_ADMIN_NEW;
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
-        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa, "REJECT_SELLER-001");
 
-        RejectSeller rejectSeller =  setUp();
+        RejectSeller rejectSeller = setUp();
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(InvalidFieldException.class)
                 .hasMessage("Invalid User Id on REJECT_SELLER");
@@ -68,15 +68,15 @@ public class RejectSellerTests {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("Should throw RequiredFieldException if reason is null or empty")
-    public void shouldThrowRequiredFieldExceptionIfReasonIsNullOrEmpty(String reason){
-        RejectSellerInput input =  new RejectSellerInput(UUID.randomUUID().toString(),reason);
+    public void shouldThrowRequiredFieldExceptionIfReasonIsNullOrEmpty(String reason) {
+        RejectSellerInput input = new RejectSellerInput(UUID.randomUUID().toString(), reason);
 
-        User sa =  VALID_SUPER_ADMIN_NEW;
+        User sa = VALID_SUPER_ADMIN_NEW;
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
-        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa, "REJECT_SELLER-001");
 
-        RejectSeller rejectSeller =  setUp();
+        RejectSeller rejectSeller = setUp();
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(RequiredFieldException.class)
                 .hasMessage("Reason for Rejection is required");
@@ -84,17 +84,17 @@ public class RejectSellerTests {
 
     @Test
     @DisplayName("Should throw ResourceNotFoundException when seller does not exist")
-    public void shouldThrowResourceNotFoundExceptionWhenSellerDoesNotExist(){
+    public void shouldThrowResourceNotFoundExceptionWhenSellerDoesNotExist() {
         UUID sellerId = UUID.randomUUID();
         String rawSellerId = sellerId.toString();
-        RejectSellerInput input =  new RejectSellerInput(rawSellerId,"any_reason");
+        RejectSellerInput input = new RejectSellerInput(rawSellerId, "any_reason");
 
-        User sa =  VALID_SUPER_ADMIN_NEW;
+        User sa = VALID_SUPER_ADMIN_NEW;
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
-        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa, "REJECT_SELLER-001");
         Mockito.when(userGateway.findSellerById(sellerId)).thenReturn(Optional.empty());
 
-        RejectSeller rejectSeller =  setUp();
+        RejectSeller rejectSeller = setUp();
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Seller not found");
@@ -104,20 +104,20 @@ public class RejectSellerTests {
 
     @Test
     @DisplayName("Should throw InvalidSellerAccountStatus when account is not in AWAITING_APPROVAL")
-    public void shouldThrowInvalidSellerAccountStatusWhenAccountIsNotInAwaitingApproval(){
-        Seller seller =  VALID_SELLER;
+    public void shouldThrowInvalidSellerAccountStatusWhenAccountIsNotInAwaitingApproval() {
+        Seller seller = VALID_SELLER;
 
         UUID sellerId = seller.getId().value();
         String rawSellerId = sellerId.toString();
-        RejectSellerInput input =  new RejectSellerInput(rawSellerId,"any_reason");
+        RejectSellerInput input = new RejectSellerInput(rawSellerId, "any_reason");
 
-        User sa =  VALID_SUPER_ADMIN_NEW;
+        User sa = VALID_SUPER_ADMIN_NEW;
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
-        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa, "REJECT_SELLER-001");
         Mockito.when(userGateway.findSellerById(sellerId)).thenReturn(Optional.of(seller));
 
-        RejectSeller rejectSeller =  setUp();
+        RejectSeller rejectSeller = setUp();
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(InvalidSellerAccountStatus.class)
                 .hasMessage("Can only perform this action to Sellers with status AWAITING_APPROVAL");
@@ -125,67 +125,67 @@ public class RejectSellerTests {
 
     @Test
     @DisplayName("Should save seller rejection and block seller if rejection count reaches 3 attempts")
-    public void shouldSaveSellerRejectionAndBlockSellerIfRejectionCountReaches3Attempts(){
-        Seller seller =  VALID_SELLER;
+    public void shouldSaveSellerRejectionAndBlockSellerIfRejectionCountReaches3Attempts() {
+        Seller seller = VALID_SELLER;
         seller.setToAwaitingForApproval();
 
         UUID sellerId = seller.getId().value();
         String rawSellerId = sellerId.toString();
         String reasonForRejection = "any_reason";
 
-        RejectSellerInput input =  new RejectSellerInput(rawSellerId,reasonForRejection);
-        SellerRejection sellerRejection =  SellerRejection.of(sellerId,"any_reason");
+        RejectSellerInput input = new RejectSellerInput(rawSellerId, reasonForRejection);
+        SellerRejection sellerRejection = SellerRejection.of(sellerId, "any_reason");
         sellerRejection.increaseNumberOfAttempts(reasonForRejection);
         sellerRejection.increaseNumberOfAttempts(reasonForRejection);
         sellerRejection.increaseNumberOfAttempts(reasonForRejection);
 
-        User sa =  VALID_SUPER_ADMIN_NEW;
+        User sa = VALID_SUPER_ADMIN_NEW;
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
-        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa, "REJECT_SELLER-001");
         Mockito.when(userGateway.findSellerById(sellerId)).thenReturn(Optional.of(seller));
         Mockito.when(sellerRejectionGateway.findByUserId(sellerId)).thenReturn(Optional.of(sellerRejection));
 
-        RejectSeller rejectSeller =  setUp();
+        RejectSeller rejectSeller = setUp();
         rejectSeller.execute(input);
 
-        Mockito.verify(authenticationGateway,Mockito.times(1)).loggedUser();
-        Mockito.verify(rejectSellerPolicy,Mockito.times(1)).enforce(sa,"REJECT_SELLER-001");
-        Mockito.verify(userGateway,Mockito.times(1)).findSellerById(sellerId);
-        Mockito.verify(sellerRejectionGateway,Mockito.times(1)).findByUserId(sellerId);
-        Mockito.verify(sellerRejectionGateway,Mockito.times(1)).save(sellerRejection);
-        Mockito.verify(userGateway,Mockito.times(1)).save(seller);
+        Mockito.verify(authenticationGateway, Mockito.times(1)).loggedUser();
+        Mockito.verify(rejectSellerPolicy, Mockito.times(1)).enforce(sa, "REJECT_SELLER-001");
+        Mockito.verify(userGateway, Mockito.times(1)).findSellerById(sellerId);
+        Mockito.verify(sellerRejectionGateway, Mockito.times(1)).findByUserId(sellerId);
+        Mockito.verify(sellerRejectionGateway, Mockito.times(1)).save(sellerRejection);
+        Mockito.verify(userGateway, Mockito.times(1)).save(seller);
     }
 
     @Test
     @DisplayName("Should save seller rejection and reject seller if rejection count does not reach 3 attempts")
-    public void shouldSaveSellerRejectionAndRejectSellerIfRejectionCountDoesNotReach3Attempts(){
-        Seller seller =  VALID_SELLER;
+    public void shouldSaveSellerRejectionAndRejectSellerIfRejectionCountDoesNotReach3Attempts() {
+        Seller seller = VALID_SELLER;
         seller.setToAwaitingForApproval();
 
         UUID sellerId = seller.getId().value();
         String rawSellerId = sellerId.toString();
         String reasonForRejection = "any_reason";
 
-        RejectSellerInput input =  new RejectSellerInput(rawSellerId,reasonForRejection);
-        SellerRejection sellerRejection =  SellerRejection.of(sellerId,"any_reason");
+        RejectSellerInput input = new RejectSellerInput(rawSellerId, reasonForRejection);
+        SellerRejection sellerRejection = SellerRejection.of(sellerId, "any_reason");
 
-        User sa =  VALID_SUPER_ADMIN_NEW;
+        User sa = VALID_SUPER_ADMIN_NEW;
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(sa);
-        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa,"REJECT_SELLER-001");
+        Mockito.doNothing().when(rejectSellerPolicy).enforce(sa, "REJECT_SELLER-001");
         Mockito.when(userGateway.findSellerById(sellerId)).thenReturn(Optional.of(seller));
         Mockito.when(sellerRejectionGateway.findByUserId(sellerId)).thenReturn(Optional.of(sellerRejection));
 
-        RejectSeller rejectSeller =  setUp();
+        RejectSeller rejectSeller = setUp();
         rejectSeller.execute(input);
 
-        Mockito.verify(authenticationGateway,Mockito.times(1)).loggedUser();
-        Mockito.verify(rejectSellerPolicy,Mockito.times(1)).enforce(sa,"REJECT_SELLER-001");
-        Mockito.verify(userGateway,Mockito.times(1)).findSellerById(sellerId);
-        Mockito.verify(sellerRejectionGateway,Mockito.times(1)).findByUserId(sellerId);
-        Mockito.verify(sellerRejectionGateway,Mockito.times(1)).save(sellerRejection);
-        Mockito.verify(userGateway,Mockito.times(1)).save(seller);
+        Mockito.verify(authenticationGateway, Mockito.times(1)).loggedUser();
+        Mockito.verify(rejectSellerPolicy, Mockito.times(1)).enforce(sa, "REJECT_SELLER-001");
+        Mockito.verify(userGateway, Mockito.times(1)).findSellerById(sellerId);
+        Mockito.verify(sellerRejectionGateway, Mockito.times(1)).findByUserId(sellerId);
+        Mockito.verify(sellerRejectionGateway, Mockito.times(1)).save(sellerRejection);
+        Mockito.verify(userGateway, Mockito.times(1)).save(seller);
     }
 
 }

@@ -5,6 +5,7 @@ import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.presentation.dto.RejectSellerRequest;
+import com.biznopay.authservice.presentation.dto.ResubmitSellerRequest;
 import com.biznopay.authservice.presentation.validator.BiDocumentValidator;
 import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
 import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSellerInput;
@@ -13,6 +14,9 @@ import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSeller;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSeller;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerOutput;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +35,7 @@ public class SellerController {
     private final RegisterSeller registerSeller;
     private final ApproveSeller approveSeller;
     private final RejectSeller rejectSeller;
+    private  final ResubmitSeller resubmitSeller;
 
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Object>> register(
@@ -56,5 +61,17 @@ public class SellerController {
         RejectSellerInput input = UserMapper.toRejectSellerInput(sellerId, request);
         rejectSeller.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));
+    }
+
+    @PatchMapping("/resubmit")
+    public ResponseEntity<ApiResponse<Object>> resubmit(
+            @RequestPart("data") ResubmitSellerRequest request,
+            @RequestPart(value = "biFrontPhoto", required = false) MultipartFile biFrontPhoto,
+            @RequestPart(value = "biBackPhoto", required = false) MultipartFile biBackPhoto
+    ) throws IOException {
+        BiDocumentValidator.validateForResubmit(biFrontPhoto, biBackPhoto);
+        ResubmitSellerInput input = UserMapper.toResubmitSellerInput(request, biFrontPhoto, biBackPhoto);
+        ResubmitSellerOutput output = resubmitSeller.execute(input);
+        return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
     }
 }

@@ -21,7 +21,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.UUID;
 
 import static com.biznopay.authservice.infra.gateway.DomainEventGatewayImpl.EVENT_TYPE_USER_REGISTERED;
-import static com.biznopay.authservice.infra.gateway.DomainEventGatewayImpl.SUBJECT_USER_REGISTERED;
+import static com.biznopay.authservice.infra.gateway.DomainEventGatewayImpl.SUBJECT;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,7 @@ public class DomainEventGatewayImplTest {
 
         String payload = "payload";
         Mockito.when(objectMapper.writeValueAsString(Mockito.any(UserRegisteredPayload.class))).thenReturn(payload);
-        OutboxEvent outboxEvent = OutboxEvent.create(event.getUserId().value(), EVENT_TYPE_USER_REGISTERED, SUBJECT_USER_REGISTERED, payload);
+        OutboxEvent outboxEvent = OutboxEvent.create(event.getUserId().value(), EVENT_TYPE_USER_REGISTERED, SUBJECT, payload);
         OutboxEventJpaEntity entity = OutboxEventMapper.toJpaEntity(outboxEvent);
 
         Mockito.when(outboxEventJpaRepository.save(Mockito.any(OutboxEventJpaEntity.class))).thenReturn(entity);
