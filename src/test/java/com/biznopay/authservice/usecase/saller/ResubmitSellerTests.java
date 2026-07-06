@@ -26,8 +26,6 @@ import static com.biznopay.authservice.testcases.SellerTestCases.*;
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class ResubmitSellerTests {
-    private TransactionGateway transactionGateway =  new TransactionGatewayImpl();
-    private ResubmitSellerPolicy resubmitSellerPolicy = new ResubmitSellerPolicy();
     @Mock
     AuthenticationGateway authenticationGateway;
     @Mock
@@ -38,22 +36,23 @@ public class ResubmitSellerTests {
     ActivationTokenGateway activationTokenGateway;
     @Mock
     DomainEventGateway domainEventGateway;
+    private TransactionGateway transactionGateway = new TransactionGatewayImpl();
+    private ResubmitSellerPolicy resubmitSellerPolicy = new ResubmitSellerPolicy();
 
-
-    private ResubmitSeller setUp(){
-        return new ResubmitSeller(transactionGateway,resubmitSellerPolicy,authenticationGateway,userGateway,
-                storageGateway,activationTokenGateway,domainEventGateway);
+    private ResubmitSeller setUp() {
+        return new ResubmitSeller(transactionGateway, resubmitSellerPolicy, authenticationGateway, userGateway,
+                storageGateway, activationTokenGateway, domainEventGateway);
     }
 
     @Test
     @DisplayName("Should throw AccessDeniedException if requesting user is not seller")
-    public  void shouldThrowAccessDeniedExceptionIRequestingUserIsNotSeller(){
+    public void shouldThrowAccessDeniedExceptionIRequestingUserIsNotSeller() {
         User buyer = VALID_BUYER;
         ResubmitSellerInput input = new ResubmitSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE,
                 VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST);
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(buyer);
-        ResubmitSeller resubmitSeller =  setUp();
+        ResubmitSeller resubmitSeller = setUp();
         Assertions.assertThatThrownBy(() -> resubmitSeller.execute(input))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("Access denied");
@@ -61,7 +60,7 @@ public class ResubmitSellerTests {
 
     @Test
     @DisplayName("Should throw AccessDeniedException if requesting seller is not rejected")
-    public void shouldThrowAccessDeniedExceptionIfRequestingSellerIsNotRejected(){
+    public void shouldThrowAccessDeniedExceptionIfRequestingSellerIsNotRejected() {
         User seller = VALID_SELLER;
         seller.setToAwaitingForApproval();
 
@@ -69,7 +68,7 @@ public class ResubmitSellerTests {
                 VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST);
 
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(seller);
-        ResubmitSeller resubmitSeller =  setUp();
+        ResubmitSeller resubmitSeller = setUp();
         Assertions.assertThatThrownBy(() -> resubmitSeller.execute(input))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessage("Access denied");

@@ -7,27 +7,39 @@ import io.nats.client.Connection;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class OutboxPoller {
+    public static final String LOCK_KEY = "outbox-poller-lock";
+    public static final long LOCK_TTL_MS = 4000;
     private static final Logger log = LoggerFactory.getLogger(OutboxPoller.class);
-
     private final OutboxEventJpaRepository repository;
     private final Connection natsConnection;
+    private final StringRedisTemplate redisTemplate;
 
     @Scheduled(fixedDelayString = "${outbox.poller.interval-ms:5000}")
     public void poll() {
-        List<OutboxEventJpaEntity> pending = repository.findByStatus(OutboxStatus.PENDING);
+        Boolean acquired = redisTemplate.opsForValue()
+                .setIfAbsent(LOCK_KEY, "locked", Duration.ofMillis(LOCK_TTL_MS));
 
-        for (OutboxEventJpaEntity entity : pending) {
-            OutboxEvent event = OutboxEventMapper.toDomain(entity);
-            process(event);
-            repository.save(OutboxEventMapper.toJpaEntity(event));
+        if (Boolean.FALSE.equals(acquired)) return;
+
+        try {
+            List<OutboxEventJpaEntity> pending = repository.findByStatus(OutboxStatus.PENDING);
+            for (OutboxEventJpaEntity entity : pending) {
+                OutboxEvent event = OutboxEventMapper.toDomain(entity);
+                process(event);
+                repository.save(OutboxEventMapper.toJpaEntity(event));
+            }
+        } finally {
+            redisTemplate.delete(LOCK_KEY);
         }
     }
 

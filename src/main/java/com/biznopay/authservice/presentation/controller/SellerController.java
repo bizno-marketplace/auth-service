@@ -35,7 +35,7 @@ public class SellerController {
     private final RegisterSeller registerSeller;
     private final ApproveSeller approveSeller;
     private final RejectSeller rejectSeller;
-    private  final ResubmitSeller resubmitSeller;
+    private final ResubmitSeller resubmitSeller;
 
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<Object>> register(

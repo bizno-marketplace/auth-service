@@ -16,17 +16,23 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaReposito
 import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.URI;
 import java.time.LocalDateTime;
 
 import static com.biznopay.authservice.testcases.ActivationTokenTestCases.VALID_ACTIVATION_TOKEN_JPA;
@@ -41,7 +47,7 @@ public class AccountControllerTests extends ContainerBase {
     @LocalServerPort
     private int port;
 
-    private TestRestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -54,7 +60,17 @@ public class AccountControllerTests extends ContainerBase {
 
     @BeforeEach
     void setUp() {
-        restTemplate = new TestRestTemplate();
+        restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                return false;
+            }
+
+            @Override
+            public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
+            }
+        });
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();

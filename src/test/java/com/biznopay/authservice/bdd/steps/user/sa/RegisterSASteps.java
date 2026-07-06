@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd.steps.sa;
+package com.biznopay.authservice.bdd.steps.user.sa;
 
 import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
