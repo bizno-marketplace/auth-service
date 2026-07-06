@@ -67,8 +67,8 @@ public class UserConfig {
     }
 
     @Bean
-    public ResubmitSeller resubmitSeller(ResubmitSellerPolicy resubmitSellerPolicy){
-        return new ResubmitSeller(transactionGateway,resubmitSellerPolicy,authenticationGateway,userGateway,storageGateway,activationTokenGateway,domainEventGateway);
+    public ResubmitSeller resubmitSeller(ResubmitSellerPolicy resubmitSellerPolicy) {
+        return new ResubmitSeller(transactionGateway, resubmitSellerPolicy, authenticationGateway, userGateway, storageGateway, activationTokenGateway, domainEventGateway);
     }
 
     @Bean
@@ -82,7 +82,7 @@ public class UserConfig {
     }
 
     @Bean
-    public ResubmitSellerPolicy resubmitSellerPolicy (){
+    public ResubmitSellerPolicy resubmitSellerPolicy() {
         return new ResubmitSellerPolicy();
     }
 

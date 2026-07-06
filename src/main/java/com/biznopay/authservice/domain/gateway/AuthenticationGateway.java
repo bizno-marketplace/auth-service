@@ -6,11 +6,18 @@ import java.security.Key;
 
 public interface AuthenticationGateway {
     User loggedUser();
+
     String extractEmail(String token);
+
     boolean isTokenValid(String token, User user);
+
     String extractUserId(String token);
+
     String extractRole(String token);
+
     String extractStatus(String token);
+
     boolean isTokenSignatureValid(String token);
+
     Key getSignKey();
 }

@@ -58,6 +58,7 @@ public class JwtHelper {
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
+
     public String getUsername(String token) {
         return this.extractClaim(token, Claims::getSubject);
     }

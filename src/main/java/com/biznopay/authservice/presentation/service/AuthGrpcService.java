@@ -28,14 +28,14 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void getUserProfile(GetUserProfileRequest request, StreamObserver<GetUserProfileResponse> responseObserver) {
-        GetUserProfileInput input =  new GetUserProfileInput(request.getUserId());
+        GetUserProfileInput input = new GetUserProfileInput(request.getUserId());
         GetUserProfileOutput output = getUserProfile.execute(input);
         GetUserProfileResponse response = buildGetUserProfileResponse(output);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
-    private GetUserProfileResponse buildGetUserProfileResponse(GetUserProfileOutput output){
+    private GetUserProfileResponse buildGetUserProfileResponse(GetUserProfileOutput output) {
         return GetUserProfileResponse.newBuilder()
                 .setUserId(output.userId())
                 .setEmail(output.email())

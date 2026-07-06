@@ -16,7 +16,6 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaReposito
 import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -71,7 +70,8 @@ public class AccountControllerTests extends ContainerBase {
             @Override
             public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
             }
-        });        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+        });
+        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_activation_tokens RESTART IDENTITY CASCADE");
         redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
     }

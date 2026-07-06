@@ -1,15 +1,12 @@
 package com.biznopay.authservice.bdd.steps.auth;
 
 import com.biznopay.authservice.bdd._config.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;
-import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.grpc.AuthServiceGrpc;
 import com.biznopay.authservice.grpc.ValidateTokenRequest;
 import com.biznopay.authservice.grpc.ValidateTokenResponse;
 import com.biznopay.authservice.infra.helper.JwtHelper;
-import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.AddressJpaRepository;
@@ -77,9 +74,9 @@ public class ValidateTokenSteps {
     }
 
     @Given("an active user exists in the database")
-    public void anActiveUserExistsInTheDatabase(){
+    public void anActiveUserExistsInTheDatabase() {
         UUID userId = UserId.of(UUID.randomUUID()).value();
-        UserJpaEntity entity =  new SuperAdminJpaEntity();
+        UserJpaEntity entity = new SuperAdminJpaEntity();
         entity.setId(userId);
         entity.setFirstName(VALID_FIRST_NAME);
         entity.setLastName(VALID_LAST_NAME);
@@ -95,17 +92,17 @@ public class ValidateTokenSteps {
     }
 
     @And("a valid JWT token is generated for that user")
-    public void aValidJWTTokenIsGeneratedForThatUser(){
+    public void aValidJWTTokenIsGeneratedForThatUser() {
         UUID userId = UUID.fromString(scenarioContext.getHeadersMap().get("userId"));
         Optional<UserJpaEntity> entityOpt = userJpaRepository.findById(userId);
         Assertions.assertTrue(entityOpt.isPresent());
-        UserJpaEntity entity =  entityOpt.get();
-        String token = jwtHelper.generate(entity.getPassword(),entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        UserJpaEntity entity = entityOpt.get();
+        String token = jwtHelper.generate(entity.getPassword(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
         scenarioContext.getHeadersMap().put("token", token);
     }
 
     @When("the ValidateToken gRPC method is called with the token")
-    public void theValidateTokenGRPCMethodIsCalledWithTheToken(){
+    public void theValidateTokenGRPCMethodIsCalledWithTheToken() {
         String token = scenarioContext.getHeadersMap().get("token");
 
         ManagedChannel channel = ManagedChannelBuilder
@@ -125,13 +122,13 @@ public class ValidateTokenSteps {
     }
 
     @Then("the gRPC response valid field should be {string}")
-    public void theGRPCResponseValidFieldShouldBeTrue(String status){
+    public void theGRPCResponseValidFieldShouldBeTrue(String status) {
         String isValid = scenarioContext.getHeadersMap().get("grpcValid");
         Assertions.assertEquals(status, isValid);
     }
 
     @When("the ValidateToken gRPC method is called with an empty token")
-    public void theValidateTokenGRPCMethodIsCalledWithAnEmptyToken(){
+    public void theValidateTokenGRPCMethodIsCalledWithAnEmptyToken() {
         String token = "";
 
         ManagedChannel channel = ManagedChannelBuilder
@@ -151,7 +148,7 @@ public class ValidateTokenSteps {
     }
 
     @When("the ValidateToken gRPC method is called with an invalid token")
-    public void theValidateTokenGRPCMethodIsCalledWithAnInvalidToken(){
+    public void theValidateTokenGRPCMethodIsCalledWithAnInvalidToken() {
         String token = UUID.randomUUID().toString();
 
         ManagedChannel channel = ManagedChannelBuilder

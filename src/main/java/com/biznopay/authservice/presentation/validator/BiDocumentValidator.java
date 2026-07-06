@@ -40,7 +40,7 @@ public class BiDocumentValidator {
     }
 
     private static void validateFileForResubmit(MultipartFile file, String fieldName) {
-        if(file != null && !file.isEmpty()){
+        if (file != null && !file.isEmpty()) {
             if (!ALLOWED_TYPES.contains(file.getContentType())) {
                 throw new UnsupportedFileTypeException(fieldName, BiDocumentValidator.class.getName(), ALLOWED_TYPES.toString(), "BIDOCUMENTVALIDATOR-002");
             }

@@ -17,7 +17,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -74,7 +73,8 @@ public class SellerControllerTests extends ContainerBase {
             @Override
             public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
             }
-        });        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
+        });
+        jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_addresses RESTART IDENTITY CASCADE");
 
     }

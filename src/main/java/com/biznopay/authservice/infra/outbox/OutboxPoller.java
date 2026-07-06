@@ -17,13 +17,12 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class OutboxPoller {
+    public static final String LOCK_KEY = "outbox-poller-lock";
+    public static final long LOCK_TTL_MS = 4000;
     private static final Logger log = LoggerFactory.getLogger(OutboxPoller.class);
-
     private final OutboxEventJpaRepository repository;
     private final Connection natsConnection;
     private final StringRedisTemplate redisTemplate;
-    public static final String LOCK_KEY = "outbox-poller-lock";
-    public static final long LOCK_TTL_MS = 4000;
 
     @Scheduled(fixedDelayString = "${outbox.poller.interval-ms:5000}")
     public void poll() {

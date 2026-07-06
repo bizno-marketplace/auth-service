@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -41,7 +40,7 @@ public class BuyerControllerTests extends ContainerBase {
     @LocalServerPort
     private int port;
 
-    private RestTemplate  restTemplate;
+    private RestTemplate restTemplate;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

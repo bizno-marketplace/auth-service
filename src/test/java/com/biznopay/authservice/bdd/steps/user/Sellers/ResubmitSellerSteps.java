@@ -1,13 +1,9 @@
 package com.biznopay.authservice.bdd.steps.user.Sellers;
 
 import com.biznopay.authservice.bdd._config.ScenarioContext;
-import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.entity.user.UserId;
-import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.helper.JwtHelper;
-import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SellerRejectionJpaRepository;
@@ -34,8 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.biznopay.authservice.testcases.SellerTestCases.*;
-
 public class ResubmitSellerSteps {
     @Autowired
     private ScenarioContext scenarioContext;
@@ -60,6 +54,7 @@ public class ResubmitSellerSteps {
             public boolean hasError(ClientHttpResponse response) throws IOException {
                 return false;
             }
+
             @Override
             public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
             }
@@ -76,7 +71,7 @@ public class ResubmitSellerSteps {
         Optional<UserJpaEntity> entityOpt = userJpaRepository.findById(sellerId);
         Assertions.assertTrue(entityOpt.isPresent());
         UserJpaEntity entity = entityOpt.get();
-        String token = jwtHelper.generate(entity.getPassword(),entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generate(entity.getPassword(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
         scenarioContext.getHeadersMap().put("token", token);
     }
 

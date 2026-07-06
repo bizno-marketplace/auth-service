@@ -36,7 +36,7 @@ public class AuthenticationGatewayImpl implements AuthenticationGateway {
 
     @Override
     public boolean isTokenValid(String token, User user) {
-        return jwtHelper.isValid(token,user);
+        return jwtHelper.isValid(token, user);
     }
 
     @Override
