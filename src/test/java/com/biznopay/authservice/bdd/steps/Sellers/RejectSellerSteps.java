@@ -134,7 +134,4 @@ public class RejectSellerSteps {
         scenarioContext.getHeadersMap().put("sellerId", UUID.randomUUID().toString());
         scenarioContext.getHeadersMap().put("rejectionCount", String.valueOf(rejectionCount));
     }
-
-    //    SCENARIO:  Reject rejection if seller does not exist
-
 }
