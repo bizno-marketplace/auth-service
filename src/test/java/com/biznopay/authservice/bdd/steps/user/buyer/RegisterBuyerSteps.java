@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd.steps.buyer;
+package com.biznopay.authservice.bdd.steps.user.buyer;
 
 import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.enums.UserStatus;

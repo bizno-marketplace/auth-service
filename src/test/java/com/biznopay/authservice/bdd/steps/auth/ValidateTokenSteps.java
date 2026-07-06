@@ -10,7 +10,9 @@ import com.biznopay.authservice.grpc.ValidateTokenRequest;
 import com.biznopay.authservice.grpc.ValidateTokenResponse;
 import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.repository.AddressJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -34,17 +36,8 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.biznopay.authservice.testcases.SellerTestCases.*;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_ADDRESS_NEW;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_BI;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_CREATED_AT;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_EXPIRES_AT;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_NUIT;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_PASSWORD;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_PHONE;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_STORE_DESC;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_STORE_NAME;
-import static com.biznopay.authservice.testcases.SellerTestCases.VALID_UPDATED_AT;
+import static com.biznopay.authservice.testcases.SuperAdminTestCases.*;
+
 
 public class ValidateTokenSteps {
     @Autowired
@@ -55,6 +48,9 @@ public class ValidateTokenSteps {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
+
+    @Autowired
+    private AddressJpaRepository addressJpaRepository;
 
     @Autowired
     private JwtHelper jwtHelper;
@@ -82,9 +78,17 @@ public class ValidateTokenSteps {
 
     @Given("an active user exists in the database")
     public void anActiveUserExistsInTheDatabase(){
-        UserId VALID_USER_ID = UserId.of(UUID.randomUUID());
-        User seller = Seller.reconstruct(VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, UserStatus.AWAITING_APPROVAL, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_NEW, VALID_BI);
-        UserJpaEntity entity = UserMapper.toUserJpaEntity(seller);
+        UUID userId = UserId.of(UUID.randomUUID()).value();
+        UserJpaEntity entity =  new SuperAdminJpaEntity();
+        entity.setId(userId);
+        entity.setFirstName(VALID_FIRST_NAME);
+        entity.setLastName(VALID_LAST_NAME);
+        entity.setEmail(VALID_EMAIL);
+        entity.setPhone(VALID_PHONE);
+        entity.setPassword(VALID_PASSWORD);
+        entity.setExpiresAt(VALID_EXPIRES_AT);
+        entity.setCreatedAt(VALID_CREATED_AT);
+        entity.setUpdatedAt(VALID_UPDATED_AT);
         entity.setStatus(UserStatus.ACTIVE);
         entity = userJpaRepository.save(entity);
         scenarioContext.getHeadersMap().put("userId", entity.getId().toString());

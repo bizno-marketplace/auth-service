@@ -1,4 +1,4 @@
-package com.biznopay.authservice.bdd.steps.Sellers;
+package com.biznopay.authservice.bdd.steps.user.Sellers;
 
 import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.User;
