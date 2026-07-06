@@ -33,7 +33,6 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
         GetUserProfileResponse response = buildGetUserProfileResponse(output);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
-
     }
 
     private GetUserProfileResponse buildGetUserProfileResponse(GetUserProfileOutput output){

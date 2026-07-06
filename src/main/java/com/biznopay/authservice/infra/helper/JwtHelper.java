@@ -34,6 +34,14 @@ public class JwtHelper {
         return create(claims, user.getEmail());
     }
 
+    public String generate(String userId, String role, String status, String email) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("role", role);
+        claims.put("status", status);
+        return create(claims, email);
+    }
+
     public String create(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .setClaims(claims)

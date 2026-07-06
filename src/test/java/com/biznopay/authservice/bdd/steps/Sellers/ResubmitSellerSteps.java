@@ -76,7 +76,7 @@ public class ResubmitSellerSteps {
         Optional<UserJpaEntity> entityOpt = userJpaRepository.findById(sellerId);
         Assertions.assertTrue(entityOpt.isPresent());
         UserJpaEntity entity = entityOpt.get();
-        String token = jwtHelper.generate(entity.getEmail());
+        String token = jwtHelper.generate(entity.getPassword(),entity.getRole(), entity.getStatus().name(), entity.getEmail());
         scenarioContext.getHeadersMap().put("token", token);
     }
 

@@ -11,7 +11,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-
+  grpc:
+    server:
+      port: 0
+      reflection:
+        enabled: true
 eureka:
   client:
     enabled: false

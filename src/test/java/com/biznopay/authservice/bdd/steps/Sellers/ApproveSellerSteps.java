@@ -88,7 +88,8 @@ public class ApproveSellerSteps {
     public void iAmAuthenticatedAsASupperAdmin() {
         UserJpaEntity userJpa = UserMapper.toUserJpaEntity(SuperAdminTestCases.VALID_SUPER_ADMIN);
         userJpaRepository.save(userJpa);
-        String authToken = jwtHelper.generate(userJpa.getEmail());
+        User user = UserMapper.toUserDomain(userJpa);
+        String authToken = jwtHelper.generate(user);
         scenarioContext.getHeadersMap().put("token", authToken);
     }
 
@@ -126,7 +127,7 @@ public class ApproveSellerSteps {
         buyer.setToAwaitingForApproval();
         UserJpaEntity userJpa = UserMapper.toUserJpaEntity(buyer);
         userJpaRepository.save(userJpa);
-        String authToken = jwtHelper.generate(userJpa.getEmail());
+        String authToken = jwtHelper.generate(buyer);
         scenarioContext.getHeadersMap().put("token", authToken);
     }
 }
