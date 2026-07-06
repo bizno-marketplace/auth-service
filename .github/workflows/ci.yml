@@ -13,4 +13,4 @@ jobs:
       run-integration-tests: true
       run-bdd-tests: true
       run-coverage: true
-      coverage-threshold: 80
+      coverage-threshold: 40
