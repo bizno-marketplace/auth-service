@@ -6,26 +6,20 @@ import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.gateway.*;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
 import static com.biznopay.authservice.domain.util.DomainFuncUtils.validatePassword;
 
+@RequiredArgsConstructor
 public class RegisterBuyer {
     private final TransactionGateway transactionGateway;
     private final UserGateway userGateway;
     private final EncoderGateway encoderGateway;
     private final DomainEventGateway domainEventGateway;
     private final ActivationTokenGateway activationTokenGateway;
-
-    public RegisterBuyer(TransactionGateway transactionGateway, UserGateway userGateway, EncoderGateway encoderGateway,
-                         DomainEventGateway domainEventGateway, ActivationTokenGateway activationTokenGateway) {
-        this.transactionGateway = transactionGateway;
-        this.userGateway = userGateway;
-        this.encoderGateway = encoderGateway;
-        this.domainEventGateway = domainEventGateway;
-        this.activationTokenGateway = activationTokenGateway;
-    }
+    private final MetricsGateway metricsGateway;
 
     public RegisterBuyerOutput execute(RegisterBuyerInput input) {
         return transactionGateway.execute(() -> {
@@ -39,6 +33,7 @@ public class RegisterBuyer {
             activationTokenGateway.save(token);
             UserRegistered event = UserRegistered.of(buyer.getId(), buyer.getEmail(), buyer.getFirstName(), token.getId());
             domainEventGateway.publish(event);
+            metricsGateway.incrementSellerRegistered();
             return new RegisterBuyerOutput("We've sent an activation link to provided email: " + input.email());
         });
     }

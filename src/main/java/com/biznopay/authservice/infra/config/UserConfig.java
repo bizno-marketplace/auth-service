@@ -30,6 +30,7 @@ public class UserConfig {
     private final ActivationTokenGateway activationTokenGateway;
     private final StorageGateway storageGateway;
     private final SellerRejectionGateway sellerRejectionGateway;
+    private final MetricsGateway metricsGateway;
 
     @Bean
     public ConfirmAccount confirmAccount() {
@@ -48,27 +49,30 @@ public class UserConfig {
 
     @Bean
     public RegisterBuyer registerBuyer() {
-        return new RegisterBuyer(transactionGateway, userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
+        return new RegisterBuyer(transactionGateway, userGateway, encoderGateway,
+                domainEventGateway, activationTokenGateway, metricsGateway);
     }
 
     @Bean
     public RegisterSeller registerSeller() {
-        return new RegisterSeller(transactionGateway, userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
+        return new RegisterSeller(transactionGateway, userGateway, encoderGateway,
+                storageGateway, domainEventGateway, activationTokenGateway, metricsGateway);
     }
 
     @Bean
     public ApproveSeller approveSeller(ApproveSellerPolicy approveSellerPolicy) {
-        return new ApproveSeller(approveSellerPolicy, authenticationGateway, userGateway);
+        return new ApproveSeller(approveSellerPolicy, authenticationGateway, userGateway, metricsGateway);
     }
 
     @Bean
     public RejectSeller rejectSeller(RejectSellerPolicy rejectSellerPolicy) {
-        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway);
+        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway, metricsGateway);
     }
 
     @Bean
     public ResubmitSeller resubmitSeller(ResubmitSellerPolicy resubmitSellerPolicy) {
-        return new ResubmitSeller(transactionGateway, resubmitSellerPolicy, authenticationGateway, userGateway, storageGateway, activationTokenGateway, domainEventGateway);
+        return new ResubmitSeller(transactionGateway, resubmitSellerPolicy, authenticationGateway, userGateway,
+                storageGateway, activationTokenGateway, domainEventGateway, metricsGateway);
     }
 
     @Bean
@@ -88,7 +92,7 @@ public class UserConfig {
 
     @Bean
     public ValidateToken validateToken() {
-        return new ValidateToken(authenticationGateway);
+        return new ValidateToken(authenticationGateway, metricsGateway);
     }
 
     @Bean

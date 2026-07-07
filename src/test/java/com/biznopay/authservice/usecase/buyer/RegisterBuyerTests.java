@@ -7,7 +7,6 @@ import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.gateway.*;
-import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,14 +32,14 @@ public class RegisterBuyerTests {
     @Mock
     private EncoderGateway encoderGateway;
     @Mock
+    private ActivationTokenGateway activationTokenGateway;
+    @Mock
     private DomainEventGateway domainEventGateway;
     @Mock
-    private ActivationTokenGateway activationTokenGateway;
+    private MetricsGateway metricsGateway;
 
-    private RegisterBuyer setUp() {
-        TransactionGateway transactionGateway = new TransactionGatewayImpl();
-        return new RegisterBuyer(transactionGateway, userGateway, encoderGateway, domainEventGateway, activationTokenGateway);
-    }
+    @InjectMocks
+    private RegisterBuyer usecase;
 
     @Test
     @DisplayName("Should throw email EmailAlreadyInUseException when email is already in use")
@@ -47,8 +47,7 @@ public class RegisterBuyerTests {
         Buyer user = VALID_BUYER;
         RegisterBuyerInput input = VALID_REGISTER_BUYER_INPUT;
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.of(user));
-        RegisterBuyer registerBuyer = setUp();
-        Assertions.assertThrows(EmailAlreadyInUseException.class, () -> registerBuyer.execute(input));
+        Assertions.assertThrows(EmailAlreadyInUseException.class, () -> usecase.execute(input));
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
 
@@ -59,8 +58,7 @@ public class RegisterBuyerTests {
         RegisterBuyerInput input = registerBuyerInputWithInvalidPassword(password);
         ;
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
-        RegisterBuyer registerBuyer = setUp();
-        Assertions.assertThrows(RequiredFieldException.class, () -> registerBuyer.execute(input));
+        Assertions.assertThrows(RequiredFieldException.class, () -> usecase.execute(input));
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
 
@@ -70,8 +68,7 @@ public class RegisterBuyerTests {
     public void shouldThrowInvalidPasswordExceptionWhenPasswordDoesNotMatchWithEstablishedRules(String password) {
         RegisterBuyerInput input = registerBuyerInputWithInvalidPassword(password);
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.empty());
-        RegisterBuyer registerBuyer = setUp();
-        Assertions.assertThrows(InvalidPasswordException.class, () -> registerBuyer.execute(input));
+        Assertions.assertThrows(InvalidPasswordException.class, () -> usecase.execute(input));
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
     }
 
@@ -85,8 +82,9 @@ public class RegisterBuyerTests {
         Mockito.doNothing().when(userGateway).save(Mockito.any(Buyer.class));
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
         Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserRegistered.class));
-        RegisterBuyer registerBuyer = setUp();
-        RegisterBuyerOutput output = registerBuyer.execute(input);
+        Mockito.doNothing().when(metricsGateway).incrementBuyerRegistered();
+
+        RegisterBuyerOutput output = usecase.execute(input);
         Assertions.assertEquals("We've sent an activation link to provided email: " + input.email(), output.message());
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
         Mockito.verify(encoderGateway, Mockito.times(1)).encode(input.password());

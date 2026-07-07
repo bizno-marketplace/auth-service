@@ -8,31 +8,22 @@ import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.InvalidSellerAccountStatus;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
-import com.biznopay.authservice.domain.gateway.AuthenticationGateway;
-import com.biznopay.authservice.domain.gateway.SellerRejectionGateway;
-import com.biznopay.authservice.domain.gateway.TransactionGateway;
-import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.RejectSellerPolicy;
+import lombok.RequiredArgsConstructor;
 
 
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class RejectSeller {
     private final TransactionGateway transactionGateway;
     private final AuthenticationGateway authenticationGateway;
     private final RejectSellerPolicy policy;
     private final UserGateway userGateway;
     private final SellerRejectionGateway sellerRejectionGateway;
-
-    public RejectSeller(TransactionGateway transactionGateway, AuthenticationGateway authenticationGateway,
-                        RejectSellerPolicy policy, UserGateway userGateway, SellerRejectionGateway sellerRejectionGateway) {
-        this.transactionGateway = transactionGateway;
-        this.authenticationGateway = authenticationGateway;
-        this.policy = policy;
-        this.userGateway = userGateway;
-        this.sellerRejectionGateway = sellerRejectionGateway;
-    }
+    private final MetricsGateway metricsGateway;
 
     public void execute(RejectSellerInput input) {
         transactionGateway.execute(() -> {
@@ -46,6 +37,7 @@ public class RejectSeller {
                 throw new InvalidSellerAccountStatus(UserStatus.AWAITING_APPROVAL.name(), "REJECT_SELLER-005");
             SellerRejection sellerRejection = buildSellerRejection(user.getId(), reason);
             saveSellerRejectionAndUser(sellerRejection, reason, user);
+            metricsGateway.incrementSellerRejected(reason);
         });
     }
 

@@ -11,11 +11,13 @@ import com.biznopay.authservice.domain.util.DocumentPathGenerator;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
 import com.biznopay.authservice.domain.vo.StorageFile;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 public class ResubmitSeller {
     private final TransactionGateway transactionGateway;
     private final ResubmitSellerPolicy sellerPolicy;
@@ -24,25 +26,14 @@ public class ResubmitSeller {
     private final StorageGateway storageGateway;
     private final ActivationTokenGateway activationTokenGateway;
     private final DomainEventGateway domainEventGateway;
-
-
-    public ResubmitSeller(TransactionGateway transactionGateway, ResubmitSellerPolicy sellerPolicy,
-                          AuthenticationGateway authenticationGateway, UserGateway userGateway, StorageGateway storageGateway,
-                          ActivationTokenGateway activationTokenGateway, DomainEventGateway domainEventGateway) {
-        this.transactionGateway = transactionGateway;
-        this.sellerPolicy = sellerPolicy;
-        this.authenticationGateway = authenticationGateway;
-        this.userGateway = userGateway;
-        this.storageGateway = storageGateway;
-        this.activationTokenGateway = activationTokenGateway;
-        this.domainEventGateway = domainEventGateway;
-    }
+    private final MetricsGateway metricsGateway;
 
     public ResubmitSellerOutput execute(ResubmitSellerInput input) {
         return transactionGateway.execute(() -> {
             User requestingUser = authenticationGateway.loggedUser();
             sellerPolicy.enforce(requestingUser, "RESUBMIT_SELLER-001");
             User updatedSeller = updateSellerInfo(requestingUser, input);
+            metricsGateway.incrementSellerResubmitted();
             return resendEmailValidation(requestingUser, updatedSeller);
         });
     }

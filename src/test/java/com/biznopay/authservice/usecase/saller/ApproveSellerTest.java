@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,30 +28,30 @@ import static com.biznopay.authservice.testcases.SellerTestCases.VALID_SELLER;
 @ExtendWith(MockitoExtension.class)
 public class ApproveSellerTest {
     @Mock
-    ApproveSellerPolicy policy;
+    private ApproveSellerPolicy policy;
     @Mock
-    AuthenticationGateway authenticationGateway;
+    private AuthenticationGateway authenticationGateway;
     @Mock
     UserGateway userGateway;
+
+    @InjectMocks
+    private ApproveSeller usecase;
 
     @Test
     @DisplayName("Should throw InvalidFieldException when seller id is invalid")
     public void shouldThrowInvalidFieldExceptionWhenSellerIdIsInvalid() {
         ApproveSellerInput input = new ApproveSellerInput("any_saller_id");
-        ApproveSeller approveSeller = new ApproveSeller(policy, authenticationGateway, userGateway);
-        Assertions.assertThatThrownBy(() -> approveSeller.execute(input)).isInstanceOf(InvalidFieldException.class);
+        Assertions.assertThatThrownBy(() -> usecase.execute(input)).isInstanceOf(InvalidFieldException.class);
     }
 
     @Test
     @DisplayName("Should throw ResourceNotFoundException when authenticated user not found in database")
     public void shouldThrowResourceNotFoundExceptionWhenAuthenticatedUserNotFoundInDatabase() {
         ApproveSellerInput input = new ApproveSellerInput(UUID.randomUUID().toString());
-        ApproveSeller approveSeller = new ApproveSeller(policy, authenticationGateway, userGateway);
-
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(VALID_SELLER);
         Mockito.doNothing().when(policy).enforce(VALID_SELLER, "APPROVE_SELLER-001");
 
-        Assertions.assertThatThrownBy(() -> approveSeller.execute(input))
+        Assertions.assertThatThrownBy(() -> usecase.execute(input))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Seller not found");
     }
@@ -59,7 +60,6 @@ public class ApproveSellerTest {
     @DisplayName("Should throw InvalidSellerAccountStatus when seller account status is not AWAITING_APPROVAL")
     public void shouldThrowInvalidSellerAccountStatusWhenSellerAccountStatusIsNotAwaitingApproval() {
         ApproveSellerInput input = new ApproveSellerInput(UUID.randomUUID().toString());
-        ApproveSeller approveSeller = new ApproveSeller(policy, authenticationGateway, userGateway);
 
         User seller = VALID_SELLER;
         seller.activate();
@@ -68,7 +68,7 @@ public class ApproveSellerTest {
         Mockito.doNothing().when(policy).enforce(seller, "APPROVE_SELLER-001");
         Mockito.when(userGateway.findSellerById(Mockito.any())).thenReturn(Optional.of(seller));
 
-        Assertions.assertThatThrownBy(() -> approveSeller.execute(input))
+        Assertions.assertThatThrownBy(() -> usecase.execute(input))
                 .isInstanceOf(InvalidSellerAccountStatus.class)
                 .hasMessage("Can only perform this action to Sellers with status AWAITING_APPROVAL");
     }
@@ -77,7 +77,6 @@ public class ApproveSellerTest {
     @DisplayName("Should approve seller successfully")
     public void shouldApproveSellerSuccessfully() {
         ApproveSellerInput input = new ApproveSellerInput(UUID.randomUUID().toString());
-        ApproveSeller approveSeller = new ApproveSeller(policy, authenticationGateway, userGateway);
 
         User seller = VALID_SELLER;
         seller.setToAwaitingForApproval();
@@ -85,7 +84,7 @@ public class ApproveSellerTest {
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(seller);
         Mockito.doNothing().when(policy).enforce(seller, "APPROVE_SELLER-001");
         Mockito.when(userGateway.findSellerById(Mockito.any())).thenReturn(Optional.of(seller));
-        approveSeller.execute(input);
+        usecase.execute(input);
 
         Mockito.verify(authenticationGateway, Mockito.times(1)).loggedUser();
         Mockito.verify(policy, Mockito.times(1)).enforce(seller, "APPROVE_SELLER-001");
