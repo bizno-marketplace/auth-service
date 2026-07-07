@@ -33,7 +33,7 @@ public class RegisterBuyer {
             activationTokenGateway.save(token);
             UserRegistered event = UserRegistered.of(buyer.getId(), buyer.getEmail(), buyer.getFirstName(), token.getId());
             domainEventGateway.publish(event);
-            metricsGateway.incrementSellerRegistered();
+            metricsGateway.incrementBuyerRegistered();
             return new RegisterBuyerOutput("We've sent an activation link to provided email: " + input.email());
         });
     }

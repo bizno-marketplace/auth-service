@@ -2,12 +2,15 @@ app:
   secret-key: aHNoZ2Rqc2FmZGpnZmdzYXNmbGpzYWZhc2ZhYml6bm8yMDI2bWFya2V0cGxhY2U=
 server:
   port: 8081
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVER_URL:http://localhost:8761/eureka/}
 spring:
-
   application:
     name: auth-service
   config:
-    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8887}"
   cloud:
     config:
       fail-fast: false
@@ -16,3 +19,6 @@ spring:
       port: 9091
       reflection:
         enabled: true
+management:
+  server:
+    port: 9081
