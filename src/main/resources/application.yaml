@@ -22,3 +22,6 @@ spring:
 management:
   server:
     port: 9081
+
+loki:
+  url: ${LOKI_URL:http://localhost:3100}
