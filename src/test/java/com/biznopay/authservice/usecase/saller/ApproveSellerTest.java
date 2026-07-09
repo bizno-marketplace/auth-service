@@ -5,6 +5,7 @@ import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.InvalidSellerAccountStatus;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.AuthenticationGateway;
+import com.biznopay.authservice.domain.gateway.MetricsGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.domain.policy.ApproveSellerPolicy;
 import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
@@ -32,7 +33,10 @@ public class ApproveSellerTest {
     @Mock
     private AuthenticationGateway authenticationGateway;
     @Mock
-    UserGateway userGateway;
+    private UserGateway userGateway;
+
+    @Mock
+    private MetricsGateway metricsGateway;
 
     @InjectMocks
     private ApproveSeller usecase;
@@ -84,6 +88,7 @@ public class ApproveSellerTest {
         Mockito.when(authenticationGateway.loggedUser()).thenReturn(seller);
         Mockito.doNothing().when(policy).enforce(seller, "APPROVE_SELLER-001");
         Mockito.when(userGateway.findSellerById(Mockito.any())).thenReturn(Optional.of(seller));
+        Mockito.doNothing().when(metricsGateway).incrementSellerApproved();
         usecase.execute(input);
 
         Mockito.verify(authenticationGateway, Mockito.times(1)).loggedUser();

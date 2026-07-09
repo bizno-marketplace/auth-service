@@ -7,10 +7,8 @@ import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.gateway.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -27,6 +25,7 @@ import static com.biznopay.authservice.testcases.BuyerTestCases.*;
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class RegisterBuyerTests {
+    TransactionGateway transactionGateway = new TransactionGatewayImpl();
     @Mock
     private UserGateway userGateway;
     @Mock
@@ -38,8 +37,13 @@ public class RegisterBuyerTests {
     @Mock
     private MetricsGateway metricsGateway;
 
-    @InjectMocks
     private RegisterBuyer usecase;
+
+    @BeforeEach
+    void setUp() {
+        usecase = new RegisterBuyer(transactionGateway, userGateway, encoderGateway,
+                domainEventGateway, activationTokenGateway, metricsGateway);
+    }
 
     @Test
     @DisplayName("Should throw email EmailAlreadyInUseException when email is already in use")

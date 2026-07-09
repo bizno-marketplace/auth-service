@@ -22,3 +22,6 @@ eureka:
 
 nats:
   enabled: false
+  
+loki:
+  enabled: false
