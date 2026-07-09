@@ -27,21 +27,26 @@ import static com.biznopay.authservice.testcases.SellerTestCases.*;
 @ExtendWith(MockitoExtension.class)
 public class ResubmitSellerTests {
     @Mock
-    AuthenticationGateway authenticationGateway;
+    private AuthenticationGateway authenticationGateway;
     @Mock
-    UserGateway userGateway;
+    private UserGateway userGateway;
     @Mock
-    StorageGateway storageGateway;
+    private StorageGateway storageGateway;
     @Mock
-    ActivationTokenGateway activationTokenGateway;
+    private ActivationTokenGateway activationTokenGateway;
     @Mock
-    DomainEventGateway domainEventGateway;
+    private DomainEventGateway domainEventGateway;
+
     private TransactionGateway transactionGateway = new TransactionGatewayImpl();
+
     private ResubmitSellerPolicy resubmitSellerPolicy = new ResubmitSellerPolicy();
+
+    @Mock
+    private MetricsGateway metricsGateway;
 
     private ResubmitSeller setUp() {
         return new ResubmitSeller(transactionGateway, resubmitSellerPolicy, authenticationGateway, userGateway,
-                storageGateway, activationTokenGateway, domainEventGateway);
+                storageGateway, activationTokenGateway, domainEventGateway,metricsGateway);
     }
 
     @Test

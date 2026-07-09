@@ -13,7 +13,7 @@ import java.io.IOException;
 @Profile("!test")
 public class NatsConfig {
 
-    @Value("${nats.url}")
+    @Value("${broker.url}")
     private String natsUrl;
 
     @Bean

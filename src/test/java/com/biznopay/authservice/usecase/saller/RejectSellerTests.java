@@ -7,10 +7,7 @@ import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.InvalidSellerAccountStatus;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
-import com.biznopay.authservice.domain.gateway.AuthenticationGateway;
-import com.biznopay.authservice.domain.gateway.SellerRejectionGateway;
-import com.biznopay.authservice.domain.gateway.TransactionGateway;
-import com.biznopay.authservice.domain.gateway.UserGateway;
+import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.RejectSellerPolicy;
 import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSeller;
@@ -35,18 +32,20 @@ import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class RejectSellerTests {
-    TransactionGateway transactionGateway = new TransactionGatewayImpl();
+    private TransactionGateway transactionGateway = new TransactionGatewayImpl();
     @Mock
-    AuthenticationGateway authenticationGateway;
+    private AuthenticationGateway authenticationGateway;
     @Mock
-    RejectSellerPolicy rejectSellerPolicy;
+    private RejectSellerPolicy rejectSellerPolicy;
     @Mock
-    UserGateway userGateway;
+    private UserGateway userGateway;
     @Mock
-    SellerRejectionGateway sellerRejectionGateway;
+    private SellerRejectionGateway sellerRejectionGateway;
+    @Mock
+    private MetricsGateway metricsGateway;
 
     public RejectSeller setUp() {
-        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway);
+        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway,metricsGateway);
     }
 
     @Test

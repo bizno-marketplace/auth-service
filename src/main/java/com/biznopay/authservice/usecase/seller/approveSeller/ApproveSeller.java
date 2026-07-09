@@ -6,21 +6,19 @@ import com.biznopay.authservice.domain.exception.InvalidFieldException;
 import com.biznopay.authservice.domain.exception.InvalidSellerAccountStatus;
 import com.biznopay.authservice.domain.exception.ResourceNotFoundException;
 import com.biznopay.authservice.domain.gateway.AuthenticationGateway;
+import com.biznopay.authservice.domain.gateway.MetricsGateway;
 import com.biznopay.authservice.domain.gateway.UserGateway;
 import com.biznopay.authservice.domain.policy.ApproveSellerPolicy;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class ApproveSeller {
     private final ApproveSellerPolicy policy;
     private final AuthenticationGateway authenticationGateway;
     private final UserGateway userGateway;
-
-    public ApproveSeller(ApproveSellerPolicy policy, AuthenticationGateway authenticationGateway, UserGateway userGateway) {
-        this.policy = policy;
-        this.authenticationGateway = authenticationGateway;
-        this.userGateway = userGateway;
-    }
+    private final MetricsGateway metricsGateway;
 
     public void execute(ApproveSellerInput input) {
         User loggedUser = authenticationGateway.loggedUser();
@@ -32,6 +30,7 @@ public class ApproveSeller {
             throw new InvalidSellerAccountStatus(UserStatus.AWAITING_APPROVAL.name(), "APPROVE_SELLER-004");
         user.activate();
         userGateway.save(user);
+        metricsGateway.incrementSellerApproved();
     }
 
     private UUID validateSellerId(String rawSellerId) {

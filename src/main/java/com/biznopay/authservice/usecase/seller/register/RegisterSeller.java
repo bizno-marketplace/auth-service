@@ -24,15 +24,17 @@ public class RegisterSeller {
     private final StorageGateway storageGateway;
     private final DomainEventGateway domainEventGateway;
     private final ActivationTokenGateway activationTokenGateway;
+    private final MetricsGateway metricsGateway;
 
     public RegisterSeller(TransactionGateway transactionGateway, UserGateway userGateway, EncoderGateway encoderGateway,
-                          StorageGateway storageGateway, DomainEventGateway domainEventGateway, ActivationTokenGateway activationTokenGateway) {
+                          StorageGateway storageGateway, DomainEventGateway domainEventGateway, ActivationTokenGateway activationTokenGateway, MetricsGateway metricsGateway) {
         this.transactionGateway = transactionGateway;
         this.userGateway = userGateway;
         this.encoderGateway = encoderGateway;
         this.storageGateway = storageGateway;
         this.domainEventGateway = domainEventGateway;
         this.activationTokenGateway = activationTokenGateway;
+        this.metricsGateway = metricsGateway;
     }
 
     public RegisterSellerOutput execute(RegisterSellerInput input) {
@@ -50,6 +52,7 @@ public class RegisterSeller {
             activationTokenGateway.save(token);
             UserRegistered event = UserRegistered.of(seller.getId(), seller.getEmail(), seller.getFirstName(), token.getId());
             domainEventGateway.publish(event);
+            metricsGateway.incrementSellerRegistered();
             return new RegisterSellerOutput("We've sent an activation link to provided email: " + input.email());
         });
     }

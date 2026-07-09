@@ -8,13 +8,13 @@ import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import com.biznopay.authservice.usecase.seller.register.RegisterSeller;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
+import io.cucumber.java.Before;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +27,7 @@ import static com.biznopay.authservice.testcases.SellerTestCases.*;
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class RegisterSellerTests {
+    TransactionGateway transactionGateway = new TransactionGatewayImpl();
     @Mock
     private UserGateway userGateway;
     @Mock
@@ -38,9 +39,16 @@ public class RegisterSellerTests {
     @Mock
     private ActivationTokenGateway activationTokenGateway;
 
-    private RegisterSeller setUp() {
-        TransactionGateway transactionGateway = new TransactionGatewayImpl();
-        return new RegisterSeller(transactionGateway, userGateway, encoderGateway, storageGateway, domainEventGateway, activationTokenGateway);
+    @Mock
+    private MetricsGateway metricsGateway;
+
+    private RegisterSeller usecase;
+
+
+    @BeforeEach
+    void setUp(){
+        usecase = new RegisterSeller(transactionGateway, userGateway, encoderGateway,
+                storageGateway, domainEventGateway, activationTokenGateway, metricsGateway);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -54,8 +62,7 @@ public class RegisterSellerTests {
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(existingByEmail);
         if (existingByNuit.isPresent())
             Mockito.when(userGateway.findByNuit(input.nuit())).thenReturn(existingByNuit);
-        RegisterSeller registerSeller = setUp();
-        Assertions.assertThatThrownBy(() -> registerSeller.execute(input)).isInstanceOf(expectedException);
+        Assertions.assertThatThrownBy(() -> usecase.execute(input)).isInstanceOf(expectedException);
     }
 
     @Test
@@ -72,9 +79,9 @@ public class RegisterSellerTests {
         Mockito.doNothing().when(userGateway).save(Mockito.any(User.class));
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
         Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserRegistered.class));
+        Mockito.doNothing().when(metricsGateway).incrementSellerRegistered();
 
-        RegisterSeller registerSeller = setUp();
-        RegisterSellerOutput output = registerSeller.execute(input);
+        RegisterSellerOutput output = usecase.execute(input);
         Assertions.assertThat(output.message()).isEqualTo("We've sent an activation link to provided email: " + input.email());
         Mockito.verify(userGateway, Mockito.times(1)).findByEmail(input.email());
         Mockito.verify(userGateway, Mockito.times(1)).findByNuit(input.nuit());
