@@ -358,4 +358,17 @@ public class BiDocumentValidatorTestCases {
                 Arguments.of("Back bi photo is too large", VALID_FRONT_BI_DOCUMENT, MAX_SIZE_BACk_BI_DOCUMENT, FileSizeExceedLimitException.class, "BI back photo exceeds the maximum size of 5MB")
         );
     }
+
+    public static Stream<Arguments> validateResubmitCases() {
+        return Stream.of(
+                Arguments.of("Front bi photo is null", null, VALID_BACK_BI_DOCUMENT, null, ""),
+                Arguments.of("Front bi photo is empty", EMPTY_FRONT_BI_DOCUMENT, VALID_BACK_BI_DOCUMENT, RequiredFieldException.class, ""),
+                Arguments.of("Front bi photo is invalid", INVALID_FRONT_BI_DOCUMENT, VALID_BACK_BI_DOCUMENT, UnsupportedFileTypeException.class, "File type not supported form field BI front photo. Only [image/jpeg, image/png] are allowed"),
+                Arguments.of("Front bi photo is too large", MAX_SIZE_FRONT_BI_DOCUMENT, VALID_BACK_BI_DOCUMENT, FileSizeExceedLimitException.class, "BI front photo exceeds the maximum size of 5MB"),
+                Arguments.of("Back bi photo is null", VALID_FRONT_BI_DOCUMENT, null, null, ""),
+                Arguments.of("Back bi photo is empty", VALID_FRONT_BI_DOCUMENT, EMPY_BACK_BI_DOCUMENT, null, ""),
+                Arguments.of("Back bi photo is invalid", VALID_FRONT_BI_DOCUMENT, INVALID_BACK_BI_DOCUMENT, UnsupportedFileTypeException.class, "File type not supported form field BI back photo. Only [image/jpeg, image/png] are allowed"),
+                Arguments.of("Back bi photo is too large", VALID_FRONT_BI_DOCUMENT, MAX_SIZE_BACk_BI_DOCUMENT, FileSizeExceedLimitException.class, "BI back photo exceeds the maximum size of 5MB")
+        );
+    }
 }

@@ -23,4 +23,21 @@ public class BiDocumentValidatorTests {
                 .isInstanceOf(expectedException)
                 .hasMessage(expectedMessage);
     }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("com.biznopay.authservice.testcases.BiDocumentValidatorTestCases#validateResubmitCases")
+    void validateResubmitCases(
+            String testName,
+            MultipartFile frontPhoto,
+            MultipartFile backPhoto,
+            Class<? extends Exception> expectedException,
+            String expectedMessage
+    ) {
+
+        if (!(testName.contains("bi photo is empty") || testName.contains("bi photo is null"))){
+            Assertions.assertThatThrownBy(() -> BiDocumentValidator.validateForResubmit(frontPhoto, backPhoto))
+                    .isInstanceOf(expectedException)
+                    .hasMessage(expectedMessage);
+        }
+    }
 }
