@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: gervasioartur/auth-service:v8-test
+          image: gervasioartur/auth-service:c716eac
           env:
             - name: DISCOVERY_SERVER_URL
               value: "http://discovery-server:8761/eureka/"
@@ -40,6 +40,8 @@ spec:
             - name: SPRING_DATA_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef: { name: redis-secret, key: REDIS_PASSWORD }
+            - name: ZIPKIN_URL
+              value: "http://zipkin:9411"
           ports:
             - containerPort: 8081
             - containerPort: 9081
