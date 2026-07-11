@@ -2,17 +2,25 @@ package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice._config.ContainerBase;
 import com.biznopay.authservice._config.TestConfig;
+import com.biznopay.authservice.domain.entity.user.Address;
+import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.util.DocumentPathGenerator;
 import com.biznopay.authservice.domain.util.DomainFuncUtils;
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.infra.persistence.jpa.entity.AddressJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
+import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.AddressJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -34,8 +42,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_JPA;
 import static com.biznopay.authservice.testcases.SellerTestCases.*;
+import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_SUPER_ADMIN_JPA;
 
 @Tag("integration")
 @ActiveProfiles("test")
@@ -55,7 +68,10 @@ public class SellerControllerTests extends ContainerBase {
     private UserJpaRepository userJpaRepository;
     @Autowired
     private AddressJpaRepository addressJpaRepository;
-
+    @Autowired
+    private JwtHelper jwtHelper;
+    @Autowired
+    private MeterRegistry registry;
 
     private String url(String path) {
         return "http://localhost:" + port + path;
@@ -228,6 +244,138 @@ public class SellerControllerTests extends ContainerBase {
         } else {
             Assertions.assertEquals(expectedMessage, response.getBody().error().message());
         }
+    }
+
+    //Approve seller
+    @Test
+    @DisplayName("Should throw AccessDeniedException if no auth token is provided")
+    public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvided() {
+        String userId = UUID.randomUUID().toString();
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+userId+"/approve"),
+                HttpMethod.PATCH,
+                HttpEntity.EMPTY,
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Should throw AccessDeniedException if logged user is not supper admin")
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdmin(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String userId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+userId+"/approve"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals("Access denied", response.getBody().error().message());
+
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException if seller does not exists")
+    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExists(){
+        BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setDeliveryAddresses(List.of(addressJpaEntity));
+        userJpaRepository.save(entity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/approve"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertEquals("Seller not found", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidSellerAccountStatus if seller account is not in AWAITING_APPROVAL status")
+    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatus(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.PENDING);
+        userJpaRepository.save(entity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/approve"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Can only perform this action to Sellers with status AWAITING_APPROVAL", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should active user and increment seller approved metrics")
+    public void shouldActiveUserAndIncrementSellerApprovedMetrics(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.AWAITING_APPROVAL);
+        userJpaRepository.save(entity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/approve"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        double valor = registry.get("auth.seller.approved").counter().count();
+        Assertions.assertTrue(resultOpt.isPresent());
+        Assertions.assertEquals(1, valor);
+        UserJpaEntity result = resultOpt.get();
+        Assertions.assertEquals(UserStatus.ACTIVE, result.getStatus());
     }
 
 }

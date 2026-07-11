@@ -30,6 +30,13 @@ public class FuncUtils {
                     ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
+
+        if (exception instanceof InvalidSellerAccountStatus ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
     }
 
@@ -69,13 +76,6 @@ public class FuncUtils {
         }
 
         if (exception instanceof NuitAlreadyInUseException ex) {
-            log.warn("[{}] {} {} | code={} | field={} | message={}",
-                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
-                    ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
-            error = new ApiError(ex.getErrorCode(), exception.getMessage());
-        }
-
-        if (exception instanceof InvalidSellerAccountStatus ex) {
             log.warn("[{}] {} {} | code={} | field={} | message={}",
                     ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                     ex.getErrorCode(), ex.getMetadata(), exception.getMessage());
