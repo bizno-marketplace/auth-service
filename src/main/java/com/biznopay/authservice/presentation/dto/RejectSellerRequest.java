@@ -1,4 +1,9 @@
 package com.biznopay.authservice.presentation.dto;
 
-public record RejectSellerRequest(String reasonForRejection) {
+import jakarta.validation.constraints.NotEmpty;
+
+public record RejectSellerRequest(
+        @NotEmpty(message = "Reason for rejection is required")
+        String reasonForRejection
+) {
 }

@@ -53,6 +53,7 @@ public class UserMapperTests {
     @DisplayName("Should return Super admin jpa entity on toUserJpaEntity")
     public void shouldReturnSuperAdminJpaEntityOnToUserJpaEntity() {
         UserMapper userMapper = new UserMapper();
+        SellerRejectionMapper sellerRejectionMapper = new SellerRejectionMapper();
         User user = VALID_SUPER_ADMIN;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(SuperAdminJpaEntity.class, entity);

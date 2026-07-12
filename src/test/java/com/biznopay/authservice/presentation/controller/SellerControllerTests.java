@@ -11,15 +11,15 @@ import com.biznopay.authservice.domain.util.DomainFuncUtils;
 import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
-import com.biznopay.authservice.infra.persistence.jpa.entity.AddressJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.entity.BuyerJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.repository.AddressJpaRepository;
-import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.authservice.infra.persistence.jpa.entity.*;
+import com.biznopay.authservice.infra.persistence.jpa.repository.*;
+import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
+import com.biznopay.authservice.presentation.dto.ResubmitSellerRequest;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
+import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +31,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -42,9 +43,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_JPA;
 import static com.biznopay.authservice.testcases.SellerTestCases.*;
@@ -72,6 +71,12 @@ public class SellerControllerTests extends ContainerBase {
     private JwtHelper jwtHelper;
     @Autowired
     private MeterRegistry registry;
+    @Autowired
+    private SellerRejectionJpaRepository sellerRejectionJpaRepository;
+    @Autowired
+    private ActivationTokenJpaRepository activationTokenRepository;
+    @Autowired
+    private OutboxEventJpaRepository outboxEventJpaRepository;
 
     private String url(String path) {
         return "http://localhost:" + port + path;
@@ -92,7 +97,8 @@ public class SellerControllerTests extends ContainerBase {
         });
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_addresses RESTART IDENTITY CASCADE");
-
+        Meter meter = registry.find("auth.seller.resubmitted").meter();
+        if (meter != null) registry.remove(meter);
     }
 
     @Test
@@ -248,8 +254,8 @@ public class SellerControllerTests extends ContainerBase {
 
     //Approve seller
     @Test
-    @DisplayName("Should throw AccessDeniedException if no auth token is provided")
-    public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvided() {
+    @DisplayName("Should throw AccessDeniedException if no auth token is provided on approve seller")
+    public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSeller() {
         String userId = UUID.randomUUID().toString();
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
                 url("/sellers/"+userId+"/approve"),
@@ -262,8 +268,8 @@ public class SellerControllerTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should throw AccessDeniedException if logged user is not supper admin")
-    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdmin(){
+    @DisplayName("Should throw AccessDeniedException if logged user is not supper admin on approve seller")
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdminOnApproveSeller(){
         SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
         String userId =  entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
@@ -289,8 +295,31 @@ public class SellerControllerTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should throw ResourceNotFoundException if seller does not exists")
-    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExists(){
+    @DisplayName("Should throw InvalidFieldException if seller id is invalid on approve seller")
+    public void shouldThrowInvalidFieldExceptionIfSellerIdIsInvalidOnApproveSeller(){
+        String sellerId =  "any_invalid_user_id";
+
+        SuperAdminJpaEntity sa = (SuperAdminJpaEntity)  VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/approve"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
+        Assertions.assertEquals("Invalid User Id on APPROVE_SELLER", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException if seller does not exists on approve seller")
+    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExistsApproveSeller(){
         BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
         String sellerId =  entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
@@ -317,8 +346,8 @@ public class SellerControllerTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should throw InvalidSellerAccountStatus if seller account is not in AWAITING_APPROVAL status")
-    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatus(){
+    @DisplayName("Should throw InvalidSellerAccountStatus if seller account is not in AWAITING_APPROVAL status on approve seller")
+    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatusOnApproveSeller(){
         SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
         String sellerId =  entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
@@ -378,4 +407,527 @@ public class SellerControllerTests extends ContainerBase {
         Assertions.assertEquals(UserStatus.ACTIVE, result.getStatus());
     }
 
+    //Reject seller
+    @Test
+    @DisplayName("Should throw AccessDeniedException if no auth token is provided on reject seller")
+    public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSellerOnRejectSeller() {
+        String userId = UUID.randomUUID().toString();
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+userId+"/reject"),
+                HttpMethod.PATCH,
+                HttpEntity.EMPTY,
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Should throw AccessDeniedException if logged user is not supper admin on reject seller")
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdminOnRejectSeller(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String userId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", "any reason");
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+userId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals("Access denied", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidFieldException if seller id is invalid on reject seller")
+    public void shouldThrowInvalidFieldExceptionIfSellerIdIsInvalidOnRejectSeller(){
+        String sellerId =  "any_invalid_user_id";
+
+        SuperAdminJpaEntity sa = (SuperAdminJpaEntity)  VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", "any reason");
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
+        Assertions.assertEquals("Invalid User Id on REJECT_SELLER", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("should throw RequiredFieldException if reason for rejection is missing on reject seller")
+    public void shouldThrowRequiredFieldExceptionIfReasonForRejectionIsMissingOnRejectSeller(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpa =  UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        entity.setStoreAddress(addressJpa);
+        userJpaRepository.save(entity);
+
+        SuperAdminJpaEntity sa = (SuperAdminJpaEntity)  VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", "");
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Reason for rejection is required", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should throw ResourceNotFoundException if seller does not exists on reject seller")
+    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExistsOnRejectSeller(){
+        BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setDeliveryAddresses(List.of(addressJpaEntity));
+        userJpaRepository.save(entity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", "any reason");
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertEquals("Seller not found", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should throw InvalidSellerAccountStatus if seller account is not in AWAITING_APPROVAL status on reject seller")
+    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatusOnRejectSeller(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.PENDING);
+        userJpaRepository.save(entity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", "any reason");
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        Assertions.assertEquals("Can only perform this action to Sellers with status AWAITING_APPROVAL", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should reject user and increment seller reject metrics")
+    public void shouldBlockUserAndIncrementSellerRejectMetrics(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.AWAITING_APPROVAL);
+        userJpaRepository.save(entity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String reasonForRejection = "any_reason";
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", reasonForRejection);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        double valor = registry.get("auth.seller.rejected").tag("reason", reasonForRejection).counter().count();
+        Assertions.assertTrue(resultOpt.isPresent());
+        Assertions.assertEquals(2, valor);
+        UserJpaEntity result = resultOpt.get();
+        Assertions.assertEquals(UserStatus.REJECTED, result.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should block user if as reached max rejection attempts and increment seller reject metrics")
+    public void shouldBlockUserIfAsReachedMaxRejectionAttemptsAndIncrementSellerRejectMetrics(){
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        String sellerId =  entity.getId().toString();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.AWAITING_APPROVAL);
+        userJpaRepository.save(entity);
+
+        SellerRejectionJpaEntity sellerRejectionJpaEntity = new SellerRejectionJpaEntity();
+        sellerRejectionJpaEntity.setSeller(entity);
+        sellerRejectionJpaEntity.setReasonsForRejections(List.of("any_reason","any_reason","any_reason"));
+        sellerRejectionJpaEntity.setNumberOfRejections(3);
+        sellerRejectionJpaRepository.save(sellerRejectionJpaEntity);
+
+        UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
+        userJpaRepository.save(sa);
+        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String reasonForRejection = "any_reason";
+        Map<String, Object> body = new HashMap<>();
+        body.put("reasonForRejection", reasonForRejection);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/"+sellerId+"/reject"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        double valor = registry.get("auth.seller.rejected").tag("reason", reasonForRejection).counter().count();
+        Assertions.assertTrue(resultOpt.isPresent());
+        Assertions.assertEquals(1, valor);
+        UserJpaEntity result = resultOpt.get();
+        Assertions.assertEquals(UserStatus.BLOCKED, result.getStatus());
+    }
+
+//  Resubmit Seller
+    @Test
+    @DisplayName("Should throw AccessDeniedException if no auth token is provided on ResubmitSeller")
+    public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSellerOnResubmitSeller() {
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/resubmit"),
+                HttpMethod.PATCH,
+                HttpEntity.EMPTY,
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Should throw AccessDeniedException if logged user is not seller")
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSeller() throws IOException {
+        //Creating non seller user
+        BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setDeliveryAddresses(List.of(addressJpaEntity));
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        //Build request
+        String frontImageName = "bi_frente.png";
+        String backImageName = "bi_verso.png";
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + frontImageName)
+                .readAllBytes();
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + backImageName)
+                .readAllBytes();
+
+
+        ResubmitSellerRequest request = new ResubmitSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, frontImageName), frontHeaders));
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, backImageName), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/resubmit"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals("Access denied", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should throw AccessDeniedException if logged seller is not in status REJECTED")
+    public void shouldThrowAccessDeniedExceptionIfLoggedSellerIsNotInStatusRejected() throws IOException {
+        //Creating non seller user
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.AWAITING_APPROVAL);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        //Build request
+        String frontImageName = "bi_frente.png";
+        String backImageName = "bi_verso.png";
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + frontImageName)
+                .readAllBytes();
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + backImageName)
+                .readAllBytes();
+
+
+        ResubmitSellerRequest request = new ResubmitSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, frontImageName), frontHeaders));
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, backImageName), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/resubmit"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals("Access denied", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should update seller status to AWAITING_APPROVAL and send email")
+    public void shouldUpdateSellerStatusToAwaitingApprovalAndSendEmail() throws IOException {
+        //Creating non seller user
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.REJECTED);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        //Build request
+        String frontImageName = "bi_frente.png";
+        String backImageName = "bi_verso.png";
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + frontImageName)
+                .readAllBytes();
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + backImageName)
+                .readAllBytes();
+
+
+        ResubmitSellerRequest request = new ResubmitSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, frontImageName), frontHeaders));
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, backImageName), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<ResubmitSellerOutput>> response = restTemplate.exchange(
+                url("/sellers/resubmit"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<ResubmitSellerOutput>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals("Seller resubmitted successfully", response.getBody().data().message());
+        double valor = registry.get("auth.seller.resubmitted").counter().count();
+        Assertions.assertEquals(1, valor);
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        Assertions.assertTrue(resultOpt.isPresent());
+        UserJpaEntity result = resultOpt.get();
+        Assertions.assertEquals(UserStatus.AWAITING_APPROVAL, result.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should update seller status to PENDING and send activation token email")
+    public void shouldUpdateSellerStatusToPendingAndSendActivationTokenEmail() throws IOException {
+        FuncUtils funcUtils =  new FuncUtils();
+        //Creating non seller user
+        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.REJECTED);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        //Build request
+        String frontImageName = "bi_frente.png";
+        String backImageName = "bi_verso.png";
+
+        byte[] biFrontBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + frontImageName)
+                .readAllBytes();
+
+        byte[] biBackBytes = getClass().getClassLoader()
+                .getResourceAsStream("fixtures/images/" + backImageName)
+                .readAllBytes();
+
+
+        ResubmitSellerRequest request = new ResubmitSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, "dombo@gmail.com", VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+                VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+        HttpHeaders dataHeaders = new HttpHeaders();
+        dataHeaders.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+
+        body.add("data", new HttpEntity<>(request, dataHeaders));
+
+        HttpHeaders frontHeaders = new HttpHeaders();
+        frontHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        HttpHeaders backHeaders = new HttpHeaders();
+        backHeaders.setContentType(org.springframework.http.MediaType.IMAGE_PNG);
+
+        body.add("biFrontPhoto", new HttpEntity<>(new NamedByteArrayResource(biFrontBytes, frontImageName), frontHeaders));
+        body.add("biBackPhoto", new HttpEntity<>(new NamedByteArrayResource(biBackBytes, backImageName), backHeaders));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+
+        ResponseEntity<ApiResponse<ResubmitSellerOutput>> response = restTemplate.exchange(
+                url("/sellers/resubmit"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(body,headers),
+                new ParameterizedTypeReference<ApiResponse<ResubmitSellerOutput>>() {}
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals("As you changed you email we've sent instruction to conform account in the provided email.", response.getBody().data().message());
+
+        double valor = registry.get("auth.seller.resubmitted").counter().count();
+        Assertions.assertEquals(1, valor);
+
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        Assertions.assertTrue(resultOpt.isPresent());
+        UserJpaEntity result = resultOpt.get();
+        Assertions.assertEquals(UserStatus.PENDING, result.getStatus());
+
+        Optional<ActivationTokenJpaEntity> activationTokenOpt = activationTokenRepository.findByUsedAndUserId(false, entity.getId());
+        Assertions.assertTrue(activationTokenOpt.isPresent());
+
+        Optional<OutboxEventJpaEntity> outboxEventOpt = outboxEventJpaRepository.findByAggregateId(entity.getId());
+        Assertions.assertTrue(outboxEventOpt.isPresent());
+    }
 }

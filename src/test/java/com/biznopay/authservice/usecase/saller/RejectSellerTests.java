@@ -78,7 +78,7 @@ public class RejectSellerTests {
         RejectSeller rejectSeller = setUp();
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(RequiredFieldException.class)
-                .hasMessage("Reason for Rejection is required");
+                .hasMessage("Reason for rejection is required");
     }
 
     @Test
