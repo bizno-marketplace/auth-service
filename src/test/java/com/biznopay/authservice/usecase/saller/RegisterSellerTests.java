@@ -8,13 +8,14 @@ import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
 import com.biznopay.authservice.usecase.seller.register.RegisterSeller;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
-import io.cucumber.java.Before;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,7 +47,7 @@ public class RegisterSellerTests {
 
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         usecase = new RegisterSeller(transactionGateway, userGateway, encoderGateway,
                 storageGateway, domainEventGateway, activationTokenGateway, metricsGateway);
     }

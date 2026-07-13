@@ -30,9 +30,9 @@ public class ValidateTokenTests {
     @Test
     @DisplayName("Should return false if token is invalid")
     public void shouldReturnFalseIfTokenIsInvalid() {
-           ValidateTokenInput input = new ValidateTokenInput("invalid-token");
-           ValidateTokenOutput output = usecase.execute(input);
-           assertFalse(output.isValid());
+        ValidateTokenInput input = new ValidateTokenInput("invalid-token");
+        ValidateTokenOutput output = usecase.execute(input);
+        assertFalse(output.isValid());
     }
 
     @Test

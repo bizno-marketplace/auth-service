@@ -18,6 +18,7 @@ import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSeller;
 import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
 import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerOutput;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,7 +58,7 @@ public class SellerController {
     }
 
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<ApiResponse<Object>> reject(@PathVariable("id") String sellerId, @RequestBody RejectSellerRequest request) {
+    public ResponseEntity<ApiResponse<Object>> reject(@PathVariable("id") String sellerId, @Valid @RequestBody RejectSellerRequest request) {
         RejectSellerInput input = UserMapper.toRejectSellerInput(sellerId, request);
         rejectSeller.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, null, null));

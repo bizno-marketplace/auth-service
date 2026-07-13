@@ -25,7 +25,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import static com.biznopay.authservice.testcases.SuperAdminTestCases.VALID_REGISTER_SA_REQUEST;
 
 @Tag("integration")
-@ActiveProfiles("test")
+@ActiveProfiles({"test"})
 @WebMvcTest(SAController.class)
 public class ControllerHandlerTests extends ContainerBase {
     @Autowired

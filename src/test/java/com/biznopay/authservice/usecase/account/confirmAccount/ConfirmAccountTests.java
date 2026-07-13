@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER;
+import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_DEFINED_ADDRESS;
 import static com.biznopay.authservice.testcases.SellerTestCases.*;
 
 @Tag("unit")
@@ -90,7 +90,7 @@ public class ConfirmAccountTests {
         ActivationTokenId activationTokenId = new ActivationTokenId(rawTokenId);
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(15);
         ActivationToken activationToken = ActivationToken.reconstitute(activationTokenId, userId, true, expiredAt, expiredAt);
-        User user = VALID_BUYER;
+        User user = VALID_BUYER_DEFINED_ADDRESS();
         user.activate();
         ;
         Mockito.when(userGateway.findById(userId.value())).thenReturn(Optional.of(user));

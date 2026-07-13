@@ -45,7 +45,7 @@ public class RejectSellerTests {
     private MetricsGateway metricsGateway;
 
     public RejectSeller setUp() {
-        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway,metricsGateway);
+        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway, metricsGateway);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class RejectSellerTests {
         RejectSeller rejectSeller = setUp();
         Assertions.assertThatThrownBy(() -> rejectSeller.execute(input))
                 .isInstanceOf(RequiredFieldException.class)
-                .hasMessage("Reason for Rejection is required");
+                .hasMessage("Reason for rejection is required");
     }
 
     @Test

@@ -4,8 +4,6 @@ import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.grpc.AuthServiceGrpc;
 import com.biznopay.authservice.grpc.GetUserProfileRequest;
 import com.biznopay.authservice.grpc.GetUserProfileResponse;
-import com.biznopay.authservice.infra.helper.JwtHelper;
-import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -31,12 +29,6 @@ public class getUserProfile {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private UserJpaRepository userJpaRepository;
-
-    @Autowired
-    private JwtHelper jwtHelper;
 
     @Value("${spring.grpc.server.port}")
     private int grpcPort;

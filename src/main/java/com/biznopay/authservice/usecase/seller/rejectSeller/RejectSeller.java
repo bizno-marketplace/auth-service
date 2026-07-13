@@ -51,7 +51,7 @@ public class RejectSeller {
 
     private String validateReason(String reason) {
         if (reason == null || reason.isEmpty())
-            throw new RequiredFieldException("Reason for Rejection", "Seller", "APPROVE_SELLER-003");
+            throw new RequiredFieldException("Reason for rejection", "Seller", "APPROVE_SELLER-003");
         return reason;
     }
 

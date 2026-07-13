@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER;
+import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_DEFINED_ADDRESS;
 import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_JPA;
 import static com.biznopay.authservice.testcases.SuperAdminTestCases.*;
 
@@ -53,6 +53,7 @@ public class UserMapperTests {
     @DisplayName("Should return Super admin jpa entity on toUserJpaEntity")
     public void shouldReturnSuperAdminJpaEntityOnToUserJpaEntity() {
         UserMapper userMapper = new UserMapper();
+        SellerRejectionMapper sellerRejectionMapper = new SellerRejectionMapper();
         User user = VALID_SUPER_ADMIN;
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(SuperAdminJpaEntity.class, entity);
@@ -71,7 +72,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return Buyer jpa entity on toUserJpaEntity")
     public void shouldReturnBuyerJpaEntityOnToUserJpaEntity() {
-        User user = VALID_BUYER;
+        User user = VALID_BUYER_DEFINED_ADDRESS();
         UserJpaEntity entity = UserMapper.toUserJpaEntity(user);
         Assertions.assertInstanceOf(UserJpaEntity.class, entity);
         Assertions.assertEquals(user.getId().value(), entity.getId());
@@ -114,7 +115,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Should return Buyer domain entity on toUserDomain")
     public void shouldReturnBuyerEntityOnToUserDomain() {
-        UserJpaEntity entity = VALID_BUYER_JPA;
+        UserJpaEntity entity = VALID_BUYER_JPA();
         User user = UserMapper.toUserDomain(entity);
         Assertions.assertInstanceOf(Buyer.class, user);
         Assertions.assertEquals(entity.getId(), user.getId().value());

@@ -1,8 +1,7 @@
-# application-test.yml
 spring:
   config:
     activate:
-      on-profile: test
+      on-profile: grpc-test
     import: "optional:configserver:"
   cloud:
     config:

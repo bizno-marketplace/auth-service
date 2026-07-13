@@ -1,6 +1,8 @@
 package com.biznopay.authservice.presentation.service;
 
 import com.biznopay.authservice.grpc.*;
+import com.biznopay.authservice.infra.mapper.UserMapper;
+import com.biznopay.authservice.presentation.validator.AuthGrpcServiceValidator;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfile;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfileInput;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfileOutput;
@@ -19,6 +21,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void validateToken(ValidateTokenRequest request, StreamObserver<ValidateTokenResponse> responseObserver) {
+        AuthGrpcServiceValidator.validateTokenRequestValidator(request);
         ValidateTokenInput input = new ValidateTokenInput(request.getToken());
         ValidateTokenOutput output = validateToken.execute(input);
         ValidateTokenResponse response = ValidateTokenResponse.newBuilder().setValid(output.isValid()).build();
@@ -28,21 +31,11 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void getUserProfile(GetUserProfileRequest request, StreamObserver<GetUserProfileResponse> responseObserver) {
+        AuthGrpcServiceValidator.getUserProfileRequestValidator(request);
         GetUserProfileInput input = new GetUserProfileInput(request.getUserId());
         GetUserProfileOutput output = getUserProfile.execute(input);
-        GetUserProfileResponse response = buildGetUserProfileResponse(output);
+        GetUserProfileResponse response = UserMapper.toGetUserProfileResponse(output);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
-    }
-
-    private GetUserProfileResponse buildGetUserProfileResponse(GetUserProfileOutput output) {
-        return GetUserProfileResponse.newBuilder()
-                .setUserId(output.userId())
-                .setEmail(output.email())
-                .setFirstName(output.firstName())
-                .setLastName(output.lastName())
-                .setRole(output.role())
-                .setStatus(output.status())
-                .build();
     }
 }

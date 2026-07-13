@@ -20,14 +20,14 @@ Feature: Approve Seller
     Given an existing seller and with status "ACTIVE"
     And i am authenticated as a Supper Admin
     When i send a PATCH request to approve seller using endpoint "/sellers/sellerId/approve"
-    Then the response status should be 409
+    Then the response status should be 400
     And the response body should contain error "Can only perform this action to Sellers with status AWAITING_APPROVAL"
 
   Scenario: Reject approval if seller was previously rejected
     Given an existing seller and with status "REJECTED"
     And i am authenticated as a Supper Admin
     When i send a PATCH request to approve seller using endpoint "/sellers/sellerId/approve"
-    Then the response status should be 409
+    Then the response status should be 400
     And the response body should contain error "Can only perform this action to Sellers with status AWAITING_APPROVAL"
 
   Scenario: Reject approval if seller does not exist
