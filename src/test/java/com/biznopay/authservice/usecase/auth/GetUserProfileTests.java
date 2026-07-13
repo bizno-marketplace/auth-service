@@ -42,7 +42,7 @@ public class GetUserProfileTests {
 
     @Test
     @DisplayName("Should return user profile when user is found")
-    public void shouldReturnUserProfileWhenIsFound(){
+    public void shouldReturnUserProfileWhenIsFound() {
         User user = VALID_SUPER_ADMIN;
         UUID userId = user.getId().value();
         GetUserProfileInput input = new GetUserProfileInput(userId.toString());

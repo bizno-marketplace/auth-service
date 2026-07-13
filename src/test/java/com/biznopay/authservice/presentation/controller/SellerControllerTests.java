@@ -2,8 +2,6 @@ package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice._config.ContainerBase;
 import com.biznopay.authservice._config.TestConfig;
-import com.biznopay.authservice.domain.entity.user.Address;
-import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.util.DocumentPathGenerator;
@@ -258,10 +256,11 @@ public class SellerControllerTests extends ContainerBase {
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSeller() {
         String userId = UUID.randomUUID().toString();
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+userId+"/approve"),
+                url("/sellers/" + userId + "/approve"),
                 HttpMethod.PATCH,
                 HttpEntity.EMPTY,
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -269,9 +268,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw AccessDeniedException if logged user is not supper admin on approve seller")
-    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdminOnApproveSeller(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String userId =  entity.getId().toString();
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdminOnApproveSeller() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String userId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -283,10 +282,11 @@ public class SellerControllerTests extends ContainerBase {
         headers.set("Authorization", "Bearer " + token);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+userId+"/approve"),
+                url("/sellers/" + userId + "/approve"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -296,10 +296,10 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw InvalidFieldException if seller id is invalid on approve seller")
-    public void shouldThrowInvalidFieldExceptionIfSellerIdIsInvalidOnApproveSeller(){
-        String sellerId =  "any_invalid_user_id";
+    public void shouldThrowInvalidFieldExceptionIfSellerIdIsInvalidOnApproveSeller() {
+        String sellerId = "any_invalid_user_id";
 
-        SuperAdminJpaEntity sa = (SuperAdminJpaEntity)  VALID_SUPER_ADMIN_JPA;
+        SuperAdminJpaEntity sa = (SuperAdminJpaEntity) VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
         String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
@@ -307,10 +307,11 @@ public class SellerControllerTests extends ContainerBase {
         headers.set("Authorization", "Bearer " + token);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/approve"),
+                url("/sellers/" + sellerId + "/approve"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
@@ -319,9 +320,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw ResourceNotFoundException if seller does not exists on approve seller")
-    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExistsApproveSeller(){
-        BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExistsApproveSeller() {
+        BuyerJpaEntity entity = (BuyerJpaEntity) VALID_BUYER_JPA();
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setDeliveryAddresses(List.of(addressJpaEntity));
@@ -335,10 +336,11 @@ public class SellerControllerTests extends ContainerBase {
         headers.set("Authorization", "Bearer " + token);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/approve"),
+                url("/sellers/" + sellerId + "/approve"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -347,9 +349,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw InvalidSellerAccountStatus if seller account is not in AWAITING_APPROVAL status on approve seller")
-    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatusOnApproveSeller(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatusOnApproveSeller() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -364,10 +366,11 @@ public class SellerControllerTests extends ContainerBase {
         headers.set("Authorization", "Bearer " + token);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/approve"),
+                url("/sellers/" + sellerId + "/approve"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -376,9 +379,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should active user and increment seller approved metrics")
-    public void shouldActiveUserAndIncrementSellerApprovedMetrics(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldActiveUserAndIncrementSellerApprovedMetrics() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -393,10 +396,11 @@ public class SellerControllerTests extends ContainerBase {
         headers.set("Authorization", "Bearer " + token);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/approve"),
+                url("/sellers/" + sellerId + "/approve"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
@@ -413,10 +417,11 @@ public class SellerControllerTests extends ContainerBase {
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSellerOnRejectSeller() {
         String userId = UUID.randomUUID().toString();
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+userId+"/reject"),
+                url("/sellers/" + userId + "/reject"),
                 HttpMethod.PATCH,
                 HttpEntity.EMPTY,
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -424,9 +429,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw AccessDeniedException if logged user is not supper admin on reject seller")
-    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdminOnRejectSeller(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String userId =  entity.getId().toString();
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSupperAdminOnRejectSeller() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String userId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -442,10 +447,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", "any reason");
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+userId+"/reject"),
+                url("/sellers/" + userId + "/reject"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(body, headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -454,10 +460,10 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw InvalidFieldException if seller id is invalid on reject seller")
-    public void shouldThrowInvalidFieldExceptionIfSellerIdIsInvalidOnRejectSeller(){
-        String sellerId =  "any_invalid_user_id";
+    public void shouldThrowInvalidFieldExceptionIfSellerIdIsInvalidOnRejectSeller() {
+        String sellerId = "any_invalid_user_id";
 
-        SuperAdminJpaEntity sa = (SuperAdminJpaEntity)  VALID_SUPER_ADMIN_JPA;
+        SuperAdminJpaEntity sa = (SuperAdminJpaEntity) VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
         String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
@@ -469,10 +475,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", "any reason");
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/reject"),
+                url("/sellers/" + sellerId + "/reject"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(body, headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
@@ -481,14 +488,14 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("should throw RequiredFieldException if reason for rejection is missing on reject seller")
-    public void shouldThrowRequiredFieldExceptionIfReasonForRejectionIsMissingOnRejectSeller(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String sellerId =  entity.getId().toString();
-        AddressJpaEntity addressJpa =  UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+    public void shouldThrowRequiredFieldExceptionIfReasonForRejectionIsMissingOnRejectSeller() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String sellerId = entity.getId().toString();
+        AddressJpaEntity addressJpa = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         entity.setStoreAddress(addressJpa);
         userJpaRepository.save(entity);
 
-        SuperAdminJpaEntity sa = (SuperAdminJpaEntity)  VALID_SUPER_ADMIN_JPA;
+        SuperAdminJpaEntity sa = (SuperAdminJpaEntity) VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
         String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
@@ -500,10 +507,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", "");
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/reject"),
+                url("/sellers/" + sellerId + "/reject"),
                 HttpMethod.PATCH,
                 new HttpEntity<>(body, headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -512,9 +520,10 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw ResourceNotFoundException if seller does not exists on reject seller")
-    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExistsOnRejectSeller(){
-        BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldThrowResourceNotFoundExceptionIfSellerDoesNotExistsOnRejectSeller() {
+        BuyerJpaEntity entity = (BuyerJpaEntity) VALID_BUYER_JPA();
+        ;
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setDeliveryAddresses(List.of(addressJpaEntity));
@@ -532,10 +541,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", "any reason");
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/reject"),
+                url("/sellers/" + sellerId + "/reject"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -544,9 +554,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should throw InvalidSellerAccountStatus if seller account is not in AWAITING_APPROVAL status on reject seller")
-    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatusOnRejectSeller(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldThrowInvalidSellerAccountStatusIfSellerAccountIsNotInAwaitingApprovalStatusOnRejectSeller() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -565,10 +575,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", "any reason");
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/reject"),
+                url("/sellers/" + sellerId + "/reject"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -577,9 +588,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should reject user and increment seller reject metrics")
-    public void shouldBlockUserAndIncrementSellerRejectMetrics(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldBlockUserAndIncrementSellerRejectMetrics() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -599,10 +610,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", reasonForRejection);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/reject"),
+                url("/sellers/" + sellerId + "/reject"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
@@ -615,9 +627,9 @@ public class SellerControllerTests extends ContainerBase {
 
     @Test
     @DisplayName("Should block user if as reached max rejection attempts and increment seller reject metrics")
-    public void shouldBlockUserIfAsReachedMaxRejectionAttemptsAndIncrementSellerRejectMetrics(){
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
-        String sellerId =  entity.getId().toString();
+    public void shouldBlockUserIfAsReachedMaxRejectionAttemptsAndIncrementSellerRejectMetrics() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        String sellerId = entity.getId().toString();
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -626,7 +638,7 @@ public class SellerControllerTests extends ContainerBase {
 
         SellerRejectionJpaEntity sellerRejectionJpaEntity = new SellerRejectionJpaEntity();
         sellerRejectionJpaEntity.setSeller(entity);
-        sellerRejectionJpaEntity.setReasonsForRejections(List.of("any_reason","any_reason","any_reason"));
+        sellerRejectionJpaEntity.setReasonsForRejections(List.of("any_reason", "any_reason", "any_reason"));
         sellerRejectionJpaEntity.setNumberOfRejections(3);
         sellerRejectionJpaRepository.save(sellerRejectionJpaEntity);
 
@@ -643,10 +655,11 @@ public class SellerControllerTests extends ContainerBase {
         body.put("reasonForRejection", reasonForRejection);
 
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-                url("/sellers/"+sellerId+"/reject"),
+                url("/sellers/" + sellerId + "/reject"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
@@ -657,7 +670,7 @@ public class SellerControllerTests extends ContainerBase {
         Assertions.assertEquals(UserStatus.BLOCKED, result.getStatus());
     }
 
-//  Resubmit Seller
+    //  Resubmit Seller
     @Test
     @DisplayName("Should throw AccessDeniedException if no auth token is provided on ResubmitSeller")
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSellerOnResubmitSeller() {
@@ -665,7 +678,8 @@ public class SellerControllerTests extends ContainerBase {
                 url("/sellers/resubmit"),
                 HttpMethod.PATCH,
                 HttpEntity.EMPTY,
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -675,7 +689,8 @@ public class SellerControllerTests extends ContainerBase {
     @DisplayName("Should throw AccessDeniedException if logged user is not seller")
     public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSeller() throws IOException {
         //Creating non seller user
-        BuyerJpaEntity entity = (BuyerJpaEntity)  VALID_BUYER_JPA;
+        BuyerJpaEntity entity = (BuyerJpaEntity) VALID_BUYER_JPA();
+        ;
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setDeliveryAddresses(List.of(addressJpaEntity));
@@ -722,8 +737,9 @@ public class SellerControllerTests extends ContainerBase {
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
                 url("/sellers/resubmit"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -734,7 +750,7 @@ public class SellerControllerTests extends ContainerBase {
     @DisplayName("Should throw AccessDeniedException if logged seller is not in status REJECTED")
     public void shouldThrowAccessDeniedExceptionIfLoggedSellerIsNotInStatusRejected() throws IOException {
         //Creating non seller user
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -782,8 +798,9 @@ public class SellerControllerTests extends ContainerBase {
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
                 url("/sellers/resubmit"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -794,7 +811,7 @@ public class SellerControllerTests extends ContainerBase {
     @DisplayName("Should update seller status to AWAITING_APPROVAL and send email")
     public void shouldUpdateSellerStatusToAwaitingApprovalAndSendEmail() throws IOException {
         //Creating non seller user
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -842,8 +859,9 @@ public class SellerControllerTests extends ContainerBase {
         ResponseEntity<ApiResponse<ResubmitSellerOutput>> response = restTemplate.exchange(
                 url("/sellers/resubmit"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<ResubmitSellerOutput>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<ResubmitSellerOutput>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -859,9 +877,9 @@ public class SellerControllerTests extends ContainerBase {
     @Test
     @DisplayName("Should update seller status to PENDING and send activation token email")
     public void shouldUpdateSellerStatusToPendingAndSendActivationTokenEmail() throws IOException {
-        FuncUtils funcUtils =  new FuncUtils();
+        FuncUtils funcUtils = new FuncUtils();
         //Creating non seller user
-        SellerJpaEntity entity = (SellerJpaEntity)  VALID_SELLER_JPA;
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
         addressJpaRepository.save(addressJpaEntity);
         entity.setStoreAddress(addressJpaEntity);
@@ -909,8 +927,9 @@ public class SellerControllerTests extends ContainerBase {
         ResponseEntity<ApiResponse<ResubmitSellerOutput>> response = restTemplate.exchange(
                 url("/sellers/resubmit"),
                 HttpMethod.PATCH,
-                new HttpEntity<>(body,headers),
-                new ParameterizedTypeReference<ApiResponse<ResubmitSellerOutput>>() {}
+                new HttpEntity<>(body, headers),
+                new ParameterizedTypeReference<ApiResponse<ResubmitSellerOutput>>() {
+                }
         );
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());

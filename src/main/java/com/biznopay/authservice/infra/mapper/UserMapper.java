@@ -5,8 +5,10 @@ import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.exception.UnknownEntityException;
 import com.biznopay.authservice.domain.vo.BiDocument;
 import com.biznopay.authservice.domain.vo.BiDocumentRequest;
+import com.biznopay.authservice.grpc.GetUserProfileResponse;
 import com.biznopay.authservice.infra.persistence.jpa.entity.*;
 import com.biznopay.authservice.presentation.dto.*;
+import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfileOutput;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyerInput;
 import com.biznopay.authservice.usecase.sa.RegisterSAInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
@@ -188,5 +190,16 @@ public class UserMapper {
 
     public static RejectSellerInput toRejectSellerInput(String sellerId, RejectSellerRequest request) {
         return new RejectSellerInput(sellerId, request.reasonForRejection());
+    }
+
+    public static GetUserProfileResponse toGetUserProfileResponse(GetUserProfileOutput output) {
+        return GetUserProfileResponse.newBuilder()
+                .setUserId(output.userId())
+                .setEmail(output.email())
+                .setFirstName(output.firstName())
+                .setLastName(output.lastName())
+                .setRole(output.role())
+                .setStatus(output.status())
+                .build();
     }
 }

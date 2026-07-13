@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,7 +47,8 @@ public class RegisterBuyerTests {
     @Test
     @DisplayName("Should throw email EmailAlreadyInUseException when email is already in use")
     public void shouldThrowEmailAlreadyInUseExceptionWhenEmailIsAlreadyInUse() {
-        Buyer user = VALID_BUYER;
+        Buyer user = VALID_BUYER_DEFINED_ADDRESS();
+        ;
         RegisterBuyerInput input = VALID_REGISTER_BUYER_INPUT;
         Mockito.when(userGateway.findByEmail(input.email())).thenReturn(Optional.of(user));
         Assertions.assertThrows(EmailAlreadyInUseException.class, () -> usecase.execute(input));

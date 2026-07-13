@@ -45,7 +45,7 @@ public class RejectSellerTests {
     private MetricsGateway metricsGateway;
 
     public RejectSeller setUp() {
-        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway,metricsGateway);
+        return new RejectSeller(transactionGateway, authenticationGateway, rejectSellerPolicy, userGateway, sellerRejectionGateway, metricsGateway);
     }
 
     @Test

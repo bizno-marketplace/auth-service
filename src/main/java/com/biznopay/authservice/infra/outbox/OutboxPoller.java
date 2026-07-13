@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class OutboxPoller {
-    public static final String LOCK_KEY = "outbox-poller-lock";
+    public static final String LOCK_KEY = "authservice-outbox-poller-lock";
     public static final long LOCK_TTL_MS = 4000;
     private static final Logger log = LoggerFactory.getLogger(OutboxPoller.class);
     private final OutboxEventJpaRepository repository;

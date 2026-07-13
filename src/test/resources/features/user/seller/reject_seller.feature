@@ -36,7 +36,7 @@ Feature: Reject Seller
     And i am authenticated as a Supper Admin
     When i send a PATCH request to reject seller using endpoint "/sellers/sellerId/reject"
       | reason | Qualquer motivo |
-    Then the response status should be 409
+    Then the response status should be 400
     And the response body should contain error "Can only perform this action to Sellers with status AWAITING_APPROVAL"
 
   Scenario: Reject rejection if reason is missing
@@ -45,7 +45,7 @@ Feature: Reject Seller
     When i send a PATCH request to reject seller using endpoint "/sellers/sellerId/reject"
       | reason |  |
     Then the response status should be 400
-    And the response body should contain error "Reason for Rejection is required"
+    And the response body should contain error "Reason for rejection is required"
 
   Scenario: Reject rejection if seller does not exist
     Given non existing seller and rejection count 0

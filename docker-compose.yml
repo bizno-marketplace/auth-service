@@ -1,38 +1,4 @@
 services:
-  postgres:
-    image: postgres:17.10-alpine
-    container_name: bizno-auth-postgres
-    restart: unless-stopped
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB:-bizno_auth}
-      - POSTGRES_USER=${POSTGRES_USER:-bizno}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change-me}
-    ports:
-      - "5432:5432"
-    volumes:
-      - auth-postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bizno} -d ${POSTGRES_DB:-bizno_auth}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks:
-      - bizno-net
-
-  redis:
-    image: redis:8.8.0-alpine
-    container_name: bizno-auth-redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks:
-      - bizno-net
-
   auth-service:
     build: .
     image: bizno/auth-service:local
@@ -52,13 +18,8 @@ services:
     ports:
       - "8081:8081"   # main port
       - "9081:9081"   # management port
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:9081/actuator/health"]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:9081/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 10

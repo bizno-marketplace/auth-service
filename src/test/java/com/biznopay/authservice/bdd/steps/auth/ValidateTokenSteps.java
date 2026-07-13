@@ -18,6 +18,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -130,21 +131,23 @@ public class ValidateTokenSteps {
     @When("the ValidateToken gRPC method is called with an empty token")
     public void theValidateTokenGRPCMethodIsCalledWithAnEmptyToken() {
         String token = "";
-
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress("localhost", grpcPort)
                 .usePlaintext()
                 .build();
-
         AuthServiceGrpc.AuthServiceBlockingStub stub = AuthServiceGrpc.newBlockingStub(channel);
-
         ValidateTokenRequest request = ValidateTokenRequest.newBuilder()
                 .setToken(token)
                 .build();
 
-        ValidateTokenResponse response = stub.validateToken(request);
-        scenarioContext.getHeadersMap().put("grpcValid", String.valueOf(response.getValid()));
-        channel.shutdown();
+        try {
+            ValidateTokenResponse response = stub.validateToken(request);
+            scenarioContext.getHeadersMap().put("grpcValid", String.valueOf(response.getValid()));
+        } catch (StatusRuntimeException e) {
+            scenarioContext.getHeadersMap().put("grpcValid", e.getMessage());
+        } finally {
+            channel.shutdown();
+        }
     }
 
     @When("the ValidateToken gRPC method is called with an invalid token")

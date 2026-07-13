@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER;
+import static com.biznopay.authservice.testcases.BuyerTestCases.VALID_BUYER_DEFINED_ADDRESS;
 import static com.biznopay.authservice.testcases.SellerTestCases.*;
 
 @Tag("unit")
@@ -46,13 +46,14 @@ public class ResubmitSellerTests {
 
     private ResubmitSeller setUp() {
         return new ResubmitSeller(transactionGateway, resubmitSellerPolicy, authenticationGateway, userGateway,
-                storageGateway, activationTokenGateway, domainEventGateway,metricsGateway);
+                storageGateway, activationTokenGateway, domainEventGateway, metricsGateway);
     }
 
     @Test
     @DisplayName("Should throw AccessDeniedException if requesting user is not seller")
     public void shouldThrowAccessDeniedExceptionIRequestingUserIsNotSeller() {
-        User buyer = VALID_BUYER;
+        User buyer = VALID_BUYER_DEFINED_ADDRESS();
+        ;
         ResubmitSellerInput input = new ResubmitSellerInput(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE,
                 VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS, VALID_BI_REQUEST);
 

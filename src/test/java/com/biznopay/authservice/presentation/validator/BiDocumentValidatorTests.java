@@ -34,7 +34,7 @@ public class BiDocumentValidatorTests {
             String expectedMessage
     ) {
 
-        if (!(testName.contains("bi photo is empty") || testName.contains("bi photo is null"))){
+        if (!(testName.contains("bi photo is empty") || testName.contains("bi photo is null"))) {
             Assertions.assertThatThrownBy(() -> BiDocumentValidator.validateForResubmit(frontPhoto, backPhoto))
                     .isInstanceOf(expectedException)
                     .hasMessage(expectedMessage);

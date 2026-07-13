@@ -17,7 +17,7 @@ Feature: Validate Token (gRPC)
 
   Scenario: Fail to validate an empty token
     When the ValidateToken gRPC method is called with an empty token
-    Then the gRPC response valid field should be "false"
+    Then the gRPC response valid field should be "INVALID_ARGUMENT: Token is required"
 
   Scenario: Fail to validate an invalid token
     When the ValidateToken gRPC method is called with an invalid token

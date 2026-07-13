@@ -166,7 +166,7 @@ public class FuncUtils {
         log.error("[{}] {} {} | code={} | message={} | metadata={}",
                 ex.getSeverity(), request.getMethod(), request.getRequestURI(),
                 ex.getErrorCode(), exception.getMessage(), ex.getMetadata());
-        ApiError error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        ApiError error = new ApiError(ex.getErrorCode(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(FuncUtils.buildResponseBody(false, null, error));
     }
 }
