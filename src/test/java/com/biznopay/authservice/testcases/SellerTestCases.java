@@ -68,6 +68,11 @@ public class SellerTestCases {
                 storeName, storeDescription, nuit, address, biDocumentRequest);
     }
 
+    public static Seller validaSeller() {
+        return Seller.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD,
+                VALID_STORE_NAME, VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_NEW, VALID_BI);
+    }
+
 
     public static UserJpaEntity validUserJpa() {
         return UserMapper.toUserJpaEntity(validSeller());

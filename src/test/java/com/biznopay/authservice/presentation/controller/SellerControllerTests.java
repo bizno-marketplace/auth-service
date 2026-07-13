@@ -14,8 +14,10 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.*;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
 import com.biznopay.authservice.presentation.dto.ResubmitSellerRequest;
+import com.biznopay.authservice.presentation.dto.UpdateSellerRequest;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerOutput;
 import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerOutput;
+import com.biznopay.authservice.usecase.seller.updateSeller.UpdateSellerOutput;
 import com.biznopay.authservice.utils.NamedByteArrayResource;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -95,6 +97,8 @@ public class SellerControllerTests extends ContainerBase {
         });
         jdbcTemplate.execute("TRUNCATE TABLE t_users RESTART IDENTITY CASCADE");
         jdbcTemplate.execute("TRUNCATE TABLE t_addresses RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE T_ACTIVATION_TOKENS RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE T_OUTBOX_EVENTS RESTART IDENTITY CASCADE");
         Meter meter = registry.find("auth.seller.resubmitted").meter();
         if (meter != null) registry.remove(meter);
     }
@@ -944,6 +948,146 @@ public class SellerControllerTests extends ContainerBase {
         Assertions.assertEquals(UserStatus.PENDING, result.getStatus());
 
         Optional<ActivationTokenJpaEntity> activationTokenOpt = activationTokenRepository.findByUsedAndUserId(false, entity.getId());
+        Assertions.assertTrue(activationTokenOpt.isPresent());
+
+        Optional<OutboxEventJpaEntity> outboxEventOpt = outboxEventJpaRepository.findByAggregateId(entity.getId());
+        Assertions.assertTrue(outboxEventOpt.isPresent());
+    }
+//    UPDATE SELLER
+@Test
+@DisplayName("Should throw AccessDeniedException if no auth token is provided on update seller")
+public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnUpdateSeller() {
+    UpdateSellerRequest request = new UpdateSellerRequest(
+            VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_STORE_NAME, VALID_STORE_DESC
+    );
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+            url("/sellers/update"),
+            HttpMethod.PATCH,
+            new HttpEntity<>(request, headers),
+            new ParameterizedTypeReference<ApiResponse<Object>>() {
+            }
+    );
+
+    Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+}
+
+    @Test
+    @DisplayName("Should throw AccessDeniedException if logged user is not seller on update seller")
+    public void shouldThrowAccessDeniedExceptionIfLoggedUserIsNotSellerOnUpdateSeller() {
+        BuyerJpaEntity entity = (BuyerJpaEntity) VALID_BUYER_JPA();
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setDeliveryAddresses(List.of(addressJpaEntity));
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        UpdateSellerRequest request = new UpdateSellerRequest(
+                VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_STORE_NAME, VALID_STORE_DESC
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/update"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(request, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals("Access denied", response.getBody().error().message());
+    }
+
+    @Test
+    @DisplayName("Should update seller fields and set AWAITING_APPROVAL when email is unchanged")
+    public void shouldUpdateSellerFieldsAndSetAwaitingApprovalWhenEmailIsUnchanged() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.ACTIVE);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        String newStoreName = "Nova Loja Dombo";
+        String newStoreDescription = "Nova descrição da loja";
+
+        UpdateSellerRequest request = new UpdateSellerRequest(
+                null, null, null, null, newStoreName, newStoreDescription
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<ApiResponse<UpdateSellerOutput>> response = restTemplate.exchange(
+                url("/sellers/update"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(request, headers),
+                new ParameterizedTypeReference<ApiResponse<UpdateSellerOutput>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals("Seller updated successfully", response.getBody().data().message());
+
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        Assertions.assertTrue(resultOpt.isPresent());
+        SellerJpaEntity result = (SellerJpaEntity) resultOpt.get();
+        Assertions.assertEquals(UserStatus.AWAITING_APPROVAL, result.getStatus());
+        Assertions.assertEquals(newStoreName, result.getStoreName());
+        Assertions.assertEquals(newStoreDescription, result.getStoreDescription());
+    }
+
+    @Test
+    @DisplayName("Should set seller status to PENDING and send activation token email when email changes")
+    public void shouldSetSellerStatusToPendingAndSendActivationTokenEmailWhenEmailChangesOnUpdateSeller() {
+        SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
+        AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
+        addressJpaRepository.save(addressJpaEntity);
+        entity.setStoreAddress(addressJpaEntity);
+        entity.setStatus(UserStatus.ACTIVE);
+        userJpaRepository.save(entity);
+
+        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+
+        UpdateSellerRequest request = new UpdateSellerRequest(
+                null, null, "dombo.novo@gmail.com", null, null, null
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<ApiResponse<UpdateSellerOutput>> response = restTemplate.exchange(
+                url("/sellers/update"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(request, headers),
+                new ParameterizedTypeReference<ApiResponse<UpdateSellerOutput>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(
+                "As you changed you email we've sent instruction to conform account in the provided email.",
+                response.getBody().data().message()
+        );
+
+        Optional<UserJpaEntity> resultOpt = userJpaRepository.findById(entity.getId());
+        Assertions.assertTrue(resultOpt.isPresent());
+        Assertions.assertEquals(UserStatus.PENDING, resultOpt.get().getStatus());
+
+        Optional<ActivationTokenJpaEntity> activationTokenOpt =
+                activationTokenRepository.findByUsedAndUserId(false, entity.getId());
         Assertions.assertTrue(activationTokenOpt.isPresent());
 
         Optional<OutboxEventJpaEntity> outboxEventOpt = outboxEventJpaRepository.findByAggregateId(entity.getId());

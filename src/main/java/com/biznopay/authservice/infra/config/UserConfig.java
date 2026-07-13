@@ -4,6 +4,7 @@ import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.ApproveSellerPolicy;
 import com.biznopay.authservice.domain.policy.RejectSellerPolicy;
 import com.biznopay.authservice.domain.policy.ResubmitSellerPolicy;
+import com.biznopay.authservice.domain.policy.UpdateSellerPolicy;
 import com.biznopay.authservice.usecase.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.account.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfile;
@@ -14,6 +15,7 @@ import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
 import com.biznopay.authservice.usecase.seller.register.RegisterSeller;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSeller;
 import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSeller;
+import com.biznopay.authservice.usecase.seller.updateSeller.UpdateSeller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -76,6 +78,24 @@ public class UserConfig {
     }
 
     @Bean
+    public ValidateToken validateToken() {
+        return new ValidateToken(authenticationGateway, metricsGateway);
+    }
+
+    @Bean
+    public GetUserProfile getUserProfile() {
+        return new GetUserProfile(userGateway);
+    }
+
+    @Bean
+    public UpdateSeller updateSeller() {
+        return new UpdateSeller(transactionGateway, authenticationGateway,
+                updateSellerPolicy(), userGateway, activationTokenGateway, domainEventGateway);
+    }
+
+
+    // Policies
+    @Bean
     public ApproveSellerPolicy approveSellerPolicy() {
         return new ApproveSellerPolicy();
     }
@@ -91,13 +111,9 @@ public class UserConfig {
     }
 
     @Bean
-    public ValidateToken validateToken() {
-        return new ValidateToken(authenticationGateway, metricsGateway);
+    public UpdateSellerPolicy updateSellerPolicy() {
+        return new UpdateSellerPolicy();
     }
 
-    @Bean
-    public GetUserProfile getUserProfile() {
-        return new GetUserProfile(userGateway);
-    }
 }
 
