@@ -14,6 +14,7 @@ import com.biznopay.authservice.usecase.sa.RegisterSAInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
 import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
 import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
+import com.biznopay.authservice.usecase.seller.updateSeller.UpdateSellerInput;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -201,5 +202,10 @@ public class UserMapper {
                 .setRole(output.role())
                 .setStatus(output.status())
                 .build();
+    }
+
+    public static UpdateSellerInput toUpdateSellerInput(UpdateSellerRequest request) {
+        return new UpdateSellerInput(request.firstName(), request.lastName(), request.email(), request.phoneNumber(),
+                request.storeName(), request.storeDescription());
     }
 }
