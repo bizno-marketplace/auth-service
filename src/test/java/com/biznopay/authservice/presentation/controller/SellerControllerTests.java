@@ -953,27 +953,28 @@ public class SellerControllerTests extends ContainerBase {
         Optional<OutboxEventJpaEntity> outboxEventOpt = outboxEventJpaRepository.findByAggregateId(entity.getId());
         Assertions.assertTrue(outboxEventOpt.isPresent());
     }
-//    UPDATE SELLER
-@Test
-@DisplayName("Should throw AccessDeniedException if no auth token is provided on update seller")
-public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnUpdateSeller() {
-    UpdateSellerRequest request = new UpdateSellerRequest(
-            VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_STORE_NAME, VALID_STORE_DESC
-    );
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
+    //    UPDATE SELLER
+    @Test
+    @DisplayName("Should throw AccessDeniedException if no auth token is provided on update seller")
+    public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnUpdateSeller() {
+        UpdateSellerRequest request = new UpdateSellerRequest(
+                VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_STORE_NAME, VALID_STORE_DESC
+        );
 
-    ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
-            url("/sellers/update"),
-            HttpMethod.PATCH,
-            new HttpEntity<>(request, headers),
-            new ParameterizedTypeReference<ApiResponse<Object>>() {
-            }
-    );
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-    Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-}
+        ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                url("/sellers/update"),
+                HttpMethod.PATCH,
+                new HttpEntity<>(request, headers),
+                new ParameterizedTypeReference<ApiResponse<Object>>() {
+                }
+        );
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
 
     @Test
     @DisplayName("Should throw AccessDeniedException if logged user is not seller on update seller")
