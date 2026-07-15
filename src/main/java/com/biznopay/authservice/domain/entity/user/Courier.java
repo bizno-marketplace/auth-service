@@ -6,6 +6,7 @@ import com.biznopay.authservice.domain.enums.VehicleTypeEnum;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Courier extends User {
     private final VehicleTypeEnum vehicleType;
@@ -28,6 +29,14 @@ public class Courier extends User {
         LocalDateTime creationDateTime = LocalDateTime.now();
         return new Courier(UserId.generate(), firstName, lastname, email, phone, password, vehicleType, licenseNumber,
                 zone, null, creationDateTime, creationDateTime);
+    }
+
+    public static Courier reconstruct(UUID id, String firstName, String lastname, String email, String phone, String password,
+                                      VehicleTypeEnum vehicleType, String licenseNumber, String zone, LocalDateTime expiresAt,
+                                      LocalDateTime createdAt, LocalDateTime updatedAt) {
+
+        phone = validatePhone(phone);
+        return new Courier(UserId.of(id), firstName, lastname, email, phone, password, vehicleType, licenseNumber, zone, expiresAt, createdAt, updatedAt);
     }
 
     private static String validatePhone(String phone) {
