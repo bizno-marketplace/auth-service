@@ -1,4 +1,4 @@
-package com.biznopay.authservice.usecase.seller.rejectSeller;
+package com.biznopay.authservice.usecase.seller.reject;
 
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.UserId;

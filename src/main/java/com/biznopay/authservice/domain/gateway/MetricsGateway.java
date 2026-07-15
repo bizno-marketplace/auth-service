@@ -13,6 +13,9 @@ public interface MetricsGateway {
     // Buyer
     void incrementBuyerRegistered();
 
+    // Courier
+    void incrementCourierRegistered();
+
     // Auth
     void recordValidateTokenDuration(long durationMillis);
 }

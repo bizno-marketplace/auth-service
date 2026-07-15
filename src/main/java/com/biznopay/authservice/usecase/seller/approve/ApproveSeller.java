@@ -1,4 +1,4 @@
-package com.biznopay.authservice.usecase.seller.approveSeller;
+package com.biznopay.authservice.usecase.seller.approve;
 
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;

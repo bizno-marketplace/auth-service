@@ -1,4 +1,4 @@
-package com.biznopay.authservice.usecase.seller.resubmitseller;
+package com.biznopay.authservice.usecase.seller.resubmit;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.event.UserUpdated;

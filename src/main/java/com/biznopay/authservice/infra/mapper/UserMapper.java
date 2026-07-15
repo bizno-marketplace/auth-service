@@ -10,11 +10,12 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.*;
 import com.biznopay.authservice.presentation.dto.*;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfileOutput;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyerInput;
+import com.biznopay.authservice.usecase.courier.register.RegisterCourierInput;
 import com.biznopay.authservice.usecase.sa.RegisterSAInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
-import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
-import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
-import com.biznopay.authservice.usecase.seller.updateSeller.UpdateSellerInput;
+import com.biznopay.authservice.usecase.seller.reject.RejectSellerInput;
+import com.biznopay.authservice.usecase.seller.resubmit.ResubmitSellerInput;
+import com.biznopay.authservice.usecase.seller.update.UpdateSellerInput;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -207,5 +208,10 @@ public class UserMapper {
     public static UpdateSellerInput toUpdateSellerInput(UpdateSellerRequest request) {
         return new UpdateSellerInput(request.firstName(), request.lastName(), request.email(), request.phoneNumber(),
                 request.storeName(), request.storeDescription());
+    }
+
+    public static RegisterCourierInput toRegisterCourierInout(RegisterCourierRequest request) {
+        return new RegisterCourierInput(request.firstName(), request.lastname(), request.email(),
+                request.phone(), request.password(), request.vehicleType(), request.licenseNumber(), request.zone());
     }
 }

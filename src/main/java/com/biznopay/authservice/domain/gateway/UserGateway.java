@@ -19,4 +19,5 @@ public interface UserGateway {
     Optional<User> findSellerById(UUID id);
 
     void update(User user);
+
 }

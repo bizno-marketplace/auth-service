@@ -1,21 +1,19 @@
 package com.biznopay.authservice.infra.config;
 
 import com.biznopay.authservice.domain.gateway.*;
-import com.biznopay.authservice.domain.policy.ApproveSellerPolicy;
-import com.biznopay.authservice.domain.policy.RejectSellerPolicy;
-import com.biznopay.authservice.domain.policy.ResubmitSellerPolicy;
-import com.biznopay.authservice.domain.policy.UpdateSellerPolicy;
+import com.biznopay.authservice.domain.policy.*;
 import com.biznopay.authservice.usecase.account.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.account.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfile;
 import com.biznopay.authservice.usecase.auth.validateToken.ValidateToken;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyer;
+import com.biznopay.authservice.usecase.courier.register.RegisterCourier;
 import com.biznopay.authservice.usecase.sa.RegisterSA;
-import com.biznopay.authservice.usecase.seller.approveSeller.ApproveSeller;
+import com.biznopay.authservice.usecase.seller.approve.ApproveSeller;
 import com.biznopay.authservice.usecase.seller.register.RegisterSeller;
-import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSeller;
-import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSeller;
-import com.biznopay.authservice.usecase.seller.updateSeller.UpdateSeller;
+import com.biznopay.authservice.usecase.seller.reject.RejectSeller;
+import com.biznopay.authservice.usecase.seller.resubmit.ResubmitSeller;
+import com.biznopay.authservice.usecase.seller.update.UpdateSeller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -93,6 +91,12 @@ public class UserConfig {
                 updateSellerPolicy(), userGateway, activationTokenGateway, domainEventGateway);
     }
 
+    @Bean
+    public RegisterCourier registerCourier() {
+        return new RegisterCourier(transactionGateway, authenticationGateway, registerCourierPolicy(),
+                userGateway, encoderGateway, activationTokenGateway, domainEventGateway, metricsGateway);
+    }
+
 
     // Policies
     @Bean
@@ -115,5 +119,9 @@ public class UserConfig {
         return new UpdateSellerPolicy();
     }
 
+    @Bean
+    public RegisterCourierPolicy registerCourierPolicy() {
+        return new RegisterCourierPolicy();
+    }
 }
 

@@ -62,7 +62,7 @@ public class CourierTests {
             Assertions.assertEquals(vehicleType, courier.getVehicleType());
             Assertions.assertEquals(licenseNumber, courier.getLicenseNumber());
             Assertions.assertEquals(zone, courier.getZone());
-            Assertions.assertEquals( expiresAt,courier.getExpiresAt());
+            Assertions.assertEquals(expiresAt, courier.getExpiresAt());
             Assertions.assertNotNull(courier.getCreatedAt());
             Assertions.assertNotNull(courier.getUpdatedAt());
         } else {
