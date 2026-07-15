@@ -26,7 +26,7 @@ public class CourierController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Object>> register(@RequestBody @Valid RegisterCourierRequest request) {
-        RegisterCourierInput input = UserMapper.toRegisterCourierInout(request);
+        RegisterCourierInput input = UserMapper.toRegisterCourierInput(request);
         RegisterCourierOutput output = registerCourier.execute(input);
         return ResponseEntity.status(HttpStatus.OK).body(FuncUtils.buildResponseBody(true, output, null));
     }

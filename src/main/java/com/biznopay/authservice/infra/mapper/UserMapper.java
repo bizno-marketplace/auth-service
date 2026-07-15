@@ -28,6 +28,7 @@ public class UserMapper {
             case SuperAdmin sa -> toSuperAdminJpaEntity(sa);
             case Buyer buyer -> toBuyerEntity(buyer);
             case Seller seller -> toSellerEntity(seller);
+            case Courier courier -> toCourierEntity(courier);
             default ->
                     throw new UnknownEntityException("Unknown entity: " + user.getClass().getName(), "USER_MAPPER-0001");
         };
@@ -92,12 +93,30 @@ public class UserMapper {
         return entity;
     }
 
+    private static CourierJpaEntity toCourierEntity(Courier courier) {
+        CourierJpaEntity entity = new CourierJpaEntity();
+        entity.setId(courier.getId().value());
+        entity.setFirstName(courier.getFirstName());
+        entity.setLastName(courier.getLastName());
+        entity.setEmail(courier.getEmail());
+        entity.setPhone(courier.getPhone());
+        entity.setPassword(courier.getPassword());
+        entity.setStatus(courier.getStatus());
+        entity.setVehicleType(courier.getVehicleType());
+        entity.setLicenseNumber(courier.getLicenseNumber());
+        entity.setZone(courier.getZone());
+        entity.setExpiresAt(courier.getExpiresAt());
+        entity.setCreatedAt(courier.getCreatedAt());
+        entity.setUpdatedAt(courier.getUpdatedAt());
+        return entity;
+    }
 
     public static User toUserDomain(UserJpaEntity entity) {
         return switch (entity) {
             case SuperAdminJpaEntity sa -> toSuperAdminDomainEntity(sa);
             case BuyerJpaEntity buyerJpa -> toBuyerDomainEntity(buyerJpa);
             case SellerJpaEntity sellerJpa -> toSellerDomainEntity(sellerJpa);
+            case CourierJpaEntity courierJpa -> toCourierDomainEntity(courierJpa);
             default ->
                     throw new UnknownEntityException("Unknown entity: " + entity.getClass().getName(), "USER_MAPPER-0002S");
         };
@@ -122,6 +141,13 @@ public class UserMapper {
         return Seller.reconstruct(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
                 entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt(), entity.getStoreName(), entity.getStoreDescription(), entity.getNuit(), address, biDocument);
+    }
+
+    private static Courier toCourierDomainEntity(CourierJpaEntity entity) {
+        return Courier.reconstruct(entity.getId(), entity.getFirstName(), entity.getLastName(),
+                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getVehicleType()
+                , entity.getLicenseNumber(), entity.getZone(), entity.getStatus(),
+                entity.getExpiresAt(), entity.getCreatedAt(), entity.getUpdatedAt());
     }
 
     public static RegisterSAInput toRegisterSAInput(RegisterSARequest request) {
@@ -210,7 +236,7 @@ public class UserMapper {
                 request.storeName(), request.storeDescription());
     }
 
-    public static RegisterCourierInput toRegisterCourierInout(RegisterCourierRequest request) {
+    public static RegisterCourierInput toRegisterCourierInput(RegisterCourierRequest request) {
         return new RegisterCourierInput(request.firstName(), request.lastname(), request.email(),
                 request.phone(), request.password(), request.vehicleType(), request.licenseNumber(), request.zone());
     }

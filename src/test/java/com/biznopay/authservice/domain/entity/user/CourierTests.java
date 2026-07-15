@@ -46,11 +46,11 @@ public class CourierTests {
     @MethodSource("com.biznopay.authservice.testcases.CourierTestCases#reconstructDomainCases")
     public void reconstructDomainCases(String testName, UUID userId, String firstName, String lastName, String email,
                                        String phone, String password, VehicleTypeEnum vehicleType, String licenseNumber, String zone,
-                                       LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
+                                       UserStatus status, LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt,
                                        Class<? extends Exception> expectedException, String expectedMessage) {
         if (testName.equals("Success")) {
             Courier courier = Courier.reconstruct(userId, firstName, lastName, email, phone, password, vehicleType,
-                    licenseNumber, zone, expiresAt, createdAt, updatedAt);
+                    licenseNumber, zone, status, expiresAt, createdAt, updatedAt);
             Assertions.assertNotNull(courier);
             Assertions.assertNotNull(courier.getId());
             Assertions.assertEquals(firstName, courier.getFirstName());
@@ -68,7 +68,7 @@ public class CourierTests {
         } else {
             org.assertj.core.api.Assertions.assertThatThrownBy(
                             () -> Courier.reconstruct(userId, firstName, lastName, email, phone, password, vehicleType,
-                                    licenseNumber, zone, expiresAt, createdAt, updatedAt))
+                                    licenseNumber, zone, status, expiresAt, createdAt, updatedAt))
                     .isInstanceOf(expectedException)
                     .hasMessage(expectedMessage);
         }

@@ -14,9 +14,9 @@ public class Courier extends User {
     private final String zone;
 
     private Courier(UserId id, String firstName, String lastname, String email, String phone, String password,
-                    VehicleTypeEnum vehicleType, String licenseNumber, String zone, LocalDateTime expiresAt,
+                    VehicleTypeEnum vehicleType, String licenseNumber, String zone, UserStatus status, LocalDateTime expiresAt,
                     LocalDateTime createdAt, LocalDateTime updatedAt) {
-        super(id, firstName, lastname, email, phone, password, Role.COURIER, UserStatus.PENDING, expiresAt, createdAt, updatedAt);
+        super(id, firstName, lastname, email, phone, password, Role.COURIER, status, expiresAt, createdAt, updatedAt);
 
         this.vehicleType = validateVehicleType(vehicleType);
         this.licenseNumber = validaLicenseNumber(licenseNumber);
@@ -28,15 +28,16 @@ public class Courier extends User {
         phone = validatePhone(phone);
         LocalDateTime creationDateTime = LocalDateTime.now();
         return new Courier(UserId.generate(), firstName, lastname, email, phone, password, vehicleType, licenseNumber,
-                zone, null, creationDateTime, creationDateTime);
+                zone, UserStatus.PENDING, null, creationDateTime, creationDateTime);
     }
 
     public static Courier reconstruct(UUID id, String firstName, String lastname, String email, String phone, String password,
-                                      VehicleTypeEnum vehicleType, String licenseNumber, String zone, LocalDateTime expiresAt,
-                                      LocalDateTime createdAt, LocalDateTime updatedAt) {
+                                      VehicleTypeEnum vehicleType, String licenseNumber, String zone, UserStatus status,
+                                      LocalDateTime expiresAt, LocalDateTime createdAt, LocalDateTime updatedAt) {
 
         phone = validatePhone(phone);
-        return new Courier(UserId.of(id), firstName, lastname, email, phone, password, vehicleType, licenseNumber, zone, expiresAt, createdAt, updatedAt);
+        return new Courier(UserId.of(id), firstName, lastname, email, phone, password, vehicleType, licenseNumber, zone,
+                status, expiresAt, createdAt, updatedAt);
     }
 
     private static String validatePhone(String phone) {
