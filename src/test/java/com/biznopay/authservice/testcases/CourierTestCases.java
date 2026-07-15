@@ -52,7 +52,7 @@ public class CourierTestCases {
         );
     }
 
-    public static Courier validCourier(){
+    public static Courier validCourier() {
         return Courier.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_VEHICLE_TYPE, VALID_LICENSE_NUMBER, VALID_ZONE);
     }
 }
