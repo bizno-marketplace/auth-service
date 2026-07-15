@@ -1,5 +1,6 @@
 package com.biznopay.authservice.testcases;
 
+import com.biznopay.authservice.domain.entity.user.Courier;
 import com.biznopay.authservice.domain.enums.VehicleTypeEnum;
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import org.junit.jupiter.params.provider.Arguments;
@@ -49,5 +50,9 @@ public class CourierTestCases {
                 Arguments.of("Zone is null", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_VEHICLE_TYPE, VALID_LICENSE_NUMBER, null, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, RequiredFieldException.class, "Zone is required"),
                 Arguments.of("Success", VALID_USER_ID, VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_VEHICLE_TYPE, VALID_LICENSE_NUMBER, VALID_ZONE, VALID_EXPIRES_AT, VALID_CREATED_AT, VALID_UPDATED_AT, null, null)
         );
+    }
+
+    public static Courier validCourier(){
+        return Courier.register(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_VEHICLE_TYPE, VALID_LICENSE_NUMBER, VALID_ZONE);
     }
 }
