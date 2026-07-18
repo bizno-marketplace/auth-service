@@ -2,6 +2,7 @@ package com.biznopay.authservice.bdd._config;
 
 
 import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.helper.JwtHelper;
 import io.cucumber.spring.ScenarioScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -30,6 +31,10 @@ public class ScenarioContext {
     private StringRedisTemplate redisTemplate;
     private JdbcTemplate jdbcTemplate;
     private Object requestData;
+
+    @Autowired
+    private JwtHelper jwtHelper;
+
 
     private Map<String, String> stringsMaps = new HashMap<>();
 
@@ -89,7 +94,8 @@ public class ScenarioContext {
         return fileParts;
     }
 
-    public Map<String, String> getHeadersMap() {
+    public Map<String, String>
+    getHeadersMap() {
         return stringsMaps;
     }
 
@@ -100,6 +106,10 @@ public class ScenarioContext {
     public void clearFileParts() {
         fileParts.clear();
         requestData = null;
+    }
+
+    public JwtHelper getJwtHelper() {
+        return jwtHelper;
     }
 
     public record FilePart(String filename, String contentType, byte[] bytes) {
