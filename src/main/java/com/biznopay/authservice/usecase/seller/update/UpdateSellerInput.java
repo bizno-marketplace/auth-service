@@ -1,4 +1,4 @@
-package com.biznopay.authservice.usecase.seller.updateSeller;
+package com.biznopay.authservice.usecase.seller.update;
 
 public record UpdateSellerInput(
         String firstName,

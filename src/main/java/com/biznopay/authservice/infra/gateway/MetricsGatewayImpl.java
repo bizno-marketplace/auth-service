@@ -38,6 +38,11 @@ public class MetricsGatewayImpl implements MetricsGateway {
     }
 
     @Override
+    public void incrementCourierRegistered() {
+        registry.counter("auth.courier.registered").increment();
+    }
+
+    @Override
     public void recordValidateTokenDuration(long durationMillis) {
         registry.timer("auth.grpc.validate_token.duration")
                 .record(Duration.ofMillis(durationMillis));

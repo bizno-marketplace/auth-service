@@ -31,7 +31,7 @@ public abstract class User {
         this.lastname = this.validateLastName(lastname);
         this.email = this.validateEmail(email);
         this.phone = phone;
-        this.password = password;
+        this.password = validatePassword(password);
         this.role = role;
         this.status = status;
         this.expiresAt = expiresAt;
@@ -65,9 +65,15 @@ public abstract class User {
         return email;
     }
 
+    private String validatePassword(String password) {
+        if (password == null || password.isEmpty())
+            throw new RequiredFieldException("Password", User.class.getName(), "USER-008");
+        return password;
+    }
+
     //END VALIDATIONS
     public void activate() {
-        if (this.status == UserStatus.ACTIVE) throw new AccountAlreadyConfirmedException("USER-008");
+        if (this.status == UserStatus.ACTIVE) throw new AccountAlreadyConfirmedException("USER-009");
         this.status = UserStatus.ACTIVE;
         this.updatedAt = LocalDateTime.now();
     }

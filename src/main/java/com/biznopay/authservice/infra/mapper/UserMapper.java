@@ -10,11 +10,12 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.*;
 import com.biznopay.authservice.presentation.dto.*;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfileOutput;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyerInput;
+import com.biznopay.authservice.usecase.courier.register.RegisterCourierInput;
 import com.biznopay.authservice.usecase.sa.RegisterSAInput;
 import com.biznopay.authservice.usecase.seller.register.RegisterSellerInput;
-import com.biznopay.authservice.usecase.seller.rejectSeller.RejectSellerInput;
-import com.biznopay.authservice.usecase.seller.resubmitseller.ResubmitSellerInput;
-import com.biznopay.authservice.usecase.seller.updateSeller.UpdateSellerInput;
+import com.biznopay.authservice.usecase.seller.reject.RejectSellerInput;
+import com.biznopay.authservice.usecase.seller.resubmit.ResubmitSellerInput;
+import com.biznopay.authservice.usecase.seller.update.UpdateSellerInput;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class UserMapper {
             case SuperAdmin sa -> toSuperAdminJpaEntity(sa);
             case Buyer buyer -> toBuyerEntity(buyer);
             case Seller seller -> toSellerEntity(seller);
+            case Courier courier -> toCourierEntity(courier);
             default ->
                     throw new UnknownEntityException("Unknown entity: " + user.getClass().getName(), "USER_MAPPER-0001");
         };
@@ -91,12 +93,30 @@ public class UserMapper {
         return entity;
     }
 
+    private static CourierJpaEntity toCourierEntity(Courier courier) {
+        CourierJpaEntity entity = new CourierJpaEntity();
+        entity.setId(courier.getId().value());
+        entity.setFirstName(courier.getFirstName());
+        entity.setLastName(courier.getLastName());
+        entity.setEmail(courier.getEmail());
+        entity.setPhone(courier.getPhone());
+        entity.setPassword(courier.getPassword());
+        entity.setStatus(courier.getStatus());
+        entity.setVehicleType(courier.getVehicleType());
+        entity.setLicenseNumber(courier.getLicenseNumber());
+        entity.setZone(courier.getZone());
+        entity.setExpiresAt(courier.getExpiresAt());
+        entity.setCreatedAt(courier.getCreatedAt());
+        entity.setUpdatedAt(courier.getUpdatedAt());
+        return entity;
+    }
 
     public static User toUserDomain(UserJpaEntity entity) {
         return switch (entity) {
             case SuperAdminJpaEntity sa -> toSuperAdminDomainEntity(sa);
             case BuyerJpaEntity buyerJpa -> toBuyerDomainEntity(buyerJpa);
             case SellerJpaEntity sellerJpa -> toSellerDomainEntity(sellerJpa);
+            case CourierJpaEntity courierJpa -> toCourierDomainEntity(courierJpa);
             default ->
                     throw new UnknownEntityException("Unknown entity: " + entity.getClass().getName(), "USER_MAPPER-0002S");
         };
@@ -121,6 +141,13 @@ public class UserMapper {
         return Seller.reconstruct(UserId.of(entity.getId()), entity.getFirstName(), entity.getLastName(),
                 entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getStatus(), entity.getExpiresAt(),
                 entity.getCreatedAt(), entity.getUpdatedAt(), entity.getStoreName(), entity.getStoreDescription(), entity.getNuit(), address, biDocument);
+    }
+
+    private static Courier toCourierDomainEntity(CourierJpaEntity entity) {
+        return Courier.reconstruct(entity.getId(), entity.getFirstName(), entity.getLastName(),
+                entity.getEmail(), entity.getPhone(), entity.getPassword(), entity.getVehicleType()
+                , entity.getLicenseNumber(), entity.getZone(), entity.getStatus(),
+                entity.getExpiresAt(), entity.getCreatedAt(), entity.getUpdatedAt());
     }
 
     public static RegisterSAInput toRegisterSAInput(RegisterSARequest request) {
@@ -207,5 +234,10 @@ public class UserMapper {
     public static UpdateSellerInput toUpdateSellerInput(UpdateSellerRequest request) {
         return new UpdateSellerInput(request.firstName(), request.lastName(), request.email(), request.phoneNumber(),
                 request.storeName(), request.storeDescription());
+    }
+
+    public static RegisterCourierInput toRegisterCourierInput(RegisterCourierRequest request) {
+        return new RegisterCourierInput(request.firstName(), request.lastname(), request.email(),
+                request.phone(), request.password(), request.vehicleType(), request.licenseNumber(), request.zone());
     }
 }
