@@ -92,19 +92,19 @@ public class ValidateTokenSteps {
         scenarioContext.getHeadersMap().put("userId", entity.getId().toString());
     }
 
-    @And("a valid JWT token is generated for that user")
+    @And("a valid JWT accessToken is generated for that user")
     public void aValidJWTTokenIsGeneratedForThatUser() {
         UUID userId = UUID.fromString(scenarioContext.getHeadersMap().get("userId"));
         Optional<UserJpaEntity> entityOpt = userJpaRepository.findById(userId);
         Assertions.assertTrue(entityOpt.isPresent());
         UserJpaEntity entity = entityOpt.get();
-        String token = jwtHelper.generate(entity.getPassword(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getPassword(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
         scenarioContext.getHeadersMap().put("token", token);
     }
 
-    @When("the ValidateToken gRPC method is called with the token")
+    @When("the ValidateToken gRPC method is called with the accessToken")
     public void theValidateTokenGRPCMethodIsCalledWithTheToken() {
-        String token = scenarioContext.getHeadersMap().get("token");
+        String token = scenarioContext.getHeadersMap().get("accessToken");
 
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress("localhost", grpcPort)
@@ -128,7 +128,7 @@ public class ValidateTokenSteps {
         Assertions.assertEquals(status, isValid);
     }
 
-    @When("the ValidateToken gRPC method is called with an empty token")
+    @When("the ValidateToken gRPC method is called with an empty accessToken")
     public void theValidateTokenGRPCMethodIsCalledWithAnEmptyToken() {
         String token = "";
         ManagedChannel channel = ManagedChannelBuilder
@@ -150,7 +150,7 @@ public class ValidateTokenSteps {
         }
     }
 
-    @When("the ValidateToken gRPC method is called with an invalid token")
+    @When("the ValidateToken gRPC method is called with an invalid accessToken")
     public void theValidateTokenGRPCMethodIsCalledWithAnInvalidToken() {
         String token = UUID.randomUUID().toString();
 

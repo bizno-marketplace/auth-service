@@ -54,10 +54,10 @@ public class AuthGrpcServiceTests extends ContainerBase {
 
     //    VALIDATE TOKEN
     @Test
-    @DisplayName("Should return valid when token is real valid")
+    @DisplayName("Should return valid when accessToken is real valid")
     public void shouldReturnValidWhenTokenIsRealValid() {
         SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
         ValidateTokenRequest request = ValidateTokenRequest.newBuilder().setToken(token).build();
         ValidateTokenResponse response = stub.validateToken(request);
         Assertions.assertTrue(response.getValid());
@@ -67,7 +67,7 @@ public class AuthGrpcServiceTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should return invalid when token is not valid")
+    @DisplayName("Should return invalid when accessToken is not valid")
     public void shouldReturnInvalidWhenTokenIsNotValid() {
         ValidateTokenRequest request = ValidateTokenRequest.newBuilder().setToken("invalid").build();
         ValidateTokenResponse response = stub.validateToken(request);
@@ -76,7 +76,7 @@ public class AuthGrpcServiceTests extends ContainerBase {
 
 
     @Test
-    @DisplayName("Should throw invalid argument when token is empty")
+    @DisplayName("Should throw invalid argument when accessToken is empty")
     void shouldThrowInvalidArgumentWhenTokenIsEmpty() {
         ValidateTokenRequest request = ValidateTokenRequest.newBuilder()
                 .setToken("")

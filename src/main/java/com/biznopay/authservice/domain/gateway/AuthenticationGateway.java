@@ -1,23 +1,25 @@
 package com.biznopay.authservice.domain.gateway;
 
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.vo.AuthenticateOutput;
+import com.biznopay.authservice.domain.vo.RefreshTokenClaims;
 
-import java.security.Key;
+import java.util.UUID;
 
 public interface AuthenticationGateway {
     User loggedUser();
 
-    String extractEmail(String token);
-
-    boolean isTokenValid(String token, User user);
-
-    String extractUserId(String token);
-
-    String extractRole(String token);
-
-    String extractStatus(String token);
-
     boolean isTokenSignatureValid(String token);
 
-    Key getSignKey();
+    AuthenticateOutput authenticate(User user);
+
+    boolean isRefreshTokenValid(UUID userId, String tokenId);
+
+    void markRefreshTokenUsed(UUID userId, String tokenId);
+
+    void revokeRefreshToken(UUID userId, String tokenId);
+
+    void revokeAllRefreshTokens(UUID userId);
+
+    RefreshTokenClaims extractRefreshClaims(String refreshToken);
 }

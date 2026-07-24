@@ -25,8 +25,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/accounts/confirm-account/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/accounts/resend-confirmation/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/confirm-account/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/resend-confirmation/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh/**").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/supper-admins/register/**",
                                 "/buyers/register/**",

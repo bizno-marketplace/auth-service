@@ -45,7 +45,7 @@ public class ActivationTokenTests {
     }
 
     @Test
-    @DisplayName("Should mark token as used on markAsUsed")
+    @DisplayName("Should mark accessToken as used on markAsUsed")
     public void shouldMarkTokenAsUsedOnMarlAsUsed() {
         ActivationToken activationToken = ActivationToken.generate(VALID_USER_ID);
         activationToken.markAsUsed();

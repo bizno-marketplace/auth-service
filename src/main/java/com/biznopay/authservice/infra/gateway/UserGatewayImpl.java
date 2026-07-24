@@ -8,9 +8,9 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SellerJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.SuperAdminJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -59,7 +59,7 @@ public class UserGatewayImpl implements UserGateway {
     }
 
     public UserDetails findByEmailUserDetails(String email) {
-        return this.userJpaRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found!"));
+        return this.userJpaRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
     }
 
     @Override

@@ -11,14 +11,14 @@ Feature: Validate Token (gRPC)
 
   Scenario: Successfully validate a valid token
     Given an active user exists in the database
-    And a valid JWT token is generated for that user
-    When the ValidateToken gRPC method is called with the token
+    And a valid JWT accessToken is generated for that user
+    When the ValidateToken gRPC method is called with the accessToken
     Then the gRPC response valid field should be "true"
 
   Scenario: Fail to validate an empty token
-    When the ValidateToken gRPC method is called with an empty token
+    When the ValidateToken gRPC method is called with an empty accessToken
     Then the gRPC response valid field should be "INVALID_ARGUMENT: Token is required"
 
   Scenario: Fail to validate an invalid token
-    When the ValidateToken gRPC method is called with an invalid token
+    When the ValidateToken gRPC method is called with an invalid accessToken
     Then the gRPC response valid field should be "false"

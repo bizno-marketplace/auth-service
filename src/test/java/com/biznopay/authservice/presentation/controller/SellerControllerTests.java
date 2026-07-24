@@ -256,7 +256,7 @@ public class SellerControllerTests extends ContainerBase {
 
     //Approve seller
     @Test
-    @DisplayName("Should throw AccessDeniedException if no auth token is provided on approve seller")
+    @DisplayName("Should throw AccessDeniedException if no auth accessToken is provided on approve seller")
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSeller() {
         String userId = UUID.randomUUID().toString();
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
@@ -280,7 +280,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStoreAddress(addressJpaEntity);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -305,7 +305,7 @@ public class SellerControllerTests extends ContainerBase {
 
         SuperAdminJpaEntity sa = (SuperAdminJpaEntity) VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -334,7 +334,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -364,7 +364,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -394,7 +394,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -417,7 +417,7 @@ public class SellerControllerTests extends ContainerBase {
 
     //Reject seller
     @Test
-    @DisplayName("Should throw AccessDeniedException if no auth token is provided on reject seller")
+    @DisplayName("Should throw AccessDeniedException if no auth accessToken is provided on reject seller")
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSellerOnRejectSeller() {
         String userId = UUID.randomUUID().toString();
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
@@ -441,7 +441,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStoreAddress(addressJpaEntity);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -469,7 +469,7 @@ public class SellerControllerTests extends ContainerBase {
 
         SuperAdminJpaEntity sa = (SuperAdminJpaEntity) VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -501,7 +501,7 @@ public class SellerControllerTests extends ContainerBase {
 
         SuperAdminJpaEntity sa = (SuperAdminJpaEntity) VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -535,7 +535,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -569,7 +569,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -603,7 +603,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -648,7 +648,7 @@ public class SellerControllerTests extends ContainerBase {
 
         UserJpaEntity sa = VALID_SUPER_ADMIN_JPA;
         userJpaRepository.save(sa);
-        String token = jwtHelper.generate(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
+        String token = jwtHelper.generateToken(sa.getId().toString(), sa.getRole(), sa.getStatus().name(), sa.getEmail());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -676,7 +676,7 @@ public class SellerControllerTests extends ContainerBase {
 
     //  Resubmit Seller
     @Test
-    @DisplayName("Should throw AccessDeniedException if no auth token is provided on ResubmitSeller")
+    @DisplayName("Should throw AccessDeniedException if no auth accessToken is provided on ResubmitSeller")
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnApproveSellerOnResubmitSeller() {
         ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
                 url("/sellers/resubmit"),
@@ -700,7 +700,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setDeliveryAddresses(List.of(addressJpaEntity));
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         //Build request
         String frontImageName = "bi_frente.png";
@@ -761,7 +761,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStatus(UserStatus.AWAITING_APPROVAL);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         //Build request
         String frontImageName = "bi_frente.png";
@@ -822,7 +822,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStatus(UserStatus.REJECTED);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         //Build request
         String frontImageName = "bi_frente.png";
@@ -837,7 +837,7 @@ public class SellerControllerTests extends ContainerBase {
                 .readAllBytes();
 
 
-        ResubmitSellerRequest request = new ResubmitSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
+        ResubmitSellerRequest request = new ResubmitSellerRequest(VALID_FIRST_NAME, VALID_LAST_NAME, entity.getEmail(), VALID_PHONE, VALID_PASSWORD, VALID_STORE_NAME,
                 VALID_STORE_DESC, VALID_NUIT, VALID_ADDRESS_REQUEST);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -879,7 +879,7 @@ public class SellerControllerTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should update seller status to PENDING and send activation token email")
+    @DisplayName("Should update seller status to PENDING and send activation accessToken email")
     public void shouldUpdateSellerStatusToPendingAndSendActivationTokenEmail() throws IOException {
         FuncUtils funcUtils = new FuncUtils();
         //Creating non seller user
@@ -890,7 +890,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStatus(UserStatus.REJECTED);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         //Build request
         String frontImageName = "bi_frente.png";
@@ -956,7 +956,7 @@ public class SellerControllerTests extends ContainerBase {
 
     //    UPDATE SELLER
     @Test
-    @DisplayName("Should throw AccessDeniedException if no auth token is provided on update seller")
+    @DisplayName("Should throw AccessDeniedException if no auth accessToken is provided on update seller")
     public void shouldThrowAccessDeniedExceptionIfNoAuthTokenIsProvidedOnUpdateSeller() {
         UpdateSellerRequest request = new UpdateSellerRequest(
                 VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_STORE_NAME, VALID_STORE_DESC
@@ -985,7 +985,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setDeliveryAddresses(List.of(addressJpaEntity));
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         UpdateSellerRequest request = new UpdateSellerRequest(
                 VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_PHONE, VALID_STORE_NAME, VALID_STORE_DESC
@@ -1017,7 +1017,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         String newStoreName = "Nova Loja Dombo";
         String newStoreDescription = "Nova descrição da loja";
@@ -1050,7 +1050,7 @@ public class SellerControllerTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should set seller status to PENDING and send activation token email when email changes")
+    @DisplayName("Should set seller status to PENDING and send activation accessToken email when email changes")
     public void shouldSetSellerStatusToPendingAndSendActivationTokenEmailWhenEmailChangesOnUpdateSeller() {
         SellerJpaEntity entity = (SellerJpaEntity) VALID_SELLER_JPA;
         AddressJpaEntity addressJpaEntity = UserMapper.toAddressJpaEntity(VALID_ADDRESS_NEW);
@@ -1059,7 +1059,7 @@ public class SellerControllerTests extends ContainerBase {
         entity.setStatus(UserStatus.ACTIVE);
         userJpaRepository.save(entity);
 
-        String token = jwtHelper.generate(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
+        String token = jwtHelper.generateToken(entity.getId().toString(), entity.getRole(), entity.getStatus().name(), entity.getEmail());
 
         UpdateSellerRequest request = new UpdateSellerRequest(
                 null, null, "dombo.novo@gmail.com", null, null, null

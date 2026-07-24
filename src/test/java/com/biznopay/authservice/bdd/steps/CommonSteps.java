@@ -42,7 +42,7 @@ public class CommonSteps {
                     data.get("email"),
                     data.get("password")
             );
-            case "/accounts/resend-confirmation" -> new ResendConfirmationRequest(data.get("email"));
+            case "/auth/resend-confirmation" -> new ResendConfirmationRequest(data.get("email"));
             case "/buyers/register" -> {
                 AddressRequest address = new AddressRequest(
                         data.get("latitude") != null && !data.get("latitude").isBlank() ? Double.parseDouble(data.get("latitude")) : null,

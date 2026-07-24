@@ -96,6 +96,14 @@ public abstract class User {
         this.status = UserStatus.BLOCKED;
     }
 
+    public void suspend() {
+        this.status = UserStatus.SUSPENDED;
+    }
+
+    public void setToExpired() {
+        this.status = UserStatus.EXPIRED;
+    }
+
     public UserId getId() {
         return id;
     }

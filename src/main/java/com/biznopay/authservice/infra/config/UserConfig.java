@@ -2,9 +2,12 @@ package com.biznopay.authservice.infra.config;
 
 import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.*;
-import com.biznopay.authservice.usecase.account.confirmAccount.ConfirmAccount;
-import com.biznopay.authservice.usecase.account.resendConfirmation.ResendConformation;
+import com.biznopay.authservice.usecase.auth.confirmAccount.ConfirmAccount;
 import com.biznopay.authservice.usecase.auth.getUserProfile.GetUserProfile;
+import com.biznopay.authservice.usecase.auth.login.Login;
+import com.biznopay.authservice.usecase.auth.logout.Logout;
+import com.biznopay.authservice.usecase.auth.refreshToken.RefreshToken;
+import com.biznopay.authservice.usecase.auth.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.auth.validateToken.ValidateToken;
 import com.biznopay.authservice.usecase.buyer.RegisterBuyer;
 import com.biznopay.authservice.usecase.courier.register.RegisterCourier;
@@ -97,6 +100,20 @@ public class UserConfig {
                 userGateway, encoderGateway, activationTokenGateway, domainEventGateway, metricsGateway);
     }
 
+    @Bean
+    public Login login() {
+        return new Login(userGateway, encoderGateway, authenticationGateway);
+    }
+
+    @Bean
+    public Logout logout() {
+        return new Logout(authenticationGateway, transactionGateway);
+    }
+
+    @Bean
+    public RefreshToken refreshToken() {
+        return new RefreshToken(transactionGateway, authenticationGateway, userGateway);
+    }
 
     // Policies
     @Bean

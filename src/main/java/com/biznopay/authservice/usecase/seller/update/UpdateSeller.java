@@ -8,7 +8,6 @@ import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.UpdateSellerPolicy;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class UpdateSeller {
     private final TransactionGateway transactionGateway;
@@ -57,7 +56,7 @@ public class UpdateSeller {
     }
 
     private UpdateSellerOutput resendEmailValidation(User seller, User updatedSeller) {
-        if (!Objects.equals(seller.getEmail(), updatedSeller.getEmail())) {
+        if (!seller.getEmail().equals(updatedSeller.getEmail())) {
             ActivationToken token = ActivationToken.generate(seller.getId());
             updatedSeller.setToPending();
             userGateway.update(updatedSeller);

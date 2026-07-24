@@ -27,7 +27,7 @@ public class ResendCooldownGatewayImplTests {
     private ValueOperations<String, String> valueOperations;
 
     @Test
-    @DisplayName("Should return false when activation token is not in cooldown")
+    @DisplayName("Should return false when activation accessToken is not in cooldown")
     public void shouldReturnFalseWhenActivationTokenIsNotInCooldown() {
         String email = "test@example.com";
         when(redisTemplate.hasKey(KEY_PREFIX + email)).thenReturn(false);
@@ -37,7 +37,7 @@ public class ResendCooldownGatewayImplTests {
     }
 
     @Test
-    @DisplayName("Should return true when activation token is in cooldown")
+    @DisplayName("Should return true when activation accessToken is in cooldown")
     public void shouldReturnTrueWhenActivationTokenIsInCooldown() {
         String email = "test@example.com";
         when(redisTemplate.hasKey(KEY_PREFIX + email)).thenReturn(true);

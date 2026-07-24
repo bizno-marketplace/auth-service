@@ -28,18 +28,18 @@ public class ValidateTokenTests {
     private MetricsGateway metricsGateway;
 
     @Test
-    @DisplayName("Should return false if token is invalid")
+    @DisplayName("Should return false if accessToken is invalid")
     public void shouldReturnFalseIfTokenIsInvalid() {
-        ValidateTokenInput input = new ValidateTokenInput("invalid-token");
+        ValidateTokenInput input = new ValidateTokenInput("invalid-accessToken");
         ValidateTokenOutput output = usecase.execute(input);
         assertFalse(output.isValid());
     }
 
     @Test
-    @DisplayName("Should return true if token is valid")
+    @DisplayName("Should return true if accessToken is valid")
     public void shouldReturnTrueIfTokenIsValid() {
-        ValidateTokenInput input = new ValidateTokenInput("valid-token");
-        Mockito.when(authenticationGateway.isTokenSignatureValid("valid-token")).thenReturn(true);
+        ValidateTokenInput input = new ValidateTokenInput("valid-accessToken");
+        Mockito.when(authenticationGateway.isTokenSignatureValid("valid-accessToken")).thenReturn(true);
         ValidateTokenOutput output = usecase.execute(input);
         assertTrue(output.isValid());
     }

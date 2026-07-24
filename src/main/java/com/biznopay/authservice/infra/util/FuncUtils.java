@@ -1,5 +1,6 @@
 package com.biznopay.authservice.infra.util;
 
+import com.biznopay.authservice.domain.enums.ExceptionSeverity;
 import com.biznopay.authservice.domain.exception.*;
 import com.biznopay.authservice.domain.vo.ApiError;
 import com.biznopay.authservice.domain.vo.ApiResponse;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 
 import java.time.Instant;
 
@@ -38,6 +40,47 @@ public class FuncUtils {
             error = new ApiError(ex.getErrorCode(), exception.getMessage());
         }
         return ResponseEntity.badRequest().body(FuncUtils.buildResponseBody(false, null, error));
+    }
+
+    public static ResponseEntity<ApiResponse<Object>> handleNotAuthorized(RuntimeException exception, HttpServletRequest request, Logger log) {
+        ApiError error = null;
+        if (exception instanceof NotAuthorizedException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof InvalidCredentialsException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ex.getSeverity(), request.getMethod(), request.getRequestURI(),
+                    ex.getErrorCode(), ex.getMetadata(), ex.getMessage());
+            error = new ApiError(ex.getErrorCode(), exception.getMessage());
+        }
+
+        if (exception instanceof AuthenticationException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ExceptionSeverity.LOW, request.getMethod(), request.getRequestURI(),
+                    "USER_GATEWAY", null, ex.getMessage());
+            error = new ApiError("USER_GATEWAY", "");
+        }
+
+
+        if (exception instanceof RefreshTokenExpiredException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ExceptionSeverity.LOW, request.getMethod(), request.getRequestURI(),
+                    "USER_GATEWAY", null, ex.getMessage());
+            error = new ApiError("USER_GATEWAY", "");
+        }
+
+        if (exception instanceof InvalidRefreshTokenException ex) {
+            log.warn("[{}] {} {} | code={} | field={} | message={}",
+                    ExceptionSeverity.LOW, request.getMethod(), request.getRequestURI(),
+                    "USER_GATEWAY", null, ex.getMessage());
+            error = new ApiError("USER_GATEWAY", "");
+        }
+
+        return new ResponseEntity<>(FuncUtils.buildResponseBody(false, null, error), HttpStatus.UNAUTHORIZED);
     }
 
     public static ResponseEntity<ApiResponse<Object>> handleNotFound(RuntimeException exception, HttpServletRequest request, Logger log) {

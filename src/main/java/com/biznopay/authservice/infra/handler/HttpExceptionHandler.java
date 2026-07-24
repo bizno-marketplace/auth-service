@@ -38,6 +38,10 @@ public class HttpExceptionHandler {
         return switch (exception) {
             case RequiredFieldException ex -> FuncUtils.handleBadRequest(ex, request, log);
             case InvalidConfirmationTokenException ex -> FuncUtils.handleBadRequest(ex, request, log);
+            case NotAuthorizedException ex -> FuncUtils.handleNotAuthorized(ex, request, log);
+            case InvalidCredentialsException ex -> FuncUtils.handleNotAuthorized(ex, request, log);
+            case RefreshTokenExpiredException ex -> FuncUtils.handleNotAuthorized(ex, request, log);
+            case InvalidRefreshTokenException ex -> FuncUtils.handleNotAuthorized(ex, request, log);
             case AccessDeniedException ex -> FuncUtils.handleForbidden(ex, request, log);
             case InvalidSellerAccountStatus ex -> FuncUtils.handleBadRequest(ex, request, log);
             case ResourceNotFoundException ex -> FuncUtils.handleNotFound(ex, request, log);

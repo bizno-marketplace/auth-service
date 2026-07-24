@@ -109,7 +109,7 @@ public class CourierControllerTests extends ContainerBase {
     }
 
     @Test
-    @DisplayName("Should return 403 when token is invalid")
+    @DisplayName("Should return 403 when accessToken is invalid")
     public void shouldReturn403WhenTokenIsInvalid() {
         RegisterCourierRequest request = new RegisterCourierRequest(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL,
                 VALID_PHONE, VALID_PASSWORD, VALID_VEHICLE_TYPE, VALID_LICENSE_NUMBER, VALID_ZONE);
@@ -138,7 +138,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         Courier courier = (Courier) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(courier);
+        String token = jwtHelper.generateToken(courier);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -165,7 +165,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -192,7 +192,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -219,7 +219,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -246,7 +246,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -273,7 +273,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -300,7 +300,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -326,7 +326,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -353,7 +353,7 @@ public class CourierControllerTests extends ContainerBase {
         userJpaRepository.save(entity);
 
         SuperAdmin sa = (SuperAdmin) UserMapper.toUserDomain(entity);
-        String token = jwtHelper.generate(sa);
+        String token = jwtHelper.generateToken(sa);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);

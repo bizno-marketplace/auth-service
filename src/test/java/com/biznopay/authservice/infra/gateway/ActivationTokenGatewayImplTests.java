@@ -26,7 +26,7 @@ public class ActivationTokenGatewayImplTests {
     private ActivationTokenJpaRepository activationTokenJpaRepository;
 
     @Test
-    @DisplayName("should save activation token with correct values")
+    @DisplayName("should save activation accessToken with correct values")
     public void shouldSaveActivationTokenWithCorrectValues() {
         UserId userId = new UserId(UUID.randomUUID());
         ActivationToken token = ActivationToken.generate(userId);
@@ -36,7 +36,7 @@ public class ActivationTokenGatewayImplTests {
     }
 
     @Test
-    @DisplayName("Should delete activation token if exists")
+    @DisplayName("Should delete activation accessToken if exists")
     public void shouldDeleteActivationTokenIfExists() {
         ActivationToken token = ActivationToken.generate(new UserId(UUID.randomUUID()));
         ActivationTokenGateway activationTokenGateway = new ActivationTokenGatewayImpl(activationTokenJpaRepository);
@@ -45,7 +45,7 @@ public class ActivationTokenGatewayImplTests {
     }
 
     @Test
-    @DisplayName("Should return optional empty if activation token is not found on find by id")
+    @DisplayName("Should return optional empty if activation accessToken is not found on find by id")
     public void shouldReturnOptionalEmptyIfActivationTokenIdIsNotFoundOnFindById() {
         UUID tokenId = UUID.randomUUID();
         Mockito.when(activationTokenJpaRepository.findById(tokenId)).thenReturn(Optional.empty());
@@ -55,7 +55,7 @@ public class ActivationTokenGatewayImplTests {
     }
 
     @Test
-    @DisplayName("Should return activation token if found on find by id")
+    @DisplayName("Should return activation accessToken if found on find by id")
     public void shouldReturnActivationTokenIfFoundOnFindById() {
         UUID tokenId = UUID.randomUUID();
         UserId userId = UserId.of(UUID.randomUUID());
@@ -74,7 +74,7 @@ public class ActivationTokenGatewayImplTests {
     }
 
     @Test
-    @DisplayName("Should return optional empty if activation token is not found on find active by  user id")
+    @DisplayName("Should return optional empty if activation accessToken is not found on find active by  user id")
     public void shouldReturnOptionalEmptyIfActivationTokenIdIsNotFoundOnFindActiveByUserId() {
         UUID userId = UUID.randomUUID();
         Mockito.when(activationTokenJpaRepository.findByUsedAndUserId(false, userId)).thenReturn(Optional.empty());

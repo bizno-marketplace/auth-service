@@ -7,6 +7,7 @@ import com.biznopay.authservice.presentation.dto.RegisterCourierRequest;
 import com.biznopay.authservice.usecase.courier.register.RegisterCourier;
 import com.biznopay.authservice.usecase.courier.register.RegisterCourierInput;
 import com.biznopay.authservice.usecase.courier.register.RegisterCourierOutput;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class CourierController {
     private final RegisterCourier registerCourier;
 
     @PostMapping("/register")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Object>> register(@RequestBody @Valid RegisterCourierRequest request) {
         RegisterCourierInput input = UserMapper.toRegisterCourierInput(request);
         RegisterCourierOutput output = registerCourier.execute(input);

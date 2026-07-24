@@ -14,4 +14,9 @@ public class EncoderGatewayImpl implements EncoderGateway {
     public String encode(String rawValue) {
         return encoder.encode(rawValue);
     }
+
+    @Override
+    public boolean matches(String rawValue, String encodedValue) {
+        return encoder.matches(rawValue, encodedValue);
+    }
 }

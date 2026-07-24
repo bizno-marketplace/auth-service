@@ -21,6 +21,7 @@ import com.biznopay.authservice.usecase.seller.resubmit.ResubmitSellerOutput;
 import com.biznopay.authservice.usecase.seller.update.UpdateSeller;
 import com.biznopay.authservice.usecase.seller.update.UpdateSellerInput;
 import com.biznopay.authservice.usecase.seller.update.UpdateSellerOutput;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,7 @@ public class SellerController {
     }
 
     @PatchMapping("/{id}/approve")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Object>> approve(@PathVariable("id") String sellerId) {
         ApproveSellerInput input = new ApproveSellerInput(sellerId);
         approveSeller.execute(input);
@@ -63,6 +65,7 @@ public class SellerController {
     }
 
     @PatchMapping("/{id}/reject")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Object>> reject(@PathVariable("id") String sellerId, @Valid @RequestBody RejectSellerRequest request) {
         RejectSellerInput input = UserMapper.toRejectSellerInput(sellerId, request);
         rejectSeller.execute(input);
@@ -70,6 +73,7 @@ public class SellerController {
     }
 
     @PatchMapping("/resubmit")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Object>> resubmit(
             @RequestPart("data") ResubmitSellerRequest request,
             @RequestPart(value = "biFrontPhoto", required = false) MultipartFile biFrontPhoto,
@@ -82,6 +86,7 @@ public class SellerController {
     }
 
     @PatchMapping("/update")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<Object>> update(@Valid @RequestBody UpdateSellerRequest request) {
         UpdateSellerInput input = UserMapper.toUpdateSellerInput(request);
         UpdateSellerOutput output = updateSeller.execute(input);
