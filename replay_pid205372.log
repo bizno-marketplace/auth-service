@@ -6553,11 +6553,11 @@ instanceKlass  @bci org/springframework/boot/web/server/context/SpringBootTestRa
 instanceKlass org/springframework/core/convert/support/StringToNumberConverterFactory$StringToNumber
 instanceKlass org/springframework/boot/webmvc/test/autoconfigure/WebDriverScope
 instanceKlass org/springframework/util/function/SupplierUtils
-instanceKlass  @bci com/biznopay/authservice/_config/ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 87 <appendix> argL0 ; # com/biznopay/authservice/_config/ContainerBase$$Lambda+0x00000000a1817c48
-instanceKlass  @bci com/biznopay/authservice/_config/ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 74 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/ContainerBase$$Lambda+0x00000000a1817a18
-instanceKlass  @bci com/biznopay/authservice/_config/ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 53 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/ContainerBase$$Lambda+0x00000000a18177e8
-instanceKlass  @bci com/biznopay/authservice/_config/ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 32 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/ContainerBase$$Lambda+0x00000000a18175b8
-instanceKlass  @bci com/biznopay/authservice/_config/ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 11 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/ContainerBase$$Lambda+0x00000000a1817388
+instanceKlass  @bci com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 87 <appendix> argL0 ; # com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase$$Lambda+0x00000000a1817c48
+instanceKlass  @bci com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 74 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase$$Lambda+0x00000000a1817a18
+instanceKlass  @bci com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 53 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase$$Lambda+0x00000000a18177e8
+instanceKlass  @bci com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 32 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase$$Lambda+0x00000000a18175b8
+instanceKlass  @bci com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase configureProperties (Lorg/springframework/test/context/DynamicPropertyRegistry;)V 11 <appendix> member <vmtarget> ; # com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase$$Lambda+0x00000000a1817388
 # instanceKlass java/lang/invoke/LambdaForm$MH+0x00000000a1810c00
 # instanceKlass java/lang/invoke/LambdaForm$MH+0x00000000a1810800
 # instanceKlass java/lang/invoke/LambdaForm$MH+0x00000000a1810400
@@ -12442,7 +12442,7 @@ instanceKlass org/junit/platform/suite/api/SelectPackages
 instanceKlass org/junit/platform/suite/api/IncludeEngines
 instanceKlass com/biznopay/authservice/bdd/_config/CucumberTestRunner
 instanceKlass io/cucumber/spring/CucumberContextConfiguration
-instanceKlass com/biznopay/authservice/_config/ContainerBase
+instanceKlass com/biznopay/authservice/_config/com.biznopay.commons.testing.ContainerBase
 instanceKlass com/biznopay/authservice/bdd/steps/user/Sellers/ResubmitSellerSteps
 instanceKlass com/biznopay/authservice/bdd/steps/user/Sellers/ResubmitSellerSteps$1
 instanceKlass com/biznopay/authservice/bdd/steps/user/Sellers/RejectSellerSteps
@@ -14612,7 +14612,7 @@ instanceKlass org/hibernate/engine/jdbc/env/internal/QualifiedObjectNameFormatte
 instanceKlass java/text/DecimalFormat$NumericPosition
 instanceKlass org/springframework/beans/factory/support/MethodDescriptor
 instanceKlass org/apache/catalina/core/DefaultInstanceManager$AnnotationCacheEntry
-instanceKlass org/apache/catalina/core/ContainerBase$StartChild
+instanceKlass org/apache/catalina/core/com.biznopay.commons.testing.ContainerBase$StartChild
 instanceKlass org/springframework/boot/autoconfigure/ssl/BundleContentProperty
 instanceKlass org/springframework/boot/autoconfigure/ssl/SslPropertiesBundleRegistrar$Bundle
 instanceKlass org/springframework/boot/web/server/Ssl$ServerNameSslBundle

@@ -5,10 +5,9 @@ import com.biznopay.authservice.domain.entity.event.UserUpdated;
 import com.biznopay.authservice.domain.gateway.DomainEventGateway;
 import com.biznopay.authservice.domain.vo.UserRegisteredPayload;
 import com.biznopay.authservice.domain.vo.UserUpdatedPayload;
-import com.biznopay.authservice.infra.mapper.OutboxEventMapper;
-import com.biznopay.authservice.infra.outbox.OutboxEvent;
-import com.biznopay.authservice.infra.persistence.jpa.entity.OutboxEventJpaEntity;
-import com.biznopay.authservice.infra.persistence.jpa.repository.OutboxEventJpaRepository;
+import com.biznopay.commons.outbox.domain.enums.OutboxStatus;
+import com.biznopay.commons.outbox.persistence.jpa.entity.OutboxEventJpaEntity;
+import com.biznopay.commons.outbox.persistence.jpa.repository.OutboxEventJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
@@ -20,23 +19,30 @@ public class DomainEventGatewayImpl implements DomainEventGateway {
     public static final String EVENT_TYPE_USER_REGISTERED = "USER_REGISTERED";
     public static final String EVENT_TYPE_USER_UPDATED = "USER_UPDATED";
 
-
     private final OutboxEventJpaRepository repository;
     private final ObjectMapper objectMapper;
 
     @Override
     public void publish(UserRegistered event) {
         String payload = serialize(event);
-        OutboxEvent outboxEvent = OutboxEvent.create(event.getUserId().value(), EVENT_TYPE_USER_REGISTERED, SUBJECT, payload);
-        OutboxEventJpaEntity entity = OutboxEventMapper.toJpaEntity(outboxEvent);
+        OutboxEventJpaEntity entity = new OutboxEventJpaEntity();
+        entity.setAggregateId(event.getUserId().value());
+        entity.setEventType(EVENT_TYPE_USER_REGISTERED);
+        entity.setStatus(OutboxStatus.PENDING);
+        entity.setSubject(SUBJECT);
+        entity.setPayload(payload);
         repository.save(entity);
     }
 
     @Override
     public void publish(UserUpdated event) {
         String payload = serialize(event);
-        OutboxEvent outboxEvent = OutboxEvent.create(event.getUserId().value(), EVENT_TYPE_USER_UPDATED, SUBJECT, payload);
-        OutboxEventJpaEntity entity = OutboxEventMapper.toJpaEntity(outboxEvent);
+        OutboxEventJpaEntity entity = new OutboxEventJpaEntity();
+        entity.setAggregateId(event.getUserId().value());
+        entity.setEventType(EVENT_TYPE_USER_UPDATED);
+        entity.setStatus(OutboxStatus.PENDING);
+        entity.setSubject(SUBJECT);
+        entity.setPayload(payload);
         repository.save(entity);
     }
 
