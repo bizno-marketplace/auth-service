@@ -2,7 +2,6 @@ package com.biznopay.authservice.usecase.seller.resubmit;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
-import com.biznopay.authservice.domain.entity.event.UserUpdated;
 import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.seller.Seller;
