@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.saller;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.infra.gateway.TransactionGatewayImpl;
@@ -79,7 +79,7 @@ public class RegisterSellerTests {
         Mockito.doNothing().when(storageGateway).upload(Mockito.anyList());
         Mockito.doNothing().when(userGateway).save(Mockito.any(User.class));
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
-        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserRegistered.class));
+        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserAccountActivation.class));
         Mockito.doNothing().when(metricsGateway).incrementSellerRegistered();
 
         RegisterSellerOutput output = usecase.execute(input);
@@ -90,6 +90,6 @@ public class RegisterSellerTests {
         Mockito.verify(storageGateway, Mockito.times(1)).upload(Mockito.anyList());
         Mockito.verify(userGateway, Mockito.times(1)).save(Mockito.any(User.class));
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivation.class));
     }
 }

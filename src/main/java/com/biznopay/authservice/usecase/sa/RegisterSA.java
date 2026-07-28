@@ -1,9 +1,10 @@
 package com.biznopay.authservice.usecase.sa;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.EventTypeEnum;
 import com.biznopay.authservice.domain.exception.ConflictException;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.gateway.*;
@@ -41,7 +42,8 @@ public class RegisterSA {
             userGateway.save(superAdmin);
             ActivationToken token = ActivationToken.generate(superAdmin.getId());
             activationTokenGateway.save(token);
-            UserRegistered event = UserRegistered.of(superAdmin.getId(), superAdmin.getEmail(), superAdmin.getFirstName(), token.getId());
+            UserAccountActivation event = UserAccountActivation.of(superAdmin.getId(), superAdmin.getEmail(),
+                    superAdmin.getFirstName(), token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             return new RegisterSAOutput("We've sent an activation link to provided email: " + input.email());
         });

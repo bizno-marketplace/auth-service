@@ -1,9 +1,10 @@
 package com.biznopay.authservice.usecase.courier.register;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.Courier;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.EventTypeEnum;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.gateway.*;
 import com.biznopay.authservice.domain.policy.RegisterCourierPolicy;
@@ -46,7 +47,8 @@ public class RegisterCourier {
             userGateway.save(courier);
             ActivationToken token = ActivationToken.generate(courier.getId());
             activationTokenGateway.save(token);
-            UserRegistered event = UserRegistered.of(courier.getId(), courier.getEmail(), courier.getFirstName(), token.getId());
+            UserAccountActivation event = UserAccountActivation.of(courier.getId(), courier.getEmail(), courier.getFirstName(),
+                    token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             metricsGateway.incrementCourierRegistered();
             return new RegisterCourierOutput("We've sent an activation link to provided email: " + input.email());

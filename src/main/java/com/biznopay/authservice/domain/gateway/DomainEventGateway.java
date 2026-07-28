@@ -1,10 +1,7 @@
 package com.biznopay.authservice.domain.gateway;
 
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
-import com.biznopay.authservice.domain.entity.event.UserUpdated;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 
 public interface DomainEventGateway {
-    void publish(UserRegistered event);
-
-    void publish(UserUpdated event);
+    void publish(UserAccountActivation event);
 }

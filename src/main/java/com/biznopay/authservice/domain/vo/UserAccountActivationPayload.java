@@ -1,11 +1,15 @@
 package com.biznopay.authservice.domain.vo;
 
-public record UserUpdatedPayload(
+import java.time.LocalDateTime;
+
+public record UserAccountActivationPayload(
         String eventId,
         String userId,
         String email,
         String firstName,
         String activationTokenId,
-        String occurredAt
+        LocalDateTime occurredAt,
+        String eventType,
+        String sourceService
 ) {
 }

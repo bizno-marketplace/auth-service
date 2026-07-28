@@ -19,7 +19,7 @@ public class UserRegisteredTests {
                                                           String firstName, ActivationTokenId activationTokenId,
                                                           Class<? extends Exception> expectedException, String expectedMessage) {
         if (testName.equals("Success")) {
-            UserRegistered userRegistered = UserRegistered.of(userId, email,
+            UserAccountActivation userRegistered = UserAccountActivation.of(userId, email,
                     firstName, activationTokenId);
             Assertions.assertNotNull(userRegistered.getEventId());
             Assertions.assertEquals(userId, userRegistered.getUserId());
@@ -29,7 +29,7 @@ public class UserRegisteredTests {
             Assertions.assertNotNull(userRegistered.getOccurredAt());
         } else {
             org.assertj.core.api.Assertions.assertThatThrownBy(() ->
-                            UserRegistered.of(userId, email, firstName, activationTokenId))
+                            UserAccountActivation.of(userId, email, firstName, activationTokenId))
                     .isInstanceOf(expectedException)
                     .hasMessage(expectedMessage);
         }

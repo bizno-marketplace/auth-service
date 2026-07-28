@@ -1,9 +1,10 @@
 package com.biznopay.authservice.usecase.seller.register;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.seller.Seller;
+import com.biznopay.authservice.domain.enums.EventTypeEnum;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.exception.NuitAlreadyInUseException;
 import com.biznopay.authservice.domain.gateway.*;
@@ -50,7 +51,8 @@ public class RegisterSeller {
             userGateway.save(seller);
             ActivationToken token = ActivationToken.generate(seller.getId());
             activationTokenGateway.save(token);
-            UserRegistered event = UserRegistered.of(seller.getId(), seller.getEmail(), seller.getFirstName(), token.getId());
+            UserAccountActivation event = UserAccountActivation.of(seller.getId(), seller.getEmail(), seller.getFirstName(),
+                    token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             metricsGateway.incrementSellerRegistered();
             return new RegisterSellerOutput("We've sent an activation link to provided email: " + input.email());

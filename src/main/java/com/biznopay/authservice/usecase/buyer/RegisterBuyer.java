@@ -1,9 +1,10 @@
 package com.biznopay.authservice.usecase.buyer;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.EventTypeEnum;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.gateway.*;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,8 @@ public class RegisterBuyer {
             userGateway.save(buyer);
             ActivationToken token = ActivationToken.generate(buyer.getId());
             activationTokenGateway.save(token);
-            UserRegistered event = UserRegistered.of(buyer.getId(), buyer.getEmail(), buyer.getFirstName(), token.getId());
+            UserAccountActivation event = UserAccountActivation.of(buyer.getId(), buyer.getEmail(), buyer.getFirstName(),
+                    token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             metricsGateway.incrementBuyerRegistered();
             return new RegisterBuyerOutput("We've sent an activation link to provided email: " + input.email());

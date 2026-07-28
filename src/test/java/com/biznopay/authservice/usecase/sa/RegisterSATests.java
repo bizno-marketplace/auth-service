@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.sa;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.exception.ConflictException;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
@@ -99,13 +99,13 @@ public class RegisterSATests {
         Mockito.when(userGateway.countSAs()).thenReturn(0L);
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
         Mockito.when(encoderGateway.encode(input.password())).thenReturn("GGSGGnxhgajhasfsklm)0199");
-        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserRegistered.class));
+        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserAccountActivation.class));
         RegisterSA useCase = setupRegisterSA();
         RegisterSAOutput output = useCase.execute(input);
         Assertions.assertEquals("We've sent an activation link to provided email: " + input.email(), output.message());
         Mockito.verify(userGateway, Mockito.times(1)).countSAs();
         Mockito.verify(userGateway, Mockito.times(1)).save(Mockito.any(SuperAdmin.class));
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserRegistered.class));
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivation.class));
     }
 }

@@ -1,8 +1,9 @@
 package com.biznopay.authservice.usecase.auth.resendConfirmation;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserRegistered;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
 import com.biznopay.authservice.domain.entity.user.User;
+import com.biznopay.authservice.domain.enums.EventTypeEnum;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.TokenCooldownException;
@@ -47,7 +48,8 @@ public class ResendConformation {
             ActivationToken token = ActivationToken.generate(user.getId());
             activationTokenGateway.save(token);
             resendCooldownGateway.startCooldown(email, COOLDOWN);
-            UserRegistered event = UserRegistered.of(user.getId(), user.getEmail(), user.getFirstName(), token.getId());
+            UserAccountActivation event = UserAccountActivation.of(user.getId(), user.getEmail(), user.getFirstName(),
+                    token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             return output;
         });
