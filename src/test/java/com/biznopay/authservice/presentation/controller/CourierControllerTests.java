@@ -1,10 +1,7 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice._config.ContainerBase;
-import com.biznopay.authservice._config.TestConfig;
 import com.biznopay.authservice.domain.entity.user.Courier;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.CourierJpaEntity;
@@ -16,6 +13,9 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaReposito
 import com.biznopay.authservice.presentation.dto.RegisterCourierRequest;
 import com.biznopay.authservice.usecase.sa.RegisterSAOutput;
 import com.biznopay.commons.outbox.persistence.jpa.repository.OutboxEventJpaRepository;
+import com.biznopay.shared.vo.ApiResponse;
+import com.biznopay.testing.ContainerBase;
+import com.biznopay.testing.TestConfig;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.*;

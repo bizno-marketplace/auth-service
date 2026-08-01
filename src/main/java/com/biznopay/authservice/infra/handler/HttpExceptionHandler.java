@@ -1,9 +1,9 @@
 package com.biznopay.authservice.infra.handler;
 
 import com.biznopay.authservice.domain.exception.*;
-import com.biznopay.authservice.domain.vo.ApiError;
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.util.FuncUtils;
+import com.biznopay.shared.vo.ApiError;
+import com.biznopay.shared.vo.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

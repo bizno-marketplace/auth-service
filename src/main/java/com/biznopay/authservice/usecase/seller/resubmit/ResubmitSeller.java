@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.seller.resubmit;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.Address;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.seller.Seller;
@@ -84,7 +84,7 @@ public class ResubmitSeller {
             updatedSeller.setToPending();
             userGateway.update(updatedSeller);
             activationTokenGateway.save(token);
-            UserAccountActivation event = UserAccountActivation.of(seller.getId(), seller.getEmail(), seller.getFirstName(),
+            UserAccountActivationEvent event = UserAccountActivationEvent.of(seller.getId(), seller.getEmail(), seller.getFirstName(),
                     token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             return new ResubmitSellerOutput("As you changed you email we've sent instruction to conform account in the provided email.");

@@ -1,9 +1,8 @@
 package com.biznopay.authservice.bdd.steps.courier;
 
-import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.VehicleTypeEnum;
-import com.biznopay.authservice.domain.vo.ApiResponse;
+import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.*;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
@@ -11,6 +10,8 @@ import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaReposito
 import com.biznopay.authservice.presentation.dto.RegisterCourierRequest;
 import com.biznopay.commons.outbox.persistence.jpa.entity.OutboxEventJpaEntity;
 import com.biznopay.commons.outbox.persistence.jpa.repository.OutboxEventJpaRepository;
+import com.biznopay.shared.vo.ApiResponse;
+import com.biznopay.testing.ScenarioContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -54,6 +55,9 @@ public class RegisterCourierSteps {
     @Autowired
     private OutboxEventJpaRepository outboxEventJpaRepository;
 
+    @Autowired
+    private JwtHelper jwtHelper;
+
     @Before
     public void setUp() {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
@@ -96,7 +100,7 @@ public class RegisterCourierSteps {
         entity.setStoreAddress(addressJpaEntity);
         entity = userJpaRepository.save(entity);
         User user = UserMapper.toUserDomain(entity);
-        String token = scenarioContext.getJwtHelper().generateToken(user);
+        String token = jwtHelper.generateToken(user);
         scenarioContext.getHeadersMap().put("token", token);
     }
 

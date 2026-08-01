@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.auth.resendConfirmation;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.EventTypeEnum;
 import com.biznopay.authservice.domain.enums.UserStatus;
@@ -48,7 +48,7 @@ public class ResendConformation {
             ActivationToken token = ActivationToken.generate(user.getId());
             activationTokenGateway.save(token);
             resendCooldownGateway.startCooldown(email, COOLDOWN);
-            UserAccountActivation event = UserAccountActivation.of(user.getId(), user.getEmail(), user.getFirstName(),
+            UserAccountActivationEvent event = UserAccountActivationEvent.of(user.getId(), user.getEmail(), user.getFirstName(),
                     token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             return output;

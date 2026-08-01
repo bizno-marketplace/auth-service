@@ -1,12 +1,10 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice._config.ContainerBase;
-import com.biznopay.authservice._config.TestConfig;
+
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
 import com.biznopay.authservice.domain.entity.user.SuperAdmin;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.UserStatus;
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.ActivationTokenMapper;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.ActivationTokenJpaEntity;
@@ -14,6 +12,9 @@ import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.ActivationTokenJpaRepository;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.ResendConfirmationRequest;
+import com.biznopay.shared.vo.ApiResponse;
+import com.biznopay.testing.ContainerBase;
+import com.biznopay.testing.TestConfig;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;

@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.seller.register;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.EventTypeEnum;
@@ -51,7 +51,7 @@ public class RegisterSeller {
             userGateway.save(seller);
             ActivationToken token = ActivationToken.generate(seller.getId());
             activationTokenGateway.save(token);
-            UserAccountActivation event = UserAccountActivation.of(seller.getId(), seller.getEmail(), seller.getFirstName(),
+            UserAccountActivationEvent event = UserAccountActivationEvent.of(seller.getId(), seller.getEmail(), seller.getFirstName(),
                     token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             metricsGateway.incrementSellerRegistered();

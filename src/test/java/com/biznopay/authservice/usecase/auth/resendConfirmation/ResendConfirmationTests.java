@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.auth.resendConfirmation;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.AccountAlreadyConfirmedException;
 import com.biznopay.authservice.domain.exception.TokenCooldownException;
@@ -91,7 +91,7 @@ public class ResendConfirmationTests {
         Mockito.verify(activationTokenGateway, Mockito.times(1)).delete(Mockito.any(ActivationToken.class));
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, ResendConformation.COOLDOWN);
-        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivation.class));
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivationEvent.class));
         Assertions.assertEquals("Successfully requested a new confirmation email.", output.message());
     }
 
@@ -112,7 +112,7 @@ public class ResendConfirmationTests {
         Mockito.verify(activationTokenGateway, Mockito.times(1)).findActiveByUserId(user.getId().value());
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
         Mockito.verify(resendCooldownGateway, Mockito.times(1)).startCooldown(email, ResendConformation.COOLDOWN);
-        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivation.class));
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivationEvent.class));
         Assertions.assertEquals("Successfully requested a new confirmation email.", output.message());
     }
 }

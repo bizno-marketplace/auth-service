@@ -1,13 +1,13 @@
 package com.biznopay.authservice.bdd.steps.Seller;
 
-import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.entity.user.User;
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
 import com.biznopay.authservice.presentation.dto.AddressRequest;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
+import com.biznopay.shared.vo.ApiResponse;
+import com.biznopay.testing.ScenarioContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;

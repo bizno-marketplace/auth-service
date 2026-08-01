@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.courier.register;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.Courier;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.enums.EventTypeEnum;
@@ -47,7 +47,7 @@ public class RegisterCourier {
             userGateway.save(courier);
             ActivationToken token = ActivationToken.generate(courier.getId());
             activationTokenGateway.save(token);
-            UserAccountActivation event = UserAccountActivation.of(courier.getId(), courier.getEmail(), courier.getFirstName(),
+            UserAccountActivationEvent event = UserAccountActivationEvent.of(courier.getId(), courier.getEmail(), courier.getFirstName(),
                     token.getId(), EventTypeEnum.USER_REGISTERED.name());
             domainEventGateway.publish(event);
             metricsGateway.incrementCourierRegistered();

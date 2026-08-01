@@ -1,12 +1,12 @@
 package com.biznopay.authservice.presentation.service;
 
-import com.biznopay.authservice._config.ContainerBase;
 import com.biznopay.authservice.domain.enums.Role;
 import com.biznopay.authservice.grpc.*;
 import com.biznopay.authservice.infra.helper.JwtHelper;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SellerJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.entity.SuperAdminJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.testing.ContainerBase;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;

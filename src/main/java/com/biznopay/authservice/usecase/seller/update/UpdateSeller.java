@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.seller.update;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.entity.user.seller.Seller;
 import com.biznopay.authservice.domain.enums.EventTypeEnum;
@@ -62,7 +62,7 @@ public class UpdateSeller {
             updatedSeller.setToPending();
             userGateway.update(updatedSeller);
             activationTokenGateway.save(token);
-            UserAccountActivation event = UserAccountActivation.of(seller.getId(), seller.getEmail(),
+            UserAccountActivationEvent event = UserAccountActivationEvent.of(seller.getId(), seller.getEmail(),
                     seller.getFirstName(), token.getId(), EventTypeEnum.USER_UPDATED.name());
             domainEventGateway.publish(event);
             return new UpdateSellerOutput("As you changed you email we've sent instruction to conform account in the provided email.");

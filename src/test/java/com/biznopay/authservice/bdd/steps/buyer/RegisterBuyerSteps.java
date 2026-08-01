@@ -1,9 +1,9 @@
 package com.biznopay.authservice.bdd.steps.buyer;
 
-import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.domain.enums.UserStatus;
 import com.biznopay.authservice.infra.persistence.jpa.entity.UserJpaEntity;
 import com.biznopay.authservice.infra.persistence.jpa.repository.UserJpaRepository;
+import com.biznopay.testing.ScenarioContext;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;

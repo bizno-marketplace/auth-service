@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.courier;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.Courier;
 import com.biznopay.authservice.domain.entity.user.User;
 import com.biznopay.authservice.domain.exception.AccessDeniedException;
@@ -93,7 +93,7 @@ public class RegisterCourierTests {
         Mockito.when(encoderGateway.encode(VALID_PASSWORD)).thenReturn(encodePassword);
         Mockito.doNothing().when(userGateway).save(Mockito.any(User.class));
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
-        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserAccountActivation.class));
+        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserAccountActivationEvent.class));
         Mockito.doNothing().when(metricsGateway).incrementCourierRegistered();
 
         RegisterCourier usecase = setUp();
@@ -105,7 +105,7 @@ public class RegisterCourierTests {
         Mockito.verify(authenticationGateway, Mockito.times(1)).loggedUser();
         Mockito.verify(userGateway, Mockito.times(1)).save(Mockito.any(User.class));
         Mockito.verify(activationTokenGateway).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(domainEventGateway).publish(Mockito.any(UserAccountActivation.class));
+        Mockito.verify(domainEventGateway).publish(Mockito.any(UserAccountActivationEvent.class));
         Mockito.verify(metricsGateway).incrementCourierRegistered();
     }
 }

@@ -9,9 +9,11 @@ import com.biznopay.authservice.domain.exception.RequiredFieldException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UserAccountActivation {
+public class UserAccountActivationEvent {
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$";
+    private static final String SUBJECT = "notification.email.send";
 
+    //There is not need to pass all activation token entity fields
     private final UUID eventId;
     private final UserId userId;
     private final String email;
@@ -21,8 +23,8 @@ public class UserAccountActivation {
     private final String eventType;
     private final String sourceService;
 
-    private UserAccountActivation(UUID eventId, UserId userId, String email, String firstName, ActivationTokenId activationTokenId,
-                                  LocalDateTime occurredAt, String eventType, String sourceService) {
+    private UserAccountActivationEvent(UUID eventId, UserId userId, String email, String firstName, ActivationTokenId activationTokenId,
+                                       LocalDateTime occurredAt, String eventType, String sourceService) {
         this.eventId = eventId;
         this.userId = this.validateUserId(userId);
         this.email = this.validateEmail(email);
@@ -33,19 +35,19 @@ public class UserAccountActivation {
         this.sourceService = this.validateSourceService(sourceService);
     }
 
-    public static UserAccountActivation of(UserId userId, String email, String firstName, ActivationTokenId activationTokenId, String eventType) {
-        return new UserAccountActivation(UUID.randomUUID(), userId, email, firstName, activationTokenId, LocalDateTime.now(), eventType, "auth-service");
+    public static UserAccountActivationEvent of(UserId userId, String email, String firstName, ActivationTokenId activationTokenId, String eventType) {
+        return new UserAccountActivationEvent(UUID.randomUUID(), userId, email, firstName, activationTokenId, LocalDateTime.now(), eventType, "auth-service");
     }
 
     private UserId validateUserId(UserId userId) {
         if (userId == null)
-            throw new RequiredFieldException("UserId", UserAccountActivation.class.getName(), "USER_REGISTERED-001");
+            throw new RequiredFieldException("UserId", UserAccountActivationEvent.class.getName(), "USER_REGISTERED-001");
         return userId;
     }
 
     private String validateEmail(String email) {
         if (email == null || email.isEmpty())
-            throw new RequiredFieldException("E-mail", UserAccountActivation.class.getName(), "USER_REGISTERED-002");
+            throw new RequiredFieldException("E-mail", UserAccountActivationEvent.class.getName(), "USER_REGISTERED-002");
         if (!email.matches(EMAIL_REGEX))
             throw new InvalidEmailException("USER_REGISTERED-003");
         return email;
@@ -53,27 +55,27 @@ public class UserAccountActivation {
 
     private String validateFirstName(String firstName) {
         if (firstName == null || firstName.isEmpty())
-            throw new RequiredFieldException("FirstName", UserAccountActivation.class.getName(), "USER_REGISTERED-004");
+            throw new RequiredFieldException("FirstName", UserAccountActivationEvent.class.getName(), "USER_REGISTERED-004");
         if (firstName.length() < 3)
-            throw new InvalidStringFieldLengException("FirstName", 3, UserAccountActivation.class.getName(), "USER_REGISTERED-005");
+            throw new InvalidStringFieldLengException("FirstName", 3, UserAccountActivationEvent.class.getName(), "USER_REGISTERED-005");
         return firstName;
     }
 
     private ActivationTokenId validateActivationTokenId(ActivationTokenId activationTokenId) {
         if (activationTokenId == null)
-            throw new RequiredFieldException("ActivationTokenId", UserAccountActivation.class.getName(), "USER_REGISTERED-006");
+            throw new RequiredFieldException("ActivationTokenId", UserAccountActivationEvent.class.getName(), "USER_REGISTERED-006");
         return activationTokenId;
     }
 
     private String validateEventType(String eventType) {
         if (eventType == null || eventType.isEmpty())
-            throw new RequiredFieldException("Event type", UserAccountActivation.class.getName(), "USER_REGISTERED-007");
+            throw new RequiredFieldException("Event type", UserAccountActivationEvent.class.getName(), "USER_REGISTERED-007");
         return eventType;
     }
 
     private String validateSourceService(String sourceService) {
         if (sourceService == null || sourceService.isEmpty())
-            throw new RequiredFieldException("Source service", UserAccountActivation.class.getName(), "USER_REGISTERED-008");
+            throw new RequiredFieldException("Source service", UserAccountActivationEvent.class.getName(), "USER_REGISTERED-008");
         return sourceService;
     }
 
@@ -108,5 +110,9 @@ public class UserAccountActivation {
 
     public String getSourceService() {
         return sourceService;
+    }
+
+    public String getSubject() {
+        return SUBJECT;
     }
 }

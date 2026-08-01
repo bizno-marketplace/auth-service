@@ -1,6 +1,6 @@
 package com.biznopay.authservice;
 
-import com.biznopay.authservice._config.TestConfig;
+import com.biznopay.testing.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;

@@ -1,6 +1,5 @@
 package com.biznopay.authservice.presentation.controller;
 
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.mapper.UserMapper;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.RegisterSellerRequest;
@@ -21,6 +20,7 @@ import com.biznopay.authservice.usecase.seller.resubmit.ResubmitSellerOutput;
 import com.biznopay.authservice.usecase.seller.update.UpdateSeller;
 import com.biznopay.authservice.usecase.seller.update.UpdateSellerInput;
 import com.biznopay.authservice.usecase.seller.update.UpdateSellerOutput;
+import com.biznopay.shared.vo.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

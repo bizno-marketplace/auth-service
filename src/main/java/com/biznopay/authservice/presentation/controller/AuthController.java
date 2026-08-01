@@ -1,7 +1,6 @@
 package com.biznopay.authservice.presentation.controller;
 
 import com.biznopay.authservice.domain.exception.RequiredFieldException;
-import com.biznopay.authservice.domain.vo.ApiResponse;
 import com.biznopay.authservice.infra.util.FuncUtils;
 import com.biznopay.authservice.presentation.dto.LoginRequest;
 import com.biznopay.authservice.presentation.dto.LogoutRequest;
@@ -19,6 +18,7 @@ import com.biznopay.authservice.usecase.auth.refreshToken.RefreshTokenInput;
 import com.biznopay.authservice.usecase.auth.refreshToken.RefreshTokenOutput;
 import com.biznopay.authservice.usecase.auth.resendConfirmation.ResendConformation;
 import com.biznopay.authservice.usecase.auth.resendConfirmation.ResendConformationOutput;
+import com.biznopay.shared.vo.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,9 +1,9 @@
 package com.biznopay.authservice.bdd.steps.auth;
 
-import com.biznopay.authservice.bdd._config.ScenarioContext;
 import com.biznopay.authservice.grpc.AuthServiceGrpc;
 import com.biznopay.authservice.grpc.GetUserProfileRequest;
 import com.biznopay.authservice.grpc.GetUserProfileResponse;
+import com.biznopay.testing.ScenarioContext;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;

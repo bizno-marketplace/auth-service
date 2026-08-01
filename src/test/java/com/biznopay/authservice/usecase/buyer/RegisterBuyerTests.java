@@ -1,7 +1,7 @@
 package com.biznopay.authservice.usecase.buyer;
 
 import com.biznopay.authservice.domain.entity.activation.ActivationToken;
-import com.biznopay.authservice.domain.entity.event.UserAccountActivation;
+import com.biznopay.authservice.domain.entity.event.UserAccountActivationEvent;
 import com.biznopay.authservice.domain.entity.user.Buyer;
 import com.biznopay.authservice.domain.exception.EmailAlreadyInUseException;
 import com.biznopay.authservice.domain.exception.InvalidPasswordException;
@@ -85,7 +85,7 @@ public class RegisterBuyerTests {
         Mockito.when(encoderGateway.encode(input.password())).thenReturn(encodedPassword);
         Mockito.doNothing().when(userGateway).save(Mockito.any(Buyer.class));
         Mockito.doNothing().when(activationTokenGateway).save(Mockito.any(ActivationToken.class));
-        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserAccountActivation.class));
+        Mockito.doNothing().when(domainEventGateway).publish(Mockito.any(UserAccountActivationEvent.class));
         Mockito.doNothing().when(metricsGateway).incrementBuyerRegistered();
 
         RegisterBuyerOutput output = usecase.execute(input);
@@ -94,6 +94,6 @@ public class RegisterBuyerTests {
         Mockito.verify(encoderGateway, Mockito.times(1)).encode(input.password());
         Mockito.verify(userGateway, Mockito.times(1)).save(Mockito.any(Buyer.class));
         Mockito.verify(activationTokenGateway, Mockito.times(1)).save(Mockito.any(ActivationToken.class));
-        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivation.class));
+        Mockito.verify(domainEventGateway, Mockito.times(1)).publish(Mockito.any(UserAccountActivationEvent.class));
     }
 }
